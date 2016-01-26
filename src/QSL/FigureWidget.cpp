@@ -31,6 +31,8 @@ FigureWidget::FigureWidget(QWidget *parent)
     setMinimumSize(250, 200);
     m->figure = new Figure();
     m->ownFigure = true;
+    connect(m->figure, SIGNAL(change(Figure*)),
+            this, SLOT(update()));
 }
 
 
@@ -55,6 +57,8 @@ FigureWidget::FigureWidget(const QString &title,
         m->figure = new Figure();
         m->ownFigure = true;
     }
+    connect(m->figure, SIGNAL(change(Figure*)),
+            this, SLOT(update()));
 }
 
 

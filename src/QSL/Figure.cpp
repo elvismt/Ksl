@@ -119,7 +119,9 @@ void Figure::paint(const QRect &targetRect, QPainter *painter) {
 }
 
 
-void Figure::save(const QString &fileName, const QSize &size, const char *fileFormat) {
+void Figure::save(const QString &fileName, const QSize &size,
+                  const char *fileFormat)
+{
     QImage image(size, QImage::Format_ARGB32);
     QPainter painter(&image);
     paint(QRect(QPoint(0,0), size), &painter);
@@ -128,7 +130,7 @@ void Figure::save(const QString &fileName, const QSize &size, const char *fileFo
 
 
 void Figure::handleAppearenceChange(FigureItem *item) {
-    // TODO
+    Q_UNUSED(item)
 }
 
 
