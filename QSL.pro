@@ -15,7 +15,8 @@ HEADERS += src/QSL/Figure.h \
            src/QSL/Global.h \
            src/QSL/Object.h \
            src/QSL/ObjectPrivate.h \
-    src/QSL/LinearScale.h
+    src/QSL/LinearScale.h \
+    src/QSL/LinearScalePrivate.h
 
 SOURCES += src/QSL/Figure.cpp \
            src/QSL/FigureScale.cpp \

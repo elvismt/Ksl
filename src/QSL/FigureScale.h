@@ -40,9 +40,6 @@ public:
     typedef QList<FigureItem*> ItemList;
 
 
-    FigureScale(const QString &name);
-
-
     QString name() const;
 
     Figure *figure() const;

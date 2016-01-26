@@ -35,6 +35,12 @@ QString Figure::name() const {
 }
 
 
+QFont Figure::font() const {
+    QSL_PUBLIC(const Figure);
+    return m->font;
+}
+
+
 Figure::ScaleList& Figure::scaleList() {
     QSL_PUBLIC(Figure);
     return m->scaleList;
@@ -75,6 +81,16 @@ void Figure::add(FigureScale *scale) {
 }
 
 
+void Figure::setFont(const QFont &font) {
+    QSL_PUBLIC(Figure);
+
+    if (m->font != font) {
+        m->font = font;
+        emit change(this);
+    }
+}
+
+
 void Figure::setTitlePen(const QPen &pen) {
     QSL_PUBLIC(Figure);
 
@@ -99,6 +115,7 @@ void Figure::paint(const QRect &targetRect, QPainter *painter) {
     QSL_PUBLIC(Figure);
 
     painter->save();
+    painter->setFont(m->font);
     painter->setClipRect(targetRect);
     if (m->fillBack) {
         painter->fillRect(targetRect, m->backBrush);
@@ -111,7 +128,7 @@ void Figure::paint(const QRect &targetRect, QPainter *painter) {
     if (m->showTitle == true) {
         auto fontMetrics = painter->fontMetrics();
         int x = targetRect.center().x() - fontMetrics.width(m->name)/2;
-        int y = fontMetrics.height() + 3;
+        int y = fontMetrics.height();
         painter->setPen(m->titlePen);
         painter->drawText(x, y, m->name);
     }

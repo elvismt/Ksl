@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Elvis Teixeira
+ * Copyright (C) 2016  Elvis M.Teixeira
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -18,41 +18,38 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QSL_FIGURE_PRIVATE_H
-#define QSL_FIGURE_PRIVATE_H
+#ifndef QSL_LINEARSCALE_PRIVATE_H
+#define QSL_LINEARSCALE_PRIVATE_H
 
-#include <QSL/Figure.h>
-#include <QBrush>
+#include <QSL/LinearScale.h>
+#include <QSL/FigureScalePrivate.h>
 
 QSL_BEGIN_NAMESPACE
 
-class FigurePrivate
-    : public ObjectPrivate
+class LinearScalePrivate
+    : public FigureScalePrivate
 {
 public:
 
-    FigurePrivate(Figure *publ, const QString &iname)
-        : ObjectPrivate(publ)
-#ifdef Q_OS_LINUX
-        , font("Times", 11)
-#endif // Q_OS_LINUX
-        , name(iname)
-        , backBrush(Qt::white)
-        , fillBack(true)
-        , titlePen(Qt::black)
-        , showTitle(true)
+    LinearScalePrivate(LinearScale *publ, const QString &name)
+        : FigureScalePrivate(publ, name)
+        , xLowBound(20), xUpBound(20)
+        , yLowBound(20), yUpBound(20)
     { }
 
 
-    QFont font;
-    QString name;
-    QBrush backBrush;
-    bool fillBack;
-    QPen titlePen;
-    bool showTitle;
-    Figure::ScaleList scaleList;
+    int xLowBound, xUpBound;
+    int yLowBound, yUpBound;
+
+    int figXmin, figXmax;
+    int figYmin, figYmax;
+    int figWidth, figHeight;
+
+    double xMin, xMax;
+    double yMin, yMax;
+    double width, height;
 };
 
 QSL_END_NAMESPACE
 
-#endif // QSL_FIGURE_PRIVATE_H
+#endif // QSL_LINEARSCALE_PRIVATE_H

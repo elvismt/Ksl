@@ -47,6 +47,7 @@ public:
     QString name() const;
     QPen titlePen() const;
     bool showTitle() const;
+    QFont font() const;
 
     ScaleList& scaleList();
     const ScaleList& scaleList() const;
@@ -68,6 +69,7 @@ public Q_SLOTS:
 
     void setTitlePen(const QPen &pen);
     void setShowTitle(bool showTitle);
+    void setFont(const QFont &font);
 
     virtual void handleAppearenceChange(FigureItem *item);
     virtual void handleDataChange(FigureItem *item);

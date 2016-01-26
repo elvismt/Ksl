@@ -44,6 +44,10 @@ protected:
 
     virtual void setFigure(Figure *figure);
     virtual void paint(const QRect &figureRect, QPainter *painter);
+
+    LinearScale(ObjectPrivate *priv)
+        : FigureScale(priv)
+    { }
 };
 
 QSL_END_NAMESPACE

@@ -22,11 +22,6 @@
 
 QSL_BEGIN_NAMESPACE
 
-FigureScale::FigureScale(const QString &name)
-    : Object(new FigureScalePrivate(this, name))
-{ }
-
-
 QString FigureScale::name() const {
     QSL_PUBLIC(const FigureScale);
     return m->name;

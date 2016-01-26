@@ -19,10 +19,54 @@
  */
 
 
-#include "LinearScale.h"
+#include <QSL/LinearScalePrivate.h>
+#include <QPoint>
 
-LinearScale::LinearScale()
-{
+QSL_BEGIN_NAMESPACE
+
+LinearScale::LinearScale(const QString &name)
+    : FigureScale(new LinearScalePrivate(this, name))
+{ }
+
+
+QRect LinearScale::figureRect() const {
 
 }
 
+
+QRectF LinearScale::dataRect() const {
+
+}
+
+
+QPoint LinearScale::map(const QPointF &p) const {
+    QSL_PUBLIC(LinearScale);
+    QPoint ret;
+    double g;
+
+    // map X coordinate
+    g = (p.x() - m->xMin) / m->width;
+    ret.setX(m->figXmin + qRound(g*m->figWidth));
+    // map Y coordinate
+    g = (p.y() - m->yMin) / m->height;
+    ret.setY(m->figYmax - qRound(g*m->figHeight));
+
+    return ret;
+}
+
+
+QPointF LinearScale::unmap(const QPoint &p) const {
+
+}
+
+
+void LinearScale::setFigure(Figure *figure) {
+
+}
+
+
+void LinearScale::paint(const QRect &figureRect, QPainter *painter) {
+
+}
+
+QSL_END_NAMESPACE
