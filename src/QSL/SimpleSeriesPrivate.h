@@ -34,7 +34,7 @@ public:
     SimpleSeriesPrivate(SimpleSeries *publ, const QString &name)
         : FigureItemPrivate(publ, name)
         , pen(Qt::blue)
-        , brush(Qt::green)
+        , brush(Qt::red)
         , radius(3)
     { }
 

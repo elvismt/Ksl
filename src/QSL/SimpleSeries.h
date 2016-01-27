@@ -33,11 +33,17 @@ class QSL_API SimpleSeries
 
 public:
 
+    enum Symbol {
+       Line        = 0x00000001,
+       Circles     = 0x00000002
+    };
+
+
     SimpleSeries(const QString &name,
                  const Array1D<double> &x,
                  const Array1D<double> &y,
                  const QPen &pen=QPen(Qt::blue),
-                 const QBrush &brush=QBrush(Qt::green));
+                 const QBrush &brush=QBrush(Qt::red));
 
 
     QPen pen() const;
