@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Elvis M.Teixeira
+ * Copyright (C) 2016  Elvis Teixeira
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -18,42 +18,37 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QSL_LINEARSCALE_PRIVATE_H
-#define QSL_LINEARSCALE_PRIVATE_H
+#ifndef QSL_CHARTAXISPRIVATE_H
+#define QSL_CHARTAXISPRIVATE_H
 
-#include <QSL/LinearScale.h>
-#include <QSL/FigureScalePrivate.h>
+#include <QSL/ChartAxis.h>
+#include <QSL/FigureItemPrivate.h>
 
 QSL_BEGIN_NAMESPACE
 
-class LinearScalePrivate
-    : public FigureScalePrivate
+class ChartAxisPrivate
+    : public FigureItemPrivate
 {
 public:
 
-    LinearScalePrivate(LinearScale *publ, const QString &name)
-        : FigureScalePrivate(publ, name)
-        , xLowBound(20), xUpBound(20)
-        , yLowBound(30), yUpBound(20)
+    ChartAxisPrivate(ChartAxis *publ, const QString &name,
+                     ChartAxis::Position iposition)
+        : FigureItemPrivate(publ, name)
+        , pen(Qt::black)
+        , position(iposition)
     { }
 
-    ~LinearScalePrivate();
+
+    QPen pen;
+    ChartAxis::Position position;
 
 
-    int xLowBound, xUpBound;
-    int yLowBound, yUpBound;
-
-    int figXmin, figXmax;
-    int figYmin, figYmax;
-    int figWidth, figHeight;
-
-    double xMin, xMax;
-    double yMin, yMax;
-    double width, height;
-
-    LinearScale::AxisList axisList;
+    void paintBottom(QPainter *painter);
+    void paintLeft(QPainter *painter);
+    void paintTop(QPainter *painter);
+    void paintRight(QPainter *painter);
 };
 
 QSL_END_NAMESPACE
 
-#endif // QSL_LINEARSCALE_PRIVATE_H
+#endif // QSL_CHARTAXISPRIVATE_H

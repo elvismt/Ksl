@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Elvis M.Teixeira
+ * Copyright (C) 2016  Elvis Teixeira
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -18,47 +18,50 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QSL_LINEARSCALE_H
-#define QSL_LINEARSCALE_H
+#ifndef QSL_CHARTAXIS_H
+#define QSL_CHARTAXIS_H
 
-#include <QSL/FigureScale.h>
-#include <QSL/ChartAxis.h>
+#include <QSL/FigureItem.h>
 
 QSL_BEGIN_NAMESPACE
 
-class QSL_API LinearScale
-    : public FigureScale
+// forward declaration
+class LinearScale;
+
+class QSL_API ChartAxis
+    : public FigureItem
 {
 public:
 
-    typedef QList<ChartAxis*> AxisList;
+    enum Position {
+        Top             = 0x00000001,
+        Left            = 0x00000002,
+        Bottom          = 0x00000004,
+        Right           = 0x00000008,
+    };
 
 
-    LinearScale(const QString &name="LinearScale");
+    ChartAxis(const QString &name, Position position,
+              FigureScale *scale, QObject *parent = 0);
 
-    AxisList& axisList();
-    const AxisList& axisList() const;
-    ChartAxis* axis(ChartAxis::Position position) const;
-    ChartAxis* axis(const QString &label) const;
+
+    Position position() const;
 
     virtual QRect figureRect() const;
     virtual QRectF dataRect() const;
 
-    virtual QPoint map(const QPointF &p) const;
-    virtual QPointF unmap(const QPoint &p) const;
-
-    virtual void rescale();
-
 
 protected:
 
-    virtual void paint(const QRect &figureRect, QPainter *painter);
+    friend class LinearScale;
 
-    LinearScale(ObjectPrivate *priv)
-        : FigureScale(priv)
+    virtual void paint(QPainter *painter);
+
+    ChartAxis(ObjectPrivate *priv, QObject *parent = 0)
+        : FigureItem(priv, parent)
     { }
 };
 
 QSL_END_NAMESPACE
 
-#endif // QSL_LINEARSCALE_H
+#endif // QSL_CHARTAXIS_H

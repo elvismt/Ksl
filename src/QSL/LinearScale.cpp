@@ -26,7 +26,21 @@ QSL_BEGIN_NAMESPACE
 
 LinearScale::LinearScale(const QString &name)
     : FigureScale(new LinearScalePrivate(this, name))
-{ }
+{
+    QSL_PUBLIC(LinearScale);
+
+    m->axisList.append(new ChartAxis("BottomAxis", ChartAxis::Bottom, this));
+    m->axisList.append(new ChartAxis("LeftAxis", ChartAxis::Left, this));
+    m->axisList.append(new ChartAxis("TopAxis", ChartAxis::Top, this));
+    m->axisList.append(new ChartAxis("RightAxis", ChartAxis::Right, this));
+}
+
+
+LinearScalePrivate::~LinearScalePrivate() {
+    for (auto axis : axisList) {
+        delete axis;
+    }
+}
 
 
 QRect LinearScale::figureRect() const {
@@ -86,16 +100,19 @@ void LinearScale::paint(const QRect &figureRect, QPainter *painter) {
     m->figYmax = figureRect.bottom() - m->yUpBound;
     m->figHeight = m->figYmax - m->figYmin;
 
-    // TODO: remove it when working on axis
-    painter->setPen(Qt::black);
-    painter->drawRect(this->figureRect());
-
     // draw user's interesting data items
     painter->save();
     painter->setClipRect(m->figXmin, m->figYmin,
                          m->figWidth, m->figHeight);
     FigureScale::paint(figureRect, painter);
     painter->restore();
+
+    // draw coordinate axis
+    for (auto axis : m->axisList) {
+        if (axis->visible()) {
+            axis->paint(painter);
+        }
+    }
 }
 
 
@@ -144,6 +161,42 @@ void LinearScale::rescale() {
     m->yMin -= border;
     m->yMax += border;
     m->height += 2.0*border;
+}
+
+
+LinearScale::AxisList& LinearScale::axisList() {
+    QSL_PUBLIC(LinearScale);
+    return m->axisList;
+}
+
+
+const LinearScale::AxisList& LinearScale::axisList() const {
+    QSL_PUBLIC(const LinearScale);
+    return m->axisList;
+}
+
+
+ChartAxis* LinearScale::axis(ChartAxis::Position position) const {
+    QSL_PUBLIC(LinearScale);
+
+    for (auto ax : m->axisList) {
+        if (ax->position() == position) {
+            return ax;
+        }
+    }
+    return nullptr;
+}
+
+
+ChartAxis* LinearScale::axis(const QString &label) const {
+    QSL_PUBLIC(LinearScale);
+
+    for (auto ax : m->axisList) {
+        if (ax->name() == label) {
+            return ax;
+        }
+    }
+    return nullptr;
 }
 
 QSL_END_NAMESPACE
