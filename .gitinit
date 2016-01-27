@@ -1,9 +1,0 @@
-build
-build/*
-*.o
-*.out
-*.obj
-*.exe
-*.swp
-.tags
-*.user
