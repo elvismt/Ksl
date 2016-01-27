@@ -1,0 +1,10 @@
+build
+build/*
+*.o
+*.out
+*.obj
+*.exe
+*.user
+.tags
+*.swp
+

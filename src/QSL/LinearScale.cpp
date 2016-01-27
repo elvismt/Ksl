@@ -18,8 +18,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include <QSL/LinearScalePrivate.h>
+#include <QSL/FigureItem.h>
 #include <QPoint>
 
 QSL_BEGIN_NAMESPACE
@@ -30,14 +30,16 @@ LinearScale::LinearScale(const QString &name)
 
 
 QRect LinearScale::figureRect() const {
-    // TODO
-    return QRect();
+    QSL_PUBLIC(LinearScale);
+    return QRect(m->figXmin, m->figYmin,
+                 m->figWidth, m->figHeight);
 }
 
 
 QRectF LinearScale::dataRect() const {
-    // TODO
-    return QRectF();
+    QSL_PUBLIC(LinearScale);
+    return QRectF(m->xMin, m->yMin,
+                  m->width, m->height);
 }
 
 
@@ -58,18 +60,46 @@ QPoint LinearScale::map(const QPointF &p) const {
 
 
 QPointF LinearScale::unmap(const QPoint &p) const {
-    // TODO
-    return QPointF();
-}
+    QSL_PUBLIC(LinearScale);
+    QPointF ret;
+    double g;
 
+    // map X coordinate
+    g = (p.x() - m->figXmin) / m->figWidth;
+    ret.setX(m->xMin + g*m->width);
+    // map Y coordinate
+    g = (m->figYmax - p.y()) / m->figHeight;
+    ret.setY(m->yMin + g*m->height);
 
-void LinearScale::setFigure(Figure *figure) {
-
+    return ret;
 }
 
 
 void LinearScale::paint(const QRect &figureRect, QPainter *painter) {
+    QSL_PUBLIC(LinearScale);
 
+    // use an inner rect in the figure
+    m->figXmin = figureRect.left() + m->xLowBound;
+    m->figXmax = figureRect.right() - m->xUpBound;
+    m->figWidth = m->figXmax - m->figXmin;
+    m->figYmin = figureRect.top() + m->yLowBound;
+    m->figYmax = figureRect.bottom() - m->yUpBound;
+    m->figHeight = m->figYmax - m->figYmin;
+
+    // TODO: remove it when working on axis
+    painter->drawRect(this->figureRect());
+
+    // draw user's interesting data items
+    painter->save();
+    painter->setClipRect(m->figXmin, m->figYmin,
+                         m->figWidth, m->figHeight);
+    FigureScale::paint(figureRect, painter);
+    painter->restore();
+}
+
+
+void LinearScale::rescale() {
+    // TODO
 }
 
 QSL_END_NAMESPACE

@@ -1,8 +1,40 @@
+/*
+ * Copyright (C) 2016  Elvis Teixeira
+ *
+ * This source code is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * This source code is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General
+ * Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <QSL/FigureItemPrivate.h>
 #include <QSL/FigureScale.h>
 #include <QSL/Figure.h>
 
 QSL_BEGIN_NAMESPACE
+
+FigureScale* FigureItem::scale() const {
+    QSL_PUBLIC(const FigureItem);
+    return m->scale;
+}
+
+
+Figure* FigureItem::figure() const {
+    QSL_PUBLIC(const FigureItem);
+    return m->figure;
+}
+
 
 QString FigureItem::name() const {
     QSL_PUBLIC(const FigureItem);
@@ -15,16 +47,23 @@ bool FigureItem::visible() const {
     return m->visible;
 }
 
+void FigureItem::setName(const QString &name) {
+    QSL_PUBLIC(FigureItem);
 
-FigureScale* FigureItem::scale() const {
-    QSL_PUBLIC(const FigureItem);
-    return m->scale;
+    if (m->name != name) {
+        m->name = name;
+        emit appearenceChange(this);
+    }
 }
 
 
-Figure* FigureItem::figure() const {
-    QSL_PUBLIC(const FigureItem);
-    return m->figure;
+void FigureItem::setVisible(bool visible) {
+    QSL_PUBLIC(FigureItem);
+
+    if (m->visible != visible) {
+        m->visible = visible;
+        emit appearenceChange(this);
+    }
 }
 
 

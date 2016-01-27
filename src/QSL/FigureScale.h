@@ -62,6 +62,8 @@ public:
     virtual QPoint map(const QPointF &p) const = 0;
     virtual QPointF unmap(const QPoint &p) const = 0;
 
+    virtual void rescale() = 0;
+
 
 protected:
 

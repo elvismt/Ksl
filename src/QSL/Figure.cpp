@@ -124,7 +124,6 @@ void Figure::paint(const QRect &targetRect, QPainter *painter) {
     QSL_PUBLIC(Figure);
 
     painter->save();
-    painter->setFont(m->font);
     painter->setClipRect(targetRect);
     if (m->fillBack) {
         painter->fillRect(targetRect, m->backBrush);
@@ -135,6 +134,7 @@ void Figure::paint(const QRect &targetRect, QPainter *painter) {
         }
     }
     if (m->showTitle == true) {
+        painter->setFont(m->font);
         auto fontMetrics = painter->fontMetrics();
         int x = targetRect.center().x() - fontMetrics.width(m->name)/2;
         int y = fontMetrics.height();

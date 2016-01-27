@@ -34,7 +34,7 @@ public:
     LinearScalePrivate(LinearScale *publ, const QString &name)
         : FigureScalePrivate(publ, name)
         , xLowBound(20), xUpBound(20)
-        , yLowBound(20), yUpBound(20)
+        , yLowBound(30), yUpBound(20)
     { }
 
 

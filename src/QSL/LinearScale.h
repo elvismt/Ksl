@@ -18,7 +18,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef QSL_LINEARSCALE_H
 #define QSL_LINEARSCALE_H
 
@@ -31,7 +30,7 @@ class QSL_API LinearScale
 {
 public:
 
-    LinearScale(const QString &name);
+    LinearScale(const QString &name="LinearScale");
 
     virtual QRect figureRect() const;
     virtual QRectF dataRect() const;
@@ -39,10 +38,11 @@ public:
     virtual QPoint map(const QPointF &p) const;
     virtual QPointF unmap(const QPoint &p) const;
 
+    virtual void rescale();
+
 
 protected:
 
-    virtual void setFigure(Figure *figure);
     virtual void paint(const QRect &figureRect, QPainter *painter);
 
     LinearScale(ObjectPrivate *priv)
