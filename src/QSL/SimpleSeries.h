@@ -40,11 +40,26 @@ public:
                  const QBrush &brush=QBrush(Qt::green));
 
 
+    QPen pen() const;
+
+    QBrush brush() const;
+
+    int radius() const;
+
     virtual QRect figureRect() const;
     virtual QRectF dataRect() const;
 
     virtual void setData(const Array1D<double> &x,
                          const Array1D<double> &y);
+
+
+public Q_SLOTS:
+
+    void setPen(const QPen &pen);
+
+    void setBrush(const QBrush &brush);
+
+    void setRadius(int radius);
 
 
 protected:

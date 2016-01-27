@@ -87,7 +87,12 @@ void LinearScale::paint(const QRect &figureRect, QPainter *painter) {
     m->figHeight = m->figYmax - m->figYmin;
 
     // TODO: remove it when working on axis
+    QPen pen(Qt::black);
+    pen.setWidth(2);
+    painter->setPen(pen);
+    painter->setRenderHint(QPainter::Antialiasing, true);
     painter->drawRect(this->figureRect());
+    painter->setRenderHint(QPainter::Antialiasing, false);
 
     // draw user's interesting data items
     painter->save();

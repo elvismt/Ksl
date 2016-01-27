@@ -38,6 +38,24 @@ SimpleSeries::SimpleSeries(const QString &name,
 }
 
 
+QPen SimpleSeries::pen() const {
+    QSL_PUBLIC(const SimpleSeries);
+    return m->pen;
+}
+
+
+QBrush SimpleSeries::brush() const {
+    QSL_PUBLIC(const SimpleSeries);
+    return m->brush;
+}
+
+
+int SimpleSeries::radius() const {
+    QSL_PUBLIC(const SimpleSeries);
+    return m->radius;
+}
+
+
 QRect SimpleSeries::figureRect() const {
     // TODO
     return QRect();
@@ -73,6 +91,45 @@ void SimpleSeries::paint(QPainter *painter) {
 }
 
 
+void SimpleSeriesPrivate::drawCircles(QPainter *painter) {
+    QPoint p = scale->map(QPointF(xArray[0], yArray[0]));
+    int twoRad = 2*radius;
+    painter->drawEllipse(p.x()-radius, p.y()-radius, twoRad, twoRad);
+
+    for (quint32 k=0; k<xArray.size(); ++k) {
+        p = scale->map(QPointF(xArray[k], yArray[k]));
+        painter->drawEllipse(p.x()-radius, p.y()-radius, twoRad, twoRad);
+    }
+}
+
+
+void SimpleSeries::setPen(const QPen &pen) {
+    QSL_PUBLIC(SimpleSeries);
+    if (m->pen != pen) {
+        m->pen = pen;
+        emit appearenceChange(this);
+    }
+}
+
+
+void SimpleSeries::setBrush(const QBrush &brush) {
+    QSL_PUBLIC(SimpleSeries);
+    if (m->brush != brush) {
+        m->brush = brush;
+        emit appearenceChange(this);
+    }
+}
+
+
+void SimpleSeries::setRadius(int radius) {
+    QSL_PUBLIC(SimpleSeries);
+    if (m->radius != radius) {
+        m->radius = radius;
+        emit appearenceChange(this);
+    }
+}
+
+
 void SimpleSeriesPrivate::checkRanges() {
     auto xIter = xArray.begin();
     auto yIter = yArray.begin();
@@ -88,18 +145,6 @@ void SimpleSeriesPrivate::checkRanges() {
         if (*yIter > yMax) yMax = *yIter;
         ++xIter;
         ++yIter;
-    }
-}
-
-
-void SimpleSeriesPrivate::drawCircles(QPainter *painter) {
-    QPoint p = scale->map(QPointF(xArray[0], yArray[0]));
-    int twoRad = 2*radius;
-    painter->drawEllipse(p.x()-radius, p.y()-radius, twoRad, twoRad);
-
-    for (quint32 k=0; k<xArray.size(); ++k) {
-        p = scale->map(QPointF(xArray[k], yArray[k]));
-        painter->drawEllipse(p.x()-radius, p.y()-radius, twoRad, twoRad);
     }
 }
 

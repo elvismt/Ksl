@@ -30,9 +30,9 @@ class FigureItemPrivate
 {
 public:
 
-    FigureItemPrivate(FigureItem *publ, const QString &name)
+    FigureItemPrivate(FigureItem *publ, const QString &iname)
         : ObjectPrivate(publ)
-        , name("Figure Item")
+        , name(iname)
         , visible(true)
         , scale(nullptr)
         , figure(nullptr)

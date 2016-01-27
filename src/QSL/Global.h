@@ -26,11 +26,17 @@
 
 #define QSL_API
 
+// Integer powers
 QSL_BEGIN_NAMESPACE
 template <typename T> inline T sqr(const T &x) { return x*x; }
 template <typename T> inline T pow2(const T &x) { return x*x; }
 template <typename T> inline T pow3(const T &x) { return x*x*x; }
 template <typename T> inline T pow4(const T &x) { return x*x*x*x; }
+QSL_END_NAMESPACE
+
+// Contants
+QSL_BEGIN_NAMESPACE
+const double PI = 3.1415926;
 QSL_END_NAMESPACE
 
 #endif // QSL_GLOBAL_H
