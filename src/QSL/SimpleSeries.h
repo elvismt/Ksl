@@ -33,10 +33,14 @@ class QSL_API SimpleSeries
 
 public:
 
-    enum Symbol {
+    enum EnumSymbol {
        Line        = 0x00000001,
        Circles     = 0x00000002
     };
+    Q_DECLARE_FLAGS(
+        Symbol,
+        EnumSymbol
+    )
 
 
     SimpleSeries(const QString &name,
@@ -51,6 +55,8 @@ public:
     QBrush brush() const;
 
     int radius() const;
+
+    Symbol symbol() const;
 
     virtual QRect figureRect() const;
     virtual QRectF dataRect() const;
@@ -67,6 +73,8 @@ public Q_SLOTS:
 
     void setRadius(int radius);
 
+    void setSymbol(Symbol symbol);
+
 
 protected:
 
@@ -76,6 +84,8 @@ protected:
         : FigureItem(priv, parent)
     { }
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(SimpleSeries::Symbol)
 
 QSL_END_NAMESPACE
 

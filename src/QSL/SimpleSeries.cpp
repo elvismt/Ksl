@@ -56,6 +56,12 @@ int SimpleSeries::radius() const {
 }
 
 
+SimpleSeries::Symbol SimpleSeries::symbol() const {
+    QSL_PUBLIC(const SimpleSeries);
+    return m->symbol;
+}
+
+
 QRect SimpleSeries::figureRect() const {
     // TODO
     return QRect();
@@ -84,22 +90,33 @@ void SimpleSeries::setData(const Array1D<double> &x,
 void SimpleSeries::paint(QPainter *painter) {
     QSL_PUBLIC(SimpleSeries);
 
-    painter->setPen(m->pen);
-    painter->setBrush(m->brush);
-
-    m->drawCircles(painter);
+    if (m->symbol == Circles)
+        m->paintCircles(painter);
+    if (m->symbol == Line)
+        m->paintLine(painter);
 }
 
 
-void SimpleSeriesPrivate::drawCircles(QPainter *painter) {
-    QPoint p = scale->map(QPointF(xArray[0], yArray[0]));
+void SimpleSeriesPrivate::paintCircles(QPainter *painter) {
     int twoRad = 2*radius;
-    painter->drawEllipse(p.x()-radius, p.y()-radius, twoRad, twoRad);
-
+    painter->setPen(pen);
+    painter->setBrush(brush);
     for (quint32 k=0; k<xArray.size(); ++k) {
-        p = scale->map(QPointF(xArray[k], yArray[k]));
+        QPoint p = scale->map(QPointF(xArray[k], yArray[k]));
         painter->drawEllipse(p.x()-radius, p.y()-radius, twoRad, twoRad);
     }
+}
+
+
+void SimpleSeriesPrivate::paintLine(QPainter *painter) {
+    QPoint p = scale->map(QPointF(xArray[0], yArray[0]));
+    QPainterPath path;
+    path.moveTo(p);
+    for (quint32 k=1; k<xArray.size(); ++k) {
+        p = scale->map(QPointF(xArray[k], yArray[k]));
+        path.lineTo(p);
+    }
+    painter->strokePath(path, pen);
 }
 
 
@@ -125,6 +142,15 @@ void SimpleSeries::setRadius(int radius) {
     QSL_PUBLIC(SimpleSeries);
     if (m->radius != radius) {
         m->radius = radius;
+        emit appearenceChange(this);
+    }
+}
+
+
+void SimpleSeries::setSymbol(Symbol symbol) {
+    QSL_PUBLIC(SimpleSeries);
+    if (m->symbol != symbol) {
+        m->symbol = symbol;
         emit appearenceChange(this);
     }
 }

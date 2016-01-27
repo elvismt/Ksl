@@ -157,11 +157,13 @@ void Figure::save(const QString &fileName, const QSize &size,
 
 void Figure::handleAppearenceChange(FigureItem *item) {
     Q_UNUSED(item)
+    emit change(this);
 }
 
 
 void Figure::handleDataChange(FigureItem *item) {
-    // TODO
+    item->scale()->rescale();
+    emit change(this);
 }
 
 QSL_END_NAMESPACE

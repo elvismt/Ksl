@@ -36,12 +36,14 @@ public:
         , pen(Qt::blue)
         , brush(Qt::red)
         , radius(3)
+        , symbol(SimpleSeries::Circles)
     { }
 
 
     QPen pen;
     QBrush brush;
     int radius;
+    SimpleSeries::Symbol symbol;
 
     Array1D<double> xArray;
     Array1D<double> yArray;
@@ -50,7 +52,8 @@ public:
 
 
     void checkRanges();
-    void drawCircles(QPainter *painter);
+    void paintCircles(QPainter *painter);
+    void paintLine(QPainter *painter);
 };
 
 QSL_END_NAMESPACE
