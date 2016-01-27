@@ -36,6 +36,9 @@ public:
 #ifdef Q_OS_LINUX
         , font("Times", 11)
 #endif // Q_OS_LINUX
+#ifdef Q_OS_WIN
+            , font("Times New Roman", 11)
+#endif // Q_OS_LINUX
         , name(iname)
         , backBrush(Qt::white)
         , fillBack(true)

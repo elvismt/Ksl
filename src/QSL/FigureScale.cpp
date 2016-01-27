@@ -19,6 +19,7 @@
  */
 
 #include <QSL/FigureScalePrivate.h>
+#include <QSL/FigureItem.h>
 
 QSL_BEGIN_NAMESPACE
 
@@ -41,29 +42,49 @@ bool FigureScale::visible() const {
 
 
 FigureScale::ItemList& FigureScale::itemList() {
-    // TODO
+    QSL_PUBLIC(FigureScale);
+    return m->itemList;
 }
 
 
 const FigureScale::ItemList& FigureScale::itemList() const {
-    // TODO
+    QSL_PUBLIC(const FigureScale);
+    return m->itemList;
 }
 
 
 FigureItem* FigureScale::item(const QString &name) const {
-    // TODO
+    QSL_PUBLIC(const FigureScale);
+
+    for (auto &item : m->itemList) {
+        if (item->name() == name) {
+            return item;
+        }
+    }
+    // not found
+    return nullptr;
 }
 
 
 void FigureScale::add(FigureItem *item) {
-    // TODO
+    QSL_PUBLIC(FigureScale);
+
+    if (m->itemList.contains(item) == false) {
+        m->itemList.append(item);
+        item->setScale(this);
+    }
 }
 
 
 void FigureScale::paint(const QRect &figureRect, QPainter *painter) {
     QSL_PUBLIC(FigureScale);
+    Q_UNUSED(figureRect)
 
-    // TODO
+    for (auto &item : m->itemList) {
+        if (item->visible()) {
+            item->paint(painter);
+        }
+    }
 }
 
 
@@ -73,7 +94,9 @@ void FigureScale::setFigure(Figure *figure) {
     if (m->figure != figure) {
         m->figure = figure;
 
-        // TODO
+        for (auto &item : m->itemList) {
+            item->setScale(this);
+        }
     }
 }
 

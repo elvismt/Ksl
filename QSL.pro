@@ -16,10 +16,13 @@ HEADERS += src/QSL/Figure.h \
            src/QSL/Object.h \
            src/QSL/ObjectPrivate.h \
     src/QSL/LinearScale.h \
-    src/QSL/LinearScalePrivate.h
+    src/QSL/LinearScalePrivate.h \
+    src/QSL/FigureItem.h \
+    src/QSL/FigureItemPrivate.h
 
 SOURCES += src/QSL/Figure.cpp \
            src/QSL/FigureScale.cpp \
            src/QSL/FigureWidget.cpp \
            src/QSL/test.cpp \
-    src/QSL/LinearScale.cpp
+    src/QSL/LinearScale.cpp \
+    src/QSL/FigureItem.cpp

@@ -20,6 +20,7 @@
 
 #include <QSL/FigurePrivate.h>
 #include <QSL/FigureScale.h>
+#include <QSL/FigureItem.h>
 
 QSL_BEGIN_NAMESPACE
 
@@ -66,7 +67,15 @@ FigureScale* Figure::scale(const QString &name) const {
 
 
 FigureItem* Figure::item(const QString &name) const {
-    // TODO
+    QSL_PUBLIC(const Figure);
+
+    for (auto &scale : m->scaleList) {
+        auto item = scale->item(name);
+        if (item != nullptr)
+            return item;
+    }
+    // not found
+    return nullptr;
 }
 
 

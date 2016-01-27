@@ -30,12 +30,14 @@ LinearScale::LinearScale(const QString &name)
 
 
 QRect LinearScale::figureRect() const {
-
+    // TODO
+    return QRect();
 }
 
 
 QRectF LinearScale::dataRect() const {
-
+    // TODO
+    return QRectF();
 }
 
 
@@ -56,7 +58,8 @@ QPoint LinearScale::map(const QPointF &p) const {
 
 
 QPointF LinearScale::unmap(const QPoint &p) const {
-
+    // TODO
+    return QPointF();
 }
 
 

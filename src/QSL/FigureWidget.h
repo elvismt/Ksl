@@ -36,7 +36,7 @@ public:
 
     FigureWidget(QWidget *parent);
 
-    FigureWidget(const QString &title="QSL",
+    FigureWidget(const QString &title="Figure",
                  const QSize &size=QSize(500,350),
                  Figure *figure = 0,
                  QWidget *parent = 0);

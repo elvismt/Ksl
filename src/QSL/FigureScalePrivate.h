@@ -41,6 +41,7 @@ public:
     Figure *figure;
     bool visible;
     QString name;
+    FigureScale::ItemList itemList;
 };
 
 QSL_END_NAMESPACE
