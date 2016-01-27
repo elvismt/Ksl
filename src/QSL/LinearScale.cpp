@@ -99,7 +99,50 @@ void LinearScale::paint(const QRect &figureRect, QPainter *painter) {
 
 
 void LinearScale::rescale() {
-    // TODO
+    QSL_PUBLIC(LinearScale);
+
+    if (m->itemList.isEmpty()) {
+        m->xMin = 0.0;
+        m->xMax = 1.0;
+        m->yMin = 0.0;
+        m->yMax = 1.0;
+        m->width = 1.0;
+        m->height = 1.0;
+        return;
+    }
+
+    ItemList::iterator iter = m->itemList.begin();
+    ItemList::iterator end = m->itemList.end();
+
+    FigureItem *item = *iter++;
+    QRectF itemRect = item->dataRect();
+
+    m->xMin = itemRect.left();
+    m->xMax = itemRect.right();
+    m->yMin = itemRect.top();
+    m->yMax = itemRect.bottom();
+
+    while (iter != end) {
+        item = *iter++;
+        itemRect = item->dataRect();
+
+        if (itemRect.left() < m->xMin) m->xMin = itemRect.left();
+        if (itemRect.right() > m->xMax) m->xMax = itemRect.right();
+        if (itemRect.top() < m->yMin) m->yMin = itemRect.top();
+        if (itemRect.bottom() > m->yMax) m->yMax = itemRect.bottom();
+    }
+
+    m->width = m->xMax - m->xMin;
+    double border = m->width / 40.0;
+    m->xMin -= border;
+    m->xMax += border;
+    m->width += 2.0*border;
+
+    m->height = m->yMax - m->yMin;
+    border = m->height / 40.0;
+    m->yMin -= border;
+    m->yMax += border;
+    m->height += 2.0*border;
 }
 
 QSL_END_NAMESPACE

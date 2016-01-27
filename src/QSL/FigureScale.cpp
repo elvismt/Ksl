@@ -72,6 +72,7 @@ void FigureScale::add(FigureItem *item) {
     if (m->itemList.contains(item) == false) {
         m->itemList.append(item);
         item->setScale(this);
+        rescale();
     }
 }
 
