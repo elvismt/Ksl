@@ -3,24 +3,25 @@
 #include <QSL/FigureWidget.h>
 #include <QSL/LinearScale.h>
 #include <QSL/SimpleSeries.h>
-#include <QDebug>
+#include <QSL/Random.h>
 using namespace QSL;
 
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
+    Random rand;
 
     const int ptCount = 500;
     const double step = 2.0*PI/ptCount;
     Array1D<double> x(ptCount), y1(ptCount), y2(ptCount);
     for (int k=0; k<ptCount; ++k) {
         x[k] = -PI + k*step;
-        y1[k] = sin(x[k]) + double(rand())/RAND_MAX;
-        y2[k] = cos(x[k]) + double(rand())/RAND_MAX;
+        y1[k] = sin(x[k]) + rand.nextFloat(0.3);
+        y2[k] = cos(x[k]) + rand.nextFloat(0.3);
     }
 
     SimpleSeries sineSeries("sine", x, y1, QPen(Qt::black), QBrush(Qt::blue));
-    SimpleSeries cossineSeries("sine", x, y2, QPen(Qt::black), QBrush(Qt::red));
+    SimpleSeries cossineSeries("cossine", x, y2, QPen(Qt::black), QBrush(Qt::red));
 
     LinearScale scale;
     scale.add(sineSeries);

@@ -10,6 +10,7 @@ set(QSL_HDRS
    QSL/FigureWidget.h
    QSL/LinearScale.h
    QSL/SimpleSeries.h
+   QSL/ChartAxis.h
 )
 
 set(QSL_SRCS
@@ -19,6 +20,7 @@ set(QSL_SRCS
    QSL/FigureWidget.cpp
    QSL/LinearScale.cpp
    QSL/SimpleSeries.cpp
+   QSL/ChartAxis.cpp
 )
 
 add_library(qsl SHARED ${QSL_SRCS})

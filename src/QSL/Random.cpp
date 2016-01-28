@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Elvis Teixeira
+ * Copyright (C) 2016  Elvis M.Teixeira
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -18,27 +18,31 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QSL_GLOBAL_H
-#define QSL_GLOBAL_H
 
-#include <qglobal.h>
+#include <QSL/RandomPrivate.h>
 
-#define QSL_BEGIN_NAMESPACE namespace QSL {
-#define QSL_END_NAMESPACE } // namespace QSL
-
-#define QSL_API
-
-// Integer powers
 QSL_BEGIN_NAMESPACE
-template <typename T> inline T sqr(const T &x) { return x*x; }
-template <typename T> inline T pow2(const T &x) { return x*x; }
-template <typename T> inline T pow3(const T &x) { return x*x*x; }
-template <typename T> inline T pow4(const T &x) { return x*x*x*x; }
-QSL_END_NAMESPACE
 
-// Contants
-QSL_BEGIN_NAMESPACE
-const double PI = 3.1415926;
-QSL_END_NAMESPACE
+Random::Random()
+    : Object(new RandomPrivate(this))
+{ }
 
-#endif // QSL_GLOBAL_H
+
+quint64 Random::nextUint() {
+    QSL_PUBLIC(Random);
+    return m->nextUint();
+}
+
+
+quint64 Random::nextUint(quint64 max) {
+    QSL_PUBLIC(Random);
+    return m->nextUintRange(max);
+}
+
+
+qreal Random::nextFloat(qreal max) {
+    QSL_PUBLIC(Random);
+    return m->nextFloat(max);
+}
+
+QSL_END_NAMESPACE

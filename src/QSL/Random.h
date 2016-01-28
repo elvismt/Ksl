@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Elvis Teixeira
+ * Copyright (C) 2016  Elvis M.Teixeira
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -18,27 +18,30 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QSL_GLOBAL_H
-#define QSL_GLOBAL_H
 
-#include <qglobal.h>
+#ifndef QSL_RANDOM_H
+#define QSL_RANDOM_H
 
-#define QSL_BEGIN_NAMESPACE namespace QSL {
-#define QSL_END_NAMESPACE } // namespace QSL
+#include <QSL/Object.h>
 
-#define QSL_API
-
-// Integer powers
 QSL_BEGIN_NAMESPACE
-template <typename T> inline T sqr(const T &x) { return x*x; }
-template <typename T> inline T pow2(const T &x) { return x*x; }
-template <typename T> inline T pow3(const T &x) { return x*x*x; }
-template <typename T> inline T pow4(const T &x) { return x*x*x*x; }
+
+class QSL_API Random
+    : public QSL::Object
+{
+public:
+
+    Random();
+
+    quint64 nextUint();
+
+    quint64 nextUint(quint64 max);
+
+    qreal nextFloat();
+
+    qreal nextFloat(qreal max=1.0);
+};
+
 QSL_END_NAMESPACE
 
-// Contants
-QSL_BEGIN_NAMESPACE
-const double PI = 3.1415926;
-QSL_END_NAMESPACE
-
-#endif // QSL_GLOBAL_H
+#endif // QSL_RANDOM_H
