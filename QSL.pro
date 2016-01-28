@@ -25,7 +25,9 @@ HEADERS += src/QSL/Figure.h \
     src/QSL/ChartAxis.h \
     src/QSL/ChartAxisPrivate.h \
     src/QSL/Random.h \
-    src/QSL/RandomPrivate.h
+    src/QSL/RandomPrivate.h \
+    src/QSL/ChartAxisSampler.h \
+    src/QSL/ChartAxisSamplerPrivate.h
 
 SOURCES += src/QSL/Figure.cpp \
            src/QSL/FigureScale.cpp \
@@ -35,4 +37,5 @@ SOURCES += src/QSL/Figure.cpp \
            src/QSL/SimpleSeries.cpp \
            demos/minimal.cpp \
     src/QSL/ChartAxis.cpp \
-    src/QSL/Random.cpp
+    src/QSL/Random.cpp \
+    src/QSL/ChartAxisSampler.cpp

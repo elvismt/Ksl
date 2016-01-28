@@ -36,11 +36,17 @@ public:
         : FigureItemPrivate(publ, name)
         , pen(Qt::black)
         , position(iposition)
+        , sampler(new ChartAxisSampler())
+        , component(ChartAxis::AllComponents)
     { }
+
+    ~ChartAxisPrivate();
 
 
     QPen pen;
     ChartAxis::Position position;
+    ChartAxisSampler* sampler;
+    ChartAxis::Component component;
 
 
     void paintBottom(QPainter *painter);

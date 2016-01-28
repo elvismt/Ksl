@@ -19,30 +19,28 @@
  */
 
 
-#include <QSL/RandomPrivate.h>
+#ifndef QSL_CHARTAXISSAMPLER_PRIVATE_H
+#define QSL_CHARTAXISSAMPLER_PRIVATE_H
+
+#include <QSL/ChartAxisSampler.h>
 
 QSL_BEGIN_NAMESPACE
 
-Random::Random()
-    : Object(new RandomPrivate(this))
-{ }
+class ChartAxisSamplerPrivate
+    : public QSL::ObjectPrivate
+{
+public:
+
+    ChartAxisSamplerPrivate(ChartAxisSampler *publ)
+        : ObjectPrivate(publ)
+        , mode(ChartAxisSampler::AutoDecimal)
+    { }
 
 
-quint64 Random::nextUint() {
-    QSL_PUBLIC(Random);
-    return m->nextUint();
-}
-
-
-quint64 Random::nextUint(quint64 max) {
-    QSL_PUBLIC(Random);
-    return m->nextUint(max);
-}
-
-
-qreal Random::nextFloat(qreal max) {
-    QSL_PUBLIC(Random);
-    return m->nextFloat(max);
-}
+    ChartAxisSampler::SamplingMode mode;
+    ChartAxisSampler::SampleList sampleList;
+};
 
 QSL_END_NAMESPACE
+
+#endif // QSL_CHARTAXISSAMPLER_PRIVATE_H

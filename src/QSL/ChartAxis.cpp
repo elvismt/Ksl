@@ -31,6 +31,11 @@ ChartAxis::ChartAxis(const QString &name, Position position,
 }
 
 
+ChartAxisPrivate::~ChartAxisPrivate() {
+    delete sampler;
+}
+
+
 ChartAxis::Position ChartAxis::position() const {
     QSL_PUBLIC(const ChartAxis);
     return m->position;
@@ -46,6 +51,12 @@ QRect ChartAxis::figureRect() const {
 QRectF ChartAxis::dataRect() const {
     // TODO
     return QRectF();
+}
+
+
+ChartAxisSampler* ChartAxis::sampler() const {
+    QSL_PUBLIC(const ChartAxis);
+    return m->sampler;
 }
 
 
@@ -72,26 +83,37 @@ void ChartAxis::paint(QPainter *painter) {
 
 void ChartAxisPrivate::paintTop(QPainter *painter) {
     QRect figureRect = scale->figureRect();
-    painter->drawLine(figureRect.topLeft(), figureRect.topRight());
+
+    if (component & ChartAxis::Line) {
+        painter->drawLine(figureRect.topLeft(), figureRect.topRight());
+    }
 }
 
 
 void ChartAxisPrivate::paintLeft(QPainter *painter) {
     QRect figureRect = scale->figureRect();
-    painter->drawLine(figureRect.bottomLeft(), figureRect.topLeft());
+
+    if (component & ChartAxis::Line) {
+        painter->drawLine(figureRect.bottomLeft(), figureRect.topLeft());
+    }
 }
 
 
 void ChartAxisPrivate::paintBottom(QPainter *painter) {
     QRect figureRect = scale->figureRect();
-    painter->drawLine(figureRect.bottomLeft(), figureRect.bottomRight());
+
+    if (component & ChartAxis::Line) {
+        painter->drawLine(figureRect.bottomLeft(), figureRect.bottomRight());
+    }
 }
 
 
 void ChartAxisPrivate::paintRight(QPainter *painter) {
     QRect figureRect = scale->figureRect();
-    painter->drawLine(figureRect.bottomRight(), figureRect.topRight());
-}
 
+    if (component & ChartAxis::Line) {
+        painter->drawLine(figureRect.bottomRight(), figureRect.topRight());
+    }
+}
 
 QSL_END_NAMESPACE

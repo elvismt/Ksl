@@ -4,6 +4,7 @@ set(QSL_HDRS
    QSL/Object.h
    QSL/ObjectPrivate.h
    QSL/Array1D.h
+   QSL/Random.h
    QSL/Figure.h
    QSL/FigureItem.h
    QSL/FigureScale.h
@@ -11,9 +12,11 @@ set(QSL_HDRS
    QSL/LinearScale.h
    QSL/SimpleSeries.h
    QSL/ChartAxis.h
+   QSL/ChartAxisSampler.h
 )
 
 set(QSL_SRCS
+   QSL/Random.cpp
    QSL/Figure.cpp
    QSL/FigureItem.cpp
    QSL/FigureScale.cpp
@@ -21,6 +24,7 @@ set(QSL_SRCS
    QSL/LinearScale.cpp
    QSL/SimpleSeries.cpp
    QSL/ChartAxis.cpp
+   QSL/ChartAxisSampler.cpp
 )
 
 add_library(qsl SHARED ${QSL_SRCS})

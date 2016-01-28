@@ -22,6 +22,7 @@
 #define QSL_CHARTAXIS_H
 
 #include <QSL/FigureItem.h>
+#include <QSL/ChartAxisSampler.h>
 
 QSL_BEGIN_NAMESPACE
 
@@ -40,6 +41,15 @@ public:
         Right           = 0x00000008,
     };
 
+    enum ComponentEnum {
+        Line            = 0x00000001,
+        Samples         = 0x00000002,
+        Ticks           = 0x00000004,
+        Title           = 0x00000008,
+        AllComponents   = 0x00FFFFFF
+    };
+    typedef QFlags<ComponentEnum> Component;
+
 
     ChartAxis(const QString &name, Position position,
               FigureScale *scale, QObject *parent = 0);
@@ -49,6 +59,10 @@ public:
 
     virtual QRect figureRect() const;
     virtual QRectF dataRect() const;
+
+    ChartAxisSampler* sampler() const;
+
+    Component component() const;
 
 
 protected:
@@ -61,6 +75,8 @@ protected:
         : FigureItem(priv, parent)
     { }
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(ChartAxis::Component)
 
 QSL_END_NAMESPACE
 

@@ -37,8 +37,6 @@ public:
 
     quint64 nextUint(quint64 max);
 
-    qreal nextFloat();
-
     qreal nextFloat(qreal max=1.0);
 };
 

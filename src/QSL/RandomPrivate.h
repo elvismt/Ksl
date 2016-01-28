@@ -49,13 +49,8 @@ public:
         return generator();
     }
 
-    inline quint64 nextUintRange(quint64 max) {
+    inline quint64 nextUint(quint64 max) {
         return qRound(qreal(generator() - rangeMin)/qreal(rangeWidth) * qreal(max));
-    }
-
-    inline qreal nextFloat() {
-        // TODO
-        return qreal(generator() - rangeMin)/qreal(rangeWidth) * max;
     }
 
     inline qreal nextFloat(qreal max) {
