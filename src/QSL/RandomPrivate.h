@@ -18,11 +18,11 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QSL_RANDOMPRIVATE_H
-#define QSL_RANDOMPRIVATE_H
+#ifndef QSL_RANDOM_PRIVATE_H
+#define QSL_RANDOM_PRIVATE_H
 
 #include <QSL/Random.h>
-#include <chrono>
+#include <QTime>
 #include <random>
 
 QSL_BEGIN_NAMESPACE
@@ -34,30 +34,46 @@ public:
 
     RandomPrivate(Random *publ)
         : ObjectPrivate(publ)
-        , generator(std::chrono::system_clock::now().time_since_epoch().count())
-        , rangeWidth(std::minstd_rand0::max() - std::minstd_rand0::min())
-        , rangeMin(std::minstd_rand0::min())
+        , device()
+        , intGenerator(QTime(0,0,0).secsTo(QTime::currentTime()))
+        , intRangeWidth(std::minstd_rand0::max() - std::minstd_rand0::min())
+        , intRangeMin(std::minstd_rand0::min())
+        , realGenerator(device())
+        , realRangeWidth(std::mt19937::max() - std::mt19937::min())
+        , realRangeMin(std::mt19937::min())
     { }
 
 
-    std::minstd_rand0 generator;
-    quint64 rangeWidth;
-    quint64 rangeMin;
+    std::random_device device;
+    std::minstd_rand0 intGenerator;
+    quint64 intRangeWidth;
+    quint64 intRangeMin;
+
+    std::mt19937 realGenerator;
+    double realRangeWidth;
+    double realRangeMin;
+
 
 
     inline quint64 nextUint() {
-        return generator();
+        return intGenerator();
     }
 
     inline quint64 nextUint(quint64 max) {
-        return qRound(qreal(generator() - rangeMin)/qreal(rangeWidth) * qreal(max));
+        // TODO: There must be a better way
+        return qRound(qreal(intGenerator() - intRangeMin)/qreal(intRangeWidth) * qreal(max));
     }
 
-    inline qreal nextFloat(qreal max) {
-        return qreal(generator() - rangeMin)/qreal(rangeWidth) * max;
+    inline double nextFloat() {
+        return realGenerator();
+    }
+
+    inline double nextFloat(double max) {
+        // TODO: Check if there is a better way
+        return (realGenerator() - realRangeMin)/realRangeWidth * max;
     }
 };
 
 QSL_END_NAMESPACE
 
-#endif // QSL_RANDOMPRIVATE_H
+#endif // QSL_RANDOM_PRIVATE_H

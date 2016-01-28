@@ -65,11 +65,18 @@ public:
     Component component() const;
 
 
+public Q_SLOTS:
+
+    void setFont(const QFont &font);
+
+
 protected:
 
     friend class LinearScale;
 
     virtual void paint(QPainter *painter);
+
+    virtual void setScale(FigureScale *scale);
 
     ChartAxis(ObjectPrivate *priv, QObject *parent = 0)
         : FigureItem(priv, parent)

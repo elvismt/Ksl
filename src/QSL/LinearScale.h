@@ -54,6 +54,8 @@ protected:
 
     virtual void paint(const QRect &figureRect, QPainter *painter);
 
+    virtual void setFigure(Figure *figure);
+
     LinearScale(ObjectPrivate *priv)
         : FigureScale(priv)
     { }

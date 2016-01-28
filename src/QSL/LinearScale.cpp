@@ -199,4 +199,15 @@ ChartAxis* LinearScale::axis(const QString &label) const {
     return nullptr;
 }
 
+
+void LinearScale::setFigure(Figure *figure) {
+    QSL_PUBLIC(LinearScale);
+    if (m->figure != figure) {
+        FigureScale::setFigure(figure);
+        for (auto axis : m->axisList) {
+            axis->setScale(this);
+        }
+    }
+}
+
 QSL_END_NAMESPACE

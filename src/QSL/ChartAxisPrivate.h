@@ -47,6 +47,7 @@ public:
     ChartAxis::Position position;
     ChartAxisSampler* sampler;
     ChartAxis::Component component;
+    QFont font;
 
 
     void paintBottom(QPainter *painter);

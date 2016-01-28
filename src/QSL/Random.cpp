@@ -40,7 +40,13 @@ quint64 Random::nextUint(quint64 max) {
 }
 
 
-qreal Random::nextFloat(qreal max) {
+double Random::nextFloat() {
+    QSL_PUBLIC(Random);
+    return m->nextFloat();
+}
+
+
+double Random::nextFloat(double max) {
     QSL_PUBLIC(Random);
     return m->nextFloat(max);
 }

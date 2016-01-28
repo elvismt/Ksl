@@ -34,7 +34,7 @@ public:
     FigurePrivate(Figure *publ, const QString &iname)
         : ObjectPrivate(publ)
 #ifdef Q_OS_LINUX
-        , font("Times", 11)
+        , font("Sans", 9)
 #endif // Q_OS_LINUX
 #ifdef Q_OS_WIN
             , font("Times New Roman", 11)

@@ -27,6 +27,26 @@ int main(int argc, char *argv[]) {
     scale.add(sineSeries);
     scale.add(cossineSeries);
 
+    scale.axis(ChartAxis::Top)->sampler()->setSamples({
+        { "-TRES", -3.0 },
+        { "-DOIS", -2.0 },
+        { "-UM", -1.0 },
+        { "ZERO", 0.0 },
+        { "UM", 1.0 },
+        { "DOIS", 2.0 },
+        { "TRÊS", 3.0 },
+    });
+
+    scale.axis(ChartAxis::Bottom)->sampler()->setSamples({
+        { "-TRES", -3.0 },
+        { "-DOIS", -2.0 },
+        { "-UM", -1.0 },
+        { "ZERO", 0.0 },
+        { "UM", 1.0 },
+        { "DOIS", 2.0 },
+        { "TRÊS", 3.0 },
+    });
+
     FigureWidget figure;
     figure.figure()->add(scale);
     figure.show();

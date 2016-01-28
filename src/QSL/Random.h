@@ -37,7 +37,9 @@ public:
 
     quint64 nextUint(quint64 max);
 
-    qreal nextFloat(qreal max=1.0);
+    qreal nextFloat();
+
+    double nextFloat(double max=1.0);
 };
 
 QSL_END_NAMESPACE
