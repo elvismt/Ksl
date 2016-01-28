@@ -72,7 +72,7 @@ public:
 
 
     void add(const Sample &sample);
-    void setSamples(const SampleList &sampleList);
+    void setSamplesList(const SampleList &sampleList);
     void setSamples(std::initializer_list<Sample> sampleList);
 };
 

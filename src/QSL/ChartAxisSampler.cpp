@@ -47,7 +47,7 @@ void ChartAxisSampler::add(const Sample &sample) {
 }
 
 
-void ChartAxisSampler::setSamples(const SampleList &sampleList) {
+void ChartAxisSampler::setSamplesList(const SampleList &sampleList) {
     QSL_PUBLIC(ChartAxisSampler);
     m->sampleList.clear();
     m->sampleList.append(sampleList);

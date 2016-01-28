@@ -113,7 +113,7 @@ void ChartAxisPrivate::paintTop(QPainter *painter) {
             QPointF dataPos = scale->dataRect().bottomLeft();
             dataPos.setX(sample.coord);
             QPoint pos = scale->map(dataPos);
-            pos.setY(pos.y() - txtSpac);
+            pos.setY(pos.y() - txtSpac/2);
             painter->drawText(pos, sample.label);
         }
     }
@@ -143,7 +143,7 @@ void ChartAxisPrivate::paintBottom(QPainter *painter) {
             QPointF dataPos = scale->dataRect().topLeft();
             dataPos.setX(sample.coord);
             QPoint pos = scale->map(dataPos);
-            pos.setY(pos.y() + 2*txtSpac);
+            pos.setY(pos.y() + 3*txtSpac/2);
             painter->drawText(pos, sample.label);
         }
     }
@@ -166,7 +166,6 @@ void ChartAxis::setFont(const QFont &font) {
 
 
 void ChartAxis::setScale(FigureScale *scale) {
-    QSL_PUBLIC(ChartAxis);
     FigureItem::setScale(scale);
     if (scale && scale->figure()) {
         setFont(scale->figure()->font());
