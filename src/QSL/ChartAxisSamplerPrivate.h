@@ -33,9 +33,14 @@ public:
 
     ChartAxisSamplerPrivate(ChartAxisSampler *publ)
         : ObjectPrivate(publ)
+        , min(0.0), max(0.0)
+        , hint(-1)
         , mode(ChartAxisSampler::AutoDecimal)
     { }
 
+
+    double min, max;
+    int hint;
 
     ChartAxisSampler::SamplingMode mode;
     ChartAxisSampler::SampleList sampleList;

@@ -66,6 +66,10 @@ public:
 
     ChartAxisSampler();
 
+    SamplingMode mode() const;
+
+    void setMode(SamplingMode mode);
+
 
     SampleList& sampleList();
     const SampleList& sampleList() const;
@@ -74,6 +78,8 @@ public:
     void add(const Sample &sample);
     void setSamplesList(const SampleList &sampleList);
     void setSamples(std::initializer_list<Sample> sampleList);
+
+    void autoSampleDecimal(double min, double max, int hint);
 };
 
 QSL_END_NAMESPACE

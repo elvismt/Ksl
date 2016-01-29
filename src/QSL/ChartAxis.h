@@ -46,7 +46,7 @@ public:
         Samples         = 0x00000002,
         Ticks           = 0x00000004,
         Title           = 0x00000008,
-        AllComponents   = 0x00FFFFFF
+        AllComponents   = 0xFFFFFFFF
     };
     typedef QFlags<ComponentEnum> Component;
 
@@ -68,6 +68,8 @@ public:
 public Q_SLOTS:
 
     void setFont(const QFont &font);
+
+    void setComponents(Component component);
 
 
 protected:

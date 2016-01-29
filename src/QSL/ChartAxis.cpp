@@ -45,23 +45,28 @@ ChartAxis::Position ChartAxis::position() const {
 
 QRect ChartAxis::figureRect() const {
     QSL_PUBLIC(ChartAxis);
-    QRect rect = m->scale->figureRect();
-    int c = 0;
+    QRect r = (m->scale != nullptr) ?
+              m->scale->figureRect() :
+              QRect();
     switch (m->position) {
     case Top:
+        r.setY(r.top()-5);
+        r.setHeight(10);
+        break;
     case Bottom:
-        c = rect.y();
-        rect.setY(c - 5);
-        rect.setHeight(10);
+        r.setY(r.bottom()-5);
+        r.setHeight(10);
         break;
     case Left:
+        r.setX(r.left()-5);
+        r.setWidth(10);
+        break;
     case Right:
-        c = rect.x();
-        rect.setX(c - 5);
-        rect.setWidth(10);
+        r.setX(r.right()-5);
+        r.setWidth(10);
         break;
     }
-    return rect;
+    return r;
 }
 
 
@@ -79,7 +84,6 @@ ChartAxisSampler* ChartAxis::sampler() const {
 
 void ChartAxis::paint(QPainter *painter) {
     QSL_PUBLIC(ChartAxis);
-
     painter->setPen(m->pen);
     painter->setFont(m->font);
     switch (m->position) {
@@ -101,20 +105,32 @@ void ChartAxis::paint(QPainter *painter) {
 
 void ChartAxisPrivate::paintTop(QPainter *painter) {
     QRect figureRect = scale->figureRect();
+    QRectF dataRect = scale->dataRect();
     QFontMetrics fontMetrics = painter->fontMetrics();
-    int txtSpac = qRound(fontMetrics.height() * 0.66);
-
+    int txtHei = fontMetrics.height() - fontMetrics.descent();
+    int txtWid;
     if (component & ChartAxis::Line) {
         painter->drawLine(figureRect.topLeft(), figureRect.topRight());
     }
-
-    if (component & ChartAxis::Samples) {
-        for (auto &sample : sampler->sampleList()) {
-            QPointF dataPos = scale->dataRect().bottomLeft();
-            dataPos.setX(sample.coord);
-            QPoint pos = scale->map(dataPos);
-            pos.setY(pos.y() - txtSpac/2);
-            painter->drawText(pos, sample.label);
+    if (component & ChartAxis::Samples || component & ChartAxis::Ticks) {
+        if (sampler->mode() == ChartAxisSampler::AutoDecimal) {
+            sampler->autoSampleDecimal(
+                dataRect.left(),
+                dataRect.right(),
+                figureRect.width()/60
+            );
+        }
+    }
+    for (auto &sample : sampler->sampleList()) {
+        QPointF dataPos = scale->dataRect().bottomLeft();
+        dataPos.setX(sample.coord);
+        QPoint pos = scale->map(dataPos);
+        if (component & ChartAxis::Samples) {
+            txtWid = fontMetrics.width(sample.label);
+            painter->drawText(pos.x()-txtWid/2, pos.y()-txtHei/2, sample.label);
+        }
+        if (component & ChartAxis::Ticks) {
+            painter->drawLine(pos.x(), pos.y(), pos.x(), pos.y()+5);
         }
     }
 }
@@ -122,29 +138,66 @@ void ChartAxisPrivate::paintTop(QPainter *painter) {
 
 void ChartAxisPrivate::paintLeft(QPainter *painter) {
     QRect figureRect = scale->figureRect();
-
+    QRectF dataRect = scale->dataRect();
+    QFontMetrics fontMetrics = painter->fontMetrics();
+    int txtHei = fontMetrics.height() - fontMetrics.descent();
+    int txtWid;
     if (component & ChartAxis::Line) {
         painter->drawLine(figureRect.bottomLeft(), figureRect.topLeft());
+    }
+    if (component & ChartAxis::Samples || component & ChartAxis::Ticks) {
+        if (sampler->mode() == ChartAxisSampler::AutoDecimal) {
+            sampler->autoSampleDecimal(
+                dataRect.top(),
+                dataRect.bottom(),
+                figureRect.height()/60
+            );
+        }
+    }
+    for (auto &sample : sampler->sampleList()) {
+        QPointF dataPos = scale->dataRect().topLeft();
+        dataPos.setY(sample.coord);
+        QPoint pos = scale->map(dataPos);
+        if (component & ChartAxis::Samples) {
+            txtWid = fontMetrics.width(sample.label);
+            painter->drawText(pos.x()-txtWid-txtHei/2, pos.y()+txtHei/2, sample.label);
+        }
+        if (component & ChartAxis::Ticks) {
+            painter->drawLine(pos.x(), pos.y(), pos.x()+5, pos.y());
+        }
     }
 }
 
 
 void ChartAxisPrivate::paintBottom(QPainter *painter) {
     QRect figureRect = scale->figureRect();
+    QRectF dataRect = scale->dataRect();
     QFontMetrics fontMetrics = painter->fontMetrics();
-    int txtSpac = qRound(fontMetrics.height() * 0.66);
-
+    int txtHei = fontMetrics.height() - fontMetrics.descent();
+    int txtWid;
     if (component & ChartAxis::Line) {
         painter->drawLine(figureRect.bottomLeft(), figureRect.bottomRight());
     }
-
-    if (component & ChartAxis::Samples) {
-        for (auto &sample : sampler->sampleList()) {
-            QPointF dataPos = scale->dataRect().topLeft();
-            dataPos.setX(sample.coord);
-            QPoint pos = scale->map(dataPos);
-            pos.setY(pos.y() + 3*txtSpac/2);
-            painter->drawText(pos, sample.label);
+    if (component & ChartAxis::Samples || component & ChartAxis::Ticks) {
+        if (sampler->mode() == ChartAxisSampler::AutoDecimal) {
+            sampler->autoSampleDecimal(
+                dataRect.left(),
+                dataRect.right(),
+                figureRect.width()/60
+            );
+        }
+    }
+    for (auto &sample : sampler->sampleList()) {
+        QPointF dataPos = scale->dataRect().topLeft();
+        dataPos.setX(sample.coord);
+        QPoint pos = scale->map(dataPos);
+        pos.setY(pos.y() - 1);
+        if (component & ChartAxis::Samples) {
+            txtWid = fontMetrics.width(sample.label);
+            painter->drawText(pos.x()-txtWid/2, pos.y() + 3*txtHei/2, sample.label);
+        }
+        if (component & ChartAxis::Ticks) {
+            painter->drawLine(pos.x(), pos.y(), pos.x(), pos.y()-5);
         }
     }
 }
@@ -152,9 +205,34 @@ void ChartAxisPrivate::paintBottom(QPainter *painter) {
 
 void ChartAxisPrivate::paintRight(QPainter *painter) {
     QRect figureRect = scale->figureRect();
-
+    QRectF dataRect = scale->dataRect();
+    QFontMetrics fontMetrics = painter->fontMetrics();
+    int txtHei = fontMetrics.height() - fontMetrics.descent();
+    // int txtWid;
     if (component & ChartAxis::Line) {
         painter->drawLine(figureRect.bottomRight(), figureRect.topRight());
+    }
+    if (component & ChartAxis::Samples || component & ChartAxis::Ticks) {
+        if (sampler->mode() == ChartAxisSampler::AutoDecimal) {
+            sampler->autoSampleDecimal(
+                dataRect.top(),
+                dataRect.bottom(),
+                figureRect.height()/60
+            );
+        }
+    }
+    for (auto &sample : sampler->sampleList()) {
+        QPointF dataPos = scale->dataRect().topRight();
+        dataPos.setY(sample.coord);
+        QPoint pos = scale->map(dataPos);
+        pos.setX(pos.x() - 1);
+        if (component & ChartAxis::Samples) {
+            // txtWid = fontMetrics.width(sample.label);
+            painter->drawText(pos.x()+txtHei/2, pos.y()+txtHei/2, sample.label);
+        }
+        if (component & ChartAxis::Ticks) {
+            painter->drawLine(pos.x(), pos.y(), pos.x()-5, pos.y());
+        }
     }
 }
 
@@ -169,6 +247,15 @@ void ChartAxis::setScale(FigureScale *scale) {
     FigureItem::setScale(scale);
     if (scale && scale->figure()) {
         setFont(scale->figure()->font());
+    }
+}
+
+
+void ChartAxis::setComponents(Component component) {
+    QSL_PUBLIC(ChartAxis);
+    if (m->component != component) {
+        m->component = component;
+        emit appearenceChange(this);
     }
 }
 

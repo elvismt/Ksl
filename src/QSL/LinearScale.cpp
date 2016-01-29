@@ -33,6 +33,9 @@ LinearScale::LinearScale(const QString &name)
     m->axisList.append(new ChartAxis("LeftAxis", ChartAxis::Left, this));
     m->axisList.append(new ChartAxis("TopAxis", ChartAxis::Top, this));
     m->axisList.append(new ChartAxis("RightAxis", ChartAxis::Right, this));
+
+    axis(ChartAxis::Top)->setComponents(ChartAxis::Line|ChartAxis::Ticks);
+    axis(ChartAxis::Right)->setComponents(ChartAxis::Line|ChartAxis::Ticks);
 }
 
 
