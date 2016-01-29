@@ -37,17 +37,15 @@ public:
        Line        = 0x00000001,
        Circles     = 0x00000002
     };
-    Q_DECLARE_FLAGS(
-        Symbol,
-        EnumSymbol
-    )
+    typedef QFlags<EnumSymbol> Symbol;
 
 
     SimpleSeries(const QString &name,
                  const Array1D<double> &x,
                  const Array1D<double> &y,
                  const QPen &pen=QPen(Qt::blue),
-                 const QBrush &brush=QBrush(Qt::red));
+                 const QBrush &brush=QBrush(Qt::red),
+                 Symbol symbol=Circles);
 
 
     QPen pen() const;

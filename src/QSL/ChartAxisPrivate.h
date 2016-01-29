@@ -34,7 +34,7 @@ public:
     ChartAxisPrivate(ChartAxis *publ, const QString &name,
                      ChartAxis::Position iposition)
         : FigureItemPrivate(publ, name)
-        , pen(QBrush(Qt::black), 2)
+        , pen(Qt::black)
         , position(iposition)
         , sampler(new ChartAxisSampler())
         , component(ChartAxis::AllComponents)

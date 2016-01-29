@@ -27,13 +27,15 @@ SimpleSeries::SimpleSeries(const QString &name,
                            const Array1D<double> &x,
                            const Array1D<double> &y,
                            const QPen &pen,
-                           const QBrush &brush)
+                           const QBrush &brush,
+                           Symbol symbol)
     : FigureItem(new SimpleSeriesPrivate(this, name))
 {
     QSL_PUBLIC(SimpleSeries);
 
     m->pen = pen;
     m->brush = brush;
+    m->symbol = symbol;
     setData(x, y);
 }
 
