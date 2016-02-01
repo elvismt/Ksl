@@ -31,6 +31,11 @@ class Array1D
 {
 public:
 
+    typedef T Data;
+    typedef T* Pointer;
+    typedef const T* ConstPointer;
+    typedef T& Reference;
+    typedef const T& ConstReference;
     typedef T* Iterator;
     typedef const T* ConstIterator;
 
@@ -42,7 +47,7 @@ public:
     { }
 
     Array1D(quint32 size)
-        : m_data(new T[size])
+        : m_data(new Data[size])
         , m_size(size)
         , m_view(false)
     { }
@@ -53,11 +58,33 @@ public:
         , m_view(true)
     { }
 
-    Array1D(const QVector<T> &qvec)
-        : m_data(const_cast<T*>(qvec.data()))
+    Array1D(Array1D &&that)
+        : m_data(that.m_data)
+        , m_size(that.m_size)
+        , m_view(true)
+    {
+        if (!that.m_view) {
+            that.m_view = true;
+            this->m_view = false;
+        }
+    }
+
+    Array1D(QVector<Data> &qvec)
+        : m_data(qvec.data())
         , m_size(qvec.size())
         , m_view(true)
     { }
+
+    Array1D(std::initializer_list<Data> initList)
+        : m_data(new Data[initList.size()])
+        , m_size(quint32(initList.size()))
+        , m_view(true)
+    {
+        Iterator iter = this->begin();
+        for (auto &elem : initList) {
+            *iter++ = elem;
+        }
+    }
 
 
     ~Array1D() {
@@ -72,11 +99,11 @@ public:
     }
 
 
-    T& operator[] (quint32 index) {
+    Reference operator[] (quint32 index) {
         return m_data[index];
     }
 
-    const T& operator[] (quint32 index) const {
+    ConstReference operator[] (quint32 index) const {
         return m_data[index];
     }
 
@@ -86,6 +113,14 @@ public:
     }
 
     Iterator end() {
+        return m_data + m_size;
+    }
+
+    ConstIterator begin() const {
+        return m_data;
+    }
+
+    ConstIterator end() const {
         return m_data + m_size;
     }
 
@@ -109,6 +144,16 @@ private:
     quint32 m_size;
     bool m_view;
 };
+
+
+template <typename T = double>
+Array1D<T> zeros(quint32 size) {
+    Array1D<T> array(size);
+    for (auto &elem : array) {
+        elem = T(0);
+    }
+    return std::move(array);
+}
 
 QSL_END_NAMESPACE
 

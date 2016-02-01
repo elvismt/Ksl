@@ -4,8 +4,8 @@
 #include <QSL/LinearScale.h>
 #include <QSL/SimpleSeries.h>
 #include <QSL/Random.h>
+#include <QSL/Integration.h>
 using namespace QSL;
-
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);

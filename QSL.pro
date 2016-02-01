@@ -4,6 +4,7 @@ TARGET = QSL_test
 INCLUDEPATH += ./ src/
 CONFIG += c++11
 QT += widgets
+LIBS += -lgsl -lgslcblas
 
 
 HEADERS += src/QSL/Figure.h \
@@ -22,12 +23,14 @@ HEADERS += src/QSL/Figure.h \
            src/QSL/SimpleSeries.h \
            src/QSL/Array1D.h \
            src/QSL/SimpleSeriesPrivate.h \
-    src/QSL/ChartAxis.h \
-    src/QSL/ChartAxisPrivate.h \
-    src/QSL/Random.h \
-    src/QSL/RandomPrivate.h \
-    src/QSL/ChartAxisSampler.h \
-    src/QSL/ChartAxisSamplerPrivate.h
+           src/QSL/ChartAxis.h \
+           src/QSL/ChartAxisPrivate.h \
+           src/QSL/Random.h \
+           src/QSL/RandomPrivate.h \
+           src/QSL/ChartAxisSampler.h \
+           src/QSL/ChartAxisSamplerPrivate.h \
+           src/QSL/Integration.h \
+           src/QSL/IntegrationPrivate.h
 
 SOURCES += src/QSL/Figure.cpp \
            src/QSL/FigureScale.cpp \
@@ -36,6 +39,7 @@ SOURCES += src/QSL/Figure.cpp \
            src/QSL/FigureItem.cpp \
            src/QSL/SimpleSeries.cpp \
            demos/minimal.cpp \
-    src/QSL/ChartAxis.cpp \
-    src/QSL/Random.cpp \
-    src/QSL/ChartAxisSampler.cpp
+           src/QSL/ChartAxis.cpp \
+           src/QSL/Random.cpp \
+           src/QSL/ChartAxisSampler.cpp \
+           src/QSL/Integration.cpp

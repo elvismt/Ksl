@@ -25,6 +25,8 @@
 
 #define QSL_BEGIN_NAMESPACE namespace QSL {
 #define QSL_END_NAMESPACE } // namespace QSL
+#define QSL_BEGIN_INTEGRATION_NAMESPACE namespace QSL { namespace Integration {
+#define QSL_END_INTEGRATION_NAMESPACE }} // namespace QSL::Integration
 
 #define QSL_API
 
