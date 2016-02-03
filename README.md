@@ -16,8 +16,8 @@ The following figure shows a screenshot of one of the demo apps bundled
 together with QSL. It shows our chart widget and a line from the linear
 regression class that best represents the data points shown.
 
-[](https://github.com/elvismt/QSL/blob/master/demos/linreg.png)
+![](https://github.com/elvismt/QSL/blob/master/demos/linreg.png)
 
 The numerical routines in QSL are ported from the Mighty GNU Scientific Library
-[(GSL)]: https://gnu.org/software/gsl
+http://www.gnu.org/software/gsl
 We thank and congratulate it's developers for the great work.
