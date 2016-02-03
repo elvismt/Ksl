@@ -31,128 +31,223 @@ class Array1D
 {
 public:
 
-    typedef T Data;
-    typedef T* Pointer;
-    typedef const T* ConstPointer;
-    typedef T& Reference;
-    typedef const T& ConstReference;
-    typedef T* Iterator;
-    typedef const T* ConstIterator;
+   typedef T Data;
+   typedef T* Pointer;
+   typedef const T* ConstPointer;
+   typedef T& Reference;
+   typedef const T& ConstReference;
+   typedef T* Iterator;
+   typedef const T* ConstIterator;
 
 
-    Array1D()
-        : m_data(nullptr)
-        , m_size(0)
-        , m_view(false)
-    { }
+   Array1D()
+      : m_data(nullptr)
+      , m_size(0)
+      , m_view(false)
+   { }
 
-    Array1D(quint32 size)
-        : m_data(new Data[size])
-        , m_size(size)
-        , m_view(false)
-    { }
+   Array1D(quint64 size)
+      : m_data(new Data[size])
+      , m_size(size)
+      , m_view(false)
+   { }
 
-    Array1D(const Array1D &that)
-        : m_data(that.m_data)
-        , m_size(that.m_size)
-        , m_view(true)
-    { }
+   Array1D(std::initializer_list<Data> initlist)
+      : m_data(new Data[initlist.size()])
+      , m_size(initlist.size())
+      , m_view(false)
+   {
+      Iterator iter = this->begin();
+      for (auto &elem : initlist) {
+         *iter++ = elem;
+      }
+   }
 
-    Array1D(Array1D &&that)
-        : m_data(that.m_data)
-        , m_size(that.m_size)
-        , m_view(true)
-    {
-        if (!that.m_view) {
-            that.m_view = true;
-            this->m_view = false;
-        }
-    }
+   Array1D(const Array1D &that)
+      : m_data(that.m_data)
+      , m_size(that.m_size)
+      , m_view(true)
+   { }
 
-    Array1D(QVector<Data> &qvec)
-        : m_data(qvec.data())
-        , m_size(qvec.size())
-        , m_view(true)
-    { }
+   Array1D(Array1D &&that)
+      : m_data(that.m_data)
+      , m_size(that.m_size)
+      , m_view(true)
+   {
+      if (!that.m_view) {
+         that.m_view = true;
+         this->m_view = false;
+      }
+   }
 
-    Array1D(std::initializer_list<Data> initList)
-        : m_data(new Data[initList.size()])
-        , m_size(quint32(initList.size()))
-        , m_view(true)
-    {
-        Iterator iter = this->begin();
-        for (auto &elem : initList) {
-            *iter++ = elem;
-        }
-    }
-
-
-    ~Array1D() {
-        if (m_data && !m_view) {
-            delete[] m_data;
-        }
-    }
+   Array1D(QVector<Data> &qvec)
+       : m_data(qvec.data())
+       , m_size(qvec.size())
+       , m_view(true)
+   { }
 
 
-    quint32 size() const {
-        return m_size;
-    }
+   Array1D& operator= (const Array1D<double> &that) {
+      if (this->m_data == that.m_data) {
+         return *this;
+      }
+      if (m_data && !m_view) {
+         delete[] m_data;
+      }
+      m_data = that.m_data;
+      m_size = that.m_size;
+      m_view = true;
+      return *this;
+   }
+
+   Array1D& operator= (Array1D<double> &&that) {
+      if (!that.m_view) {
+         that.m_view = true;
+         this->m_view = false;
+      }
+      else {
+         this->m_view = true;
+      }
+      if (this->m_data == that.m_data) {
+         return *this;
+      }
+      if (m_data && !m_view) {
+         delete[] m_data;
+      }
+      m_data = that.m_data;
+      m_size = that.m_size;
+      return *this;
+   }
 
 
-    Reference operator[] (quint32 index) {
-        return m_data[index];
-    }
-
-    ConstReference operator[] (quint32 index) const {
-        return m_data[index];
-    }
+   ~Array1D() {
+      if (m_data && !m_view) {
+         delete[] m_data;
+      }
+   }
 
 
-    Iterator begin() {
-        return m_data;
-    }
+   quint64 size() const {
+      return m_size;
+   }
 
-    Iterator end() {
-        return m_data + m_size;
-    }
-
-    ConstIterator begin() const {
-        return m_data;
-    }
-
-    ConstIterator end() const {
-        return m_data + m_size;
-    }
+   bool empty() const {
+      return m_size == 0;
+   }
 
 
-    void setView(const Array1D &that) {
-        if (m_data == that.m_data) {
-            return;
-        }
-        if (m_data && !m_view) {
-            delete[] m_data;
-        }
-        m_data = that.m_data;
-        m_size = that.m_size;
-        m_view = true;
-    }
+   Reference operator[] (quint64 index) {
+      return m_data[index];
+   }
+
+   ConstReference operator[] (quint64 index) const {
+      return m_data[index];
+   }
+
+
+   Iterator begin() {
+      return m_data;
+   }
+
+   Iterator end() {
+      return m_data + m_size;
+   }
+
+   ConstIterator begin() const {
+      return m_data;
+   }
+
+   ConstIterator end() const {
+      return m_data + m_size;
+   }
+
+
+   Array1D operator* (const T &x) const {
+       Array1D ret = this->copy();
+       for (auto &elem : ret) {
+           elem *= x;
+       }
+       return std::move(ret);
+   }
+
+
+   Array1D operator+ (const T &x) const {
+       Array1D ret = this->copy();
+       for (auto &elem : ret) {
+           elem += x;
+       }
+       return std::move(ret);
+   }
+
+
+   Array1D& operator+= (const T &x) {
+       for (auto &elem : *this) {
+           elem += x;
+       }
+       return *this;
+   }
+
+
+   Array1D& operator*= (const T &x) {
+       for (auto &elem : *this) {
+           elem *= x;
+       }
+       return *this;
+   }
+
+
+   Array1D copy() const {
+       Array1D array(m_size);
+       auto iter = array.begin();
+       for (auto &elem : *this) {
+           *iter++ = elem;
+       }
+       return std::move(array);
+   }
 
 
 private:
 
-    T *m_data;
-    quint32 m_size;
-    bool m_view;
+   Pointer m_data;
+   quint64 m_size;
+   bool m_view;
 };
 
 
 template <typename T = double>
-Array1D<T> zeros(quint32 size) {
-    Array1D<T> array(size);
-    for (auto &elem : array) {
-        elem = T(0);
-    }
-    return std::move(array);
+inline Array1D<T> zeros(quint64 size)
+{
+   Array1D<T> array(size);
+   for (auto &elem : array) {
+      elem = T(0);
+   }
+   return std::move(array);
+}
+
+
+template <typename T = double>
+inline Array1D<T> array1d(quint64 size, const T &init)
+{
+   Array1D<T> array(size);
+   for (auto &elem : array) {
+      elem = init;
+   }
+   return std::move(array);
+}
+
+
+template <typename T>
+inline std::ostream& operator<< (std::ostream &os,
+                                 const Array1D<T> &array)
+{
+   auto iter = array.begin();
+   auto end = array.end() - 1;
+   os << "[ ";
+   while (iter != end) {
+      os << (*iter++) << ", ";
+   }
+   os << (*iter++) << " ]";
+   return os;
 }
 
 QSL_END_NAMESPACE

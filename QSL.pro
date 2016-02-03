@@ -30,7 +30,8 @@ HEADERS += src/QSL/Figure.h \
            src/QSL/ChartAxisSampler.h \
            src/QSL/ChartAxisSamplerPrivate.h \
            src/QSL/Integration.h \
-           src/QSL/IntegrationPrivate.h
+           src/QSL/IntegrationPrivate.h \
+    src/QSL/LinearFit.h
 
 SOURCES += src/QSL/Figure.cpp \
            src/QSL/FigureScale.cpp \

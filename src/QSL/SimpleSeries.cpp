@@ -82,8 +82,8 @@ void SimpleSeries::setData(const Array1D<double> &x,
                            const Array1D<double> &y)
 {
     QSL_PUBLIC(SimpleSeries);
-    m->xArray.setView(x);
-    m->yArray.setView(y);
+    m->xArray = x;
+    m->yArray = y;
     m->checkRanges();
     emit dataChange(this);
 }

@@ -4,28 +4,40 @@
 #include <QSL/LinearScale.h>
 #include <QSL/SimpleSeries.h>
 #include <QSL/Random.h>
-#include <QSL/Integration.h>
+#include <QSL/LinearFit.h>
 using namespace QSL;
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     Random rand;
 
-    const int ptCount = 500;
+    const int ptCount = 20;
     const double step = 2.0*PI/ptCount;
-    Array1D<double> x(ptCount), y1(ptCount), y2(ptCount);
+    Array1D<double> x(ptCount), y(ptCount), yFit;
+
+    // simulate data
     for (int k=0; k<ptCount; ++k) {
         x[k] = -PI + k*step;
-        y1[k] = sin(x[k]) + rand.nextFloat(0.3)-0.15;
-        y2[k] = cos(x[k]) + rand.nextFloat(0.3)-0.15;
+        y[k] = ( 8.0 + 3.0*x[k] ) + rand.nextFloat(4.0)-2.0;
     }
 
-    SimpleSeries sineSeries("sine", x, y1, QPen(Qt::black), QBrush(Qt::blue));
-    SimpleSeries cossineSeries("cossine", x, y2, QPen(Qt::black), QBrush(Qt::red));
+    // create linear regression
+    LinearFit linReg(x,y);
+    linReg.execute();
+    auto params = linReg.solution();
+    yFit = x.copy();
+    yFit *= params[1];
+    yFit += params[0];
+
+    SimpleSeries dataSeries("data", x, y, QPen(Qt::black), QBrush(Qt::blue));
+
+    QPen pen(Qt::red);
+    pen.setWidth(2);
+    SimpleSeries fitSeries("regression", x, yFit, pen, Qt::NoBrush, SimpleSeries::Line);
 
     LinearScale scale;
-    scale.add(sineSeries);
-    scale.add(cossineSeries);
+    scale.add(dataSeries);
+    scale.add(fitSeries);
 
     FigureWidget figure;
     figure.figure()->add(scale);
