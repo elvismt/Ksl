@@ -4,7 +4,7 @@
 #include <QSL/LinearScale.h>
 #include <QSL/SimpleSeries.h>
 #include <QSL/Random.h>
-#include <QSL/LinearFit.h>
+#include <QSL/LinearRegression.h>
 using namespace QSL;
 
 int main(int argc, char *argv[]) {
@@ -22,18 +22,13 @@ int main(int argc, char *argv[]) {
     }
 
     // create linear regression
-    LinearFit linReg(x,y);
-    linReg.execute();
-    auto params = linReg.solution();
+    auto params = LinearRegression::exec(x, y);
     yFit = x.copy();
     yFit *= params[1];
     yFit += params[0];
 
     SimpleSeries dataSeries("data", x, y, QPen(Qt::black), QBrush(Qt::blue));
-
-    QPen pen(Qt::red);
-    pen.setWidth(2);
-    SimpleSeries fitSeries("regression", x, yFit, pen, Qt::NoBrush, SimpleSeries::Line);
+    SimpleSeries fitSeries("regression", x, yFit, QPen(Qt::red), Qt::NoBrush, SimpleSeries::Line);
 
     LinearScale scale;
     scale.add(dataSeries);

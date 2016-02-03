@@ -92,6 +92,7 @@ void SimpleSeries::setData(const Array1D<double> &x,
 void SimpleSeries::paint(QPainter *painter) {
     QSL_PUBLIC(SimpleSeries);
 
+    painter->setRenderHint(QPainter::Antialiasing, m->antialias);
     if (m->symbol == Circles)
         m->paintCircles(painter);
     if (m->symbol == Line)

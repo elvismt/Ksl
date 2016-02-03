@@ -37,6 +37,7 @@ public:
         , brush(Qt::red)
         , radius(3)
         , symbol(SimpleSeries::Circles)
+        , antialias(true)
     { }
 
 
@@ -44,6 +45,7 @@ public:
     QBrush brush;
     int radius;
     SimpleSeries::Symbol symbol;
+    bool antialias;
 
     Array1D<double> xArray;
     Array1D<double> yArray;
