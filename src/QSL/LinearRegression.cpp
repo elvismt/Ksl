@@ -18,36 +18,36 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QSL_LINEARREGRESSION_H
-#define QSL_LINEARREGRESSION_H
-
-#include <QSL/Object.h>
-#include <QSL/Array1D.h>
+#include <QSL/LinearRegressionPrivate.h>
 
 QSL_BEGIN_NAMESPACE
 
-class QSL_API LinearRegression
-    : public QSL::Object
-{
-public:
-
-   LinearRegression(const Array1D<double> &x,
-                    const Array1D<double> &y);
+LinearRegression::LinearRegression(const Array1D<double> &x,
+                                   const Array1D<double> &y)
+    : QSL::Object(new LinearRegressionPrivate(this, x, y))
+{ }
 
 
-   void execute();
+void LinearRegression::execute() {
+    QSL_PUBLIC(LinearRegression);
+    gsl_fit_linear(
+         m->x.begin(), 1,
+         m->y.begin(), 1,
+         m->x.size(),
+         &m->par1, &m->par2,
+         &m->cov00, &m->cov01, &m->cov11,
+         &m->chiSqr
+    );
+}
 
-   Array1D<double> solution() const;
 
-   static inline Array1D<double> exec(const Array1D<double> &x,
-                                      const Array1D<double> &y)
-   {
-       LinearRegression linReg(x, y);
-       linReg.execute();
-       return std::move(linReg.solution());
-   }
-};
+Array1D<double> LinearRegression::solution() const {
+    QSL_PUBLIC(const LinearRegression);
+   return std::move(Array1D<double>{
+        m->par1, m->par2,
+        m->cov00, m->cov01, m->cov11,
+        m->chiSqr
+   });
+}
 
 QSL_END_NAMESPACE
-
-#endif // QSL_LINEARREGRESSION_H
