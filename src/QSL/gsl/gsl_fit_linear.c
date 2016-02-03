@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include <gsl_errno.h>
-#include <gsl_fit.h>
+#include "gsl_errno.h"
+#include "gsl_fit.h"
 
 /* Fit the data (x_i, y_i) to the linear relationship 
 

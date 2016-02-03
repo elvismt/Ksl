@@ -4,7 +4,7 @@ TARGET = QSL_test
 CONFIG += c++11
 QT += widgets
 
-INCLUDEPATH += ./ src/ src/QSL/gsl/
+INCLUDEPATH += ./ src/ src/QSL
 
 HEADERS += src/QSL/Figure.h \
            src/QSL/FigurePrivate.h \
