@@ -1,11 +1,10 @@
 
 TEMPLATE = app
 TARGET = QSL_test
-INCLUDEPATH += ./ src/
 CONFIG += c++11
 QT += widgets
-LIBS += -lgsl -lgslcblas
 
+INCLUDEPATH += ./ src/ src/QSL/gsl/
 
 HEADERS += src/QSL/Figure.h \
            src/QSL/FigurePrivate.h \
@@ -29,9 +28,9 @@ HEADERS += src/QSL/Figure.h \
            src/QSL/RandomPrivate.h \
            src/QSL/ChartAxisSampler.h \
            src/QSL/ChartAxisSamplerPrivate.h \
-           src/QSL/Integration.h \
-           src/QSL/IntegrationPrivate.h \
-    src/QSL/LinearFit.h
+#           src/QSL/Integration.h \
+#           src/QSL/IntegrationPrivate.h \
+           src/QSL/LinearFit.h
 
 SOURCES += src/QSL/Figure.cpp \
            src/QSL/FigureScale.cpp \
@@ -43,4 +42,5 @@ SOURCES += src/QSL/Figure.cpp \
            src/QSL/ChartAxis.cpp \
            src/QSL/Random.cpp \
            src/QSL/ChartAxisSampler.cpp \
-           src/QSL/Integration.cpp
+#           src/QSL/Integration.cpp \
+           src/QSL/gsl/gsl_fit_linear.c
