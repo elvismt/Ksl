@@ -213,6 +213,8 @@ private:
    bool m_view;
 };
 
+typedef Array1D<double> array1d;
+
 
 template <typename T = double>
 inline Array1D<T> zeros(quint64 size)
@@ -220,17 +222,6 @@ inline Array1D<T> zeros(quint64 size)
    Array1D<T> array(size);
    for (auto &elem : array) {
       elem = T(0);
-   }
-   return std::move(array);
-}
-
-
-template <typename T = double>
-inline Array1D<T> array1d(quint64 size, const T &init)
-{
-   Array1D<T> array(size);
-   for (auto &elem : array) {
-      elem = init;
    }
    return std::move(array);
 }

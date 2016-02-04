@@ -18,14 +18,14 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GDE_LINREG_H
-#define GDE_LINREG_H
+#ifndef QSL_LINREG_H
+#define QSL_LINREG_H
 
-#include <Gde/Array1D.h>
+#include <QSL/Array1D.h>
 
-GDE_BEGIN_NAMESPACE
+QSL_BEGIN_NAMESPACE
 
-class GDE_EXPORT LinReg
+class QSL_API LinReg
 {
 public:
 
@@ -56,9 +56,9 @@ private:
 
     array1d m_x;
     array1d m_y;
-    real m_chisqr;
-    real m_c0, m_c1;
-    real m_cov00, m_cov01, m_cov11;
+    double m_chisqr;
+    double m_c0, m_c1;
+    double m_cov00, m_cov01, m_cov11;
 };
 
 inline array1d linreg(const array1d &x, const array1d &y) {
@@ -67,6 +67,6 @@ inline array1d linreg(const array1d &x, const array1d &y) {
     return std::move(lr.solution());
 }
 
-GDE_END_NAMESPACE
+QSL_END_NAMESPACE
 
-#endif // GDE_LINREG_H
+#endif // QSL_LINREG_H

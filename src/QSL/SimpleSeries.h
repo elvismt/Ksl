@@ -43,8 +43,8 @@ public:
     SimpleSeries(const QString &name,
                  const Array1D<double> &x,
                  const Array1D<double> &y,
-                 const QPen &pen=QPen(Qt::blue),
-                 const QBrush &brush=QBrush(Qt::red),
+                 const QColor &strokeColor=Qt::blue,
+                 const QColor &fillColor=Qt::blue,
                  Symbol symbol=Circles);
 
 

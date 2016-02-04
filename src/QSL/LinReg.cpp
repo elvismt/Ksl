@@ -18,16 +18,18 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Gde/LinReg.h>
+#include <QSL/LinReg.h>
 
-GDE_BEGIN_NAMESPACE
+QSL_BEGIN_NAMESPACE
 
+
+// Adapted from GSL, The GNU scientific library.
 void LinReg::solve()
 {
     double gx = 0, gy = 0, m_dx2 = 0, m_dxdy = 0;
 
-      index i;
-      index n = m_x.size();
+      size_t i;
+      size_t n = m_x.size();
 
       for (i = 0; i < n; i++)
         {
@@ -75,4 +77,4 @@ void LinReg::solve()
       }
 }
 
-GDE_END_NAMESPACE
+QSL_END_NAMESPACE

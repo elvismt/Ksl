@@ -13,6 +13,7 @@ set(QSL_HDRS
    QSL/SimpleSeries.h
    QSL/ChartAxis.h
    QSL/ChartAxisSampler.h
+   QSL/LinReg.h
 )
 
 set(QSL_SRCS
@@ -25,6 +26,7 @@ set(QSL_SRCS
    QSL/SimpleSeries.cpp
    QSL/ChartAxis.cpp
    QSL/ChartAxisSampler.cpp
+   QSL/LinReg.cpp
 )
 
 add_library(qsl SHARED ${QSL_SRCS})
@@ -32,4 +34,3 @@ target_link_libraries(qsl Qt5::Widgets)
 
 install(TARGETS qsl DESTINATION /usr/lib)
 install(FILES ${QSL_HDRS} DESTINATION /usr/include/QSL)
-

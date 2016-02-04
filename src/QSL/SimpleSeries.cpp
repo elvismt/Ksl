@@ -26,16 +26,20 @@ QSL_BEGIN_NAMESPACE
 SimpleSeries::SimpleSeries(const QString &name,
                            const Array1D<double> &x,
                            const Array1D<double> &y,
-                           const QPen &pen,
-                           const QBrush &brush,
+                           const QColor &strokeColor,
+                           const QColor &fillColor,
                            Symbol symbol)
     : FigureItem(new SimpleSeriesPrivate(this, name))
 {
     QSL_PUBLIC(SimpleSeries);
 
-    m->pen = pen;
-    m->brush = brush;
+    m->pen = QPen(strokeColor);
+    m->brush = QBrush(fillColor);
     m->symbol = symbol;
+
+    if (symbol == Line)
+        m->pen.setWidth(2);
+
     setData(x, y);
 }
 

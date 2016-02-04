@@ -31,10 +31,7 @@ HEADERS += src/QSL/Figure.h \
            src/QSL/RandomPrivate.h \
            src/QSL/ChartAxisSampler.h \
            src/QSL/ChartAxisSamplerPrivate.h \
-           src/QSL/LinearRegression.h \
-    src/QSL/LinearRegressionPrivate.h
-#           src/QSL/Integration.h \
-#           src/QSL/IntegrationPrivate.h \
+           src/QSL/LinReg.h
 
 SOURCES += src/QSL/Figure.cpp \
            src/QSL/FigureScale.cpp \
@@ -46,6 +43,4 @@ SOURCES += src/QSL/Figure.cpp \
            src/QSL/ChartAxis.cpp \
            src/QSL/Random.cpp \
            src/QSL/ChartAxisSampler.cpp \
-#           src/QSL/Integration.cpp \
-           src/gsl/gsl_fit_linear.c \
-    src/QSL/LinearRegression.cpp
+           src/QSL/LinReg.cpp
