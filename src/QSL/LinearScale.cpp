@@ -154,13 +154,13 @@ void LinearScale::rescale() {
     }
 
     m->width = m->xMax - m->xMin;
-    double border = m->width / 20.0;
+    double border = m->width / 15.0;
     m->xMin -= border;
     m->xMax += border;
     m->width += 2.0*border;
 
     m->height = m->yMax - m->yMin;
-    border = m->height / 20.0;
+    border = m->height / 15.0;
     m->yMin -= border;
     m->yMax += border;
     m->height += 2.0*border;

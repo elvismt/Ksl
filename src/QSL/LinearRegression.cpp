@@ -22,13 +22,27 @@
 
 QSL_BEGIN_NAMESPACE
 
+LinearRegression::LinearRegression()
+    : QSL::Object(new LinearRegressionPrivate(this))
+{ }
+
+
 LinearRegression::LinearRegression(const Array1D<double> &x,
                                    const Array1D<double> &y)
     : QSL::Object(new LinearRegressionPrivate(this, x, y))
 { }
 
 
-void LinearRegression::execute() {
+void LinearRegression::setData(const Array1D<double> &x,
+                               const Array1D<double> &y)
+{
+    QSL_PUBLIC(LinearRegression);
+    m->x = x;
+    m->y = y;
+}
+
+
+void LinearRegression::solve() {
     QSL_PUBLIC(LinearRegression);
     gsl_fit_linear(
          m->x.begin(), 1,

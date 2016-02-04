@@ -31,6 +31,10 @@ class LinearRegressionPrivate
 {
 public:
 
+    LinearRegressionPrivate(LinearRegression *publ)
+        : QSL::ObjectPrivate(publ)
+    { }
+
     LinearRegressionPrivate(LinearRegression *publ,
                             const Array1D<double> &ix,
                             const Array1D<double> &iy)

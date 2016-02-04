@@ -104,7 +104,7 @@ void ChartAxisSampler::autoSampleDecimal(double min, double max, int hint) {
     // sampSpac /= 4.0;
     coord = firstTick;
     while (coord <= max) {
-        m->sampleList.append({QString::number(coord,'f',2), coord});
+        m->sampleList.append({QString::number(coord, 'f', 1), coord});
         coord += sampSpac;
     }
 }

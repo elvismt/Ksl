@@ -31,21 +31,17 @@ class QSL_API LinearRegression
 {
 public:
 
+   LinearRegression();
+
    LinearRegression(const Array1D<double> &x,
                     const Array1D<double> &y);
 
+   void setData(const Array1D<double> &x,
+                const Array1D<double> &y);
 
-   void execute();
+   void solve();
 
    Array1D<double> solution() const;
-
-   static inline Array1D<double> exec(const Array1D<double> &x,
-                                      const Array1D<double> &y)
-   {
-       LinearRegression linReg(x, y);
-       linReg.execute();
-       return std::move(linReg.solution());
-   }
 };
 
 QSL_END_NAMESPACE

@@ -22,18 +22,25 @@ int main(int argc, char *argv[]) {
     }
 
     // create linear regression
-    auto params = LinearRegression::exec(x, y);
+    LinearRegression linReg(x, y);
+    linReg.solve();
+    auto params = linReg.solution();
     yFit = x.copy();
     yFit *= params[1];
     yFit += params[0];
 
+    // create series to plot
+    QPen linePen(Qt::red);
+    linePen.setWidth(2);
     SimpleSeries dataSeries("data", x, y, QPen(Qt::black), QBrush(Qt::blue));
-    SimpleSeries fitSeries("regression", x, yFit, QPen(Qt::red), Qt::NoBrush, SimpleSeries::Line);
+    SimpleSeries fitSeries("regression", x, yFit, linePen, Qt::NoBrush, SimpleSeries::Line);
 
+    // put series in scale
     LinearScale scale;
     scale.add(dataSeries);
     scale.add(fitSeries);
 
+    // put scale objects in figure and show them
     FigureWidget figure;
     figure.figure()->add(scale);
     figure.show();
