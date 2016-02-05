@@ -31,7 +31,8 @@ HEADERS += src/QSL/Figure.h \
            src/QSL/RandomPrivate.h \
            src/QSL/ChartAxisSampler.h \
            src/QSL/ChartAxisSamplerPrivate.h \
-           src/QSL/LinReg.h
+           src/QSL/LinReg.h \
+    src/QSL/Array2D.h
 
 SOURCES += src/QSL/Figure.cpp \
            src/QSL/FigureScale.cpp \

@@ -23,6 +23,7 @@
 
 #include <QSL/Global.h>
 #include <QVector>
+#include <ostream>
 
 QSL_BEGIN_NAMESPACE
 
@@ -227,9 +228,12 @@ inline Array1D<T> zeros(quint64 size)
 }
 
 
+QSL_END_NAMESPACE
+
+
 template <typename T>
 inline std::ostream& operator<< (std::ostream &os,
-                                 const Array1D<T> &array)
+                                 const QSL::Array1D<T> &array)
 {
    auto iter = array.begin();
    auto end = array.end() - 1;
@@ -240,7 +244,5 @@ inline std::ostream& operator<< (std::ostream &os,
    os << (*iter++) << " ]";
    return os;
 }
-
-QSL_END_NAMESPACE
 
 #endif // QSL_ARRAY1D_H

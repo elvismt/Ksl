@@ -7,6 +7,7 @@
 #include <QSL/LinReg.h>
 using namespace QSL;
 
+
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     Random rand;
