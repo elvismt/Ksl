@@ -1,36 +1,24 @@
 
-set(QSL_HDRS
-   QSL/Global.h
-   QSL/Object.h
-   QSL/ObjectPrivate.h
-   QSL/Array1D.h
-   QSL/Random.h
-   QSL/Figure.h
-   QSL/FigureItem.h
-   QSL/FigureScale.h
-   QSL/FigureWidget.h
-   QSL/LinearScale.h
-   QSL/SimpleSeries.h
-   QSL/ChartAxis.h
-   QSL/ChartAxisSampler.h
-   QSL/LinReg.h
+set(Ksl_HDRS
+    Ksl/arrayview.h
+    Ksl/chart.h
+    Ksl/chartitem.h
+    Ksl/chartlinearscale.h
+    Ksl/chartscale.h
+    Ksl/chartview.h
+    Ksl/global.h
+    Ksl/object.h
+    Ksl/object_p.h
+    Ksl/simpleplot.h
 )
 
-set(QSL_SRCS
-   QSL/Random.cpp
-   QSL/Figure.cpp
-   QSL/FigureItem.cpp
-   QSL/FigureScale.cpp
-   QSL/FigureWidget.cpp
-   QSL/LinearScale.cpp
-   QSL/SimpleSeries.cpp
-   QSL/ChartAxis.cpp
-   QSL/ChartAxisSampler.cpp
-   QSL/LinReg.cpp
+set(Ksl_SRCS
+    Ksl/chart.cpp
+    Ksl/chartitem.cpp
+    Ksl/chartlinearscale.cpp
+    Ksl/chartscale.cpp
+    Ksl/chartview.cpp
+    Ksl/simpleplot.cpp
 )
 
-add_library(qsl SHARED ${QSL_SRCS})
-target_link_libraries(qsl Qt5::Widgets)
-
-install(TARGETS qsl DESTINATION /usr/lib)
-install(FILES ${QSL_HDRS} DESTINATION /usr/include/QSL)
+add_library(Ksl ${Ksl_SRCS})

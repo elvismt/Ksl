@@ -1,23 +1,19 @@
-QSL
+KSL
 ===
 
-QSL is a free (LGPL3) C++/Qt library with utilities for science. Our
+KSL is a free (LGPL3) C++/Qt library with utilities for science. Our
 goal is to mimic the set of tools NumPy, SciPy and matplotlib from
 Python down here in the world of C++ performance.
 
-QSL provide a widget to visualize data as many forms of charts. It also
+KSL provides a widget to visualize data as many forms of charts. It also
 provides classes that executes various machine learning and data-related
 tasks like:
 
    * Linear regression
    * Maximization and minimization
 
-The following figure shows a screenshot of one of the demo apps bundled
-together with QSL. It shows our chart widget and a line from the linear
-regression class that best represents the data points shown.
-
-![](https://github.com/elvismt/QSL/blob/master/demos/linreg.png)
-
-The numerical routines in QSL are adapted from the Mighty GNU Scientific Library
+The numerical routines in KSL are adapted from the Mighty GNU Scientific Library
 [GSL](http://www.gnu.org/software/gsl)
 We thank and congratulate it's developers for the great work.
+Ksl follows some of KDE's software design goals and all of it's philosophy but it
+is not an official KDE component.

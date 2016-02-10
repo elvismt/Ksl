@@ -1,5 +1,6 @@
-include_directories("${CMAKE_SOURCE_DIR}/src")
 
-add_executable(minimal minimal.cpp)
-target_link_libraries(minimal qsl)
+add_executable(scatter scatter.cpp)
+target_link_libraries(scatter Ksl ${QT_LIBRARIES})
 
+add_executable(trigonometry trigonometry.cpp)
+target_link_libraries(trigonometry Ksl ${QT_LIBRARIES})
