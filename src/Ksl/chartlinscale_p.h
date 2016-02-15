@@ -18,33 +18,35 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHARTLINEARSCALE_H
-#define KSL_CHARTLINEARSCALE_H
+#ifndef KSL_CHARTLINSCALE_P_H
+#define KSL_CHARTLINSCALE_P_H
 
-#include <Ksl/chartscale.h>
+#include <Ksl/chartlinscale.h>
+#include <Ksl/chartscale_p.h>
 
-class KSL_EXPORT KslChartLinearScale
-    : public KslChartScale
+class KslChartLinscalePrivate
+    : public KslChartScalePrivate
 {
 public:
 
-    KslChartLinearScale(const QString &name="scale");
-
-    virtual QPoint map(const QPointF &p) const;
-    virtual QPointF unmap(const QPoint &p) const;
-    virtual void rescale();
-    
-    virtual QRect chartRect() const;
-    virtual QRectF dataRect() const;
-
-
-protected:
-
-    virtual void paint(const QRect &rect, QPainter *painter);
-
-    KslChartLinearScale(KslObjectPrivate *priv)
-        : KslChartScale(priv)
+    KslChartLinscalePrivate(KslChartLinscale *publ,
+                               const QString &iname)
+        : KslChartScalePrivate(publ, iname)
+        , lowXbound(20) , upXbound(20)
+        , lowYbound(20) , upYbound(20)
     { }
+
+
+    int lowXbound, upXbound;
+    int lowYbound, upYbound;
+
+    int chartXmin, chartXmax;
+    int chartYmin, chartYmax;
+    int chartWidth, chartHeight;
+
+    double xMin, xMax;
+    double yMin, yMax;
+    double width, height;
 };
 
-#endif // KSL_CHARTLINEARSCALE_H
+#endif // KSL_CHARTLINSCALE_P_H

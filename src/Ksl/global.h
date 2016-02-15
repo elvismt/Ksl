@@ -24,10 +24,15 @@
 #include <QString>
 #include <QList>
 
-#define KSL_BEGIN_NAMESPACE namespace ksl {
-#define KSL_END_NAMESPACE } // namespace ksl
+#define KSL_BEGIN_NAMESPACE namespace Ksl {
+#define KSL_END_NAMESPACE } // namespace Ksl
 
 #define KSL_EXPORT
+#define KSL_CPP2011
+
+#ifndef KSL_CPP2011
+#define nullptr 0
+#endif
 
 KSL_BEGIN_NAMESPACE
 template <typename T> inline T pow2(const T &x) { return x*x; }

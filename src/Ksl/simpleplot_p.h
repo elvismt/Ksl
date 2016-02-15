@@ -50,8 +50,8 @@ public:
     int symbolRadius;
     bool antialias;
 
-    KslArrayView<double> x;
-    KslArrayView<double> y;    
+    KslArray1D<double> x;
+    KslArray1D<double> y;
     double xMin, xMax;
     double yMin, yMax;
     double width, height;

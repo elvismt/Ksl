@@ -1,7 +1,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <Ksl/chartview.h>
-#include <Ksl/chartlinearscale.h>
+#include <Ksl/chartlinscale.h>
 #include <Ksl/simpleplot.h>
 #include <cmath>
 
@@ -9,19 +9,14 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc,argv);
 
-    // two thousand points
-    const quint32 nPts = 2000;
-    QVector<double> x(nPts), y(nPts);
-
-    for (quint32 k=0; k<nPts; ++k) {
-        x[k] = 10.0 * double(rand())/RAND_MAX;
-        y[k] = 10.0 * double(rand())/RAND_MAX;
-    }
+    // five thousand points
+    auto x = linspace(0.0, 5000.0);
+    auto y = randspace(5000.0, 10.0);
 
     KslSimplePlot scatter(x, y, "scatter", Qt::black, Qt::green,
                           KslSimplePlot::Circles);
 
-    KslChartLinearScale scale;
+    KslChartLinscale scale;
     scale.add(scatter);
 
     KslChartView chart;

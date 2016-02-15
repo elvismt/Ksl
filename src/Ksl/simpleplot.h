@@ -22,7 +22,7 @@
 #define KSL_SIMPLEPLOT_H
 
 #include <Ksl/chartitem.h>
-#include <Ksl/arrayview.h>
+#include <Ksl/array1d.h>
 
 class KSL_EXPORT KslSimplePlot
     : public KslChartItem
@@ -38,8 +38,8 @@ public:
     typedef QFlags<ScatterSymbolEnum> ScatterSymbol;
 
 
-    KslSimplePlot(const KslArrayView<double> &x,
-                  const KslArrayView<double> &y,
+    KslSimplePlot(const KslArray1D<double> &x,
+                  const KslArray1D<double> &y,
                   const QString &name,
                   const QColor &strokeColor=Qt::blue,
                   const QColor &fillColor=Qt::red,
@@ -47,8 +47,8 @@ public:
                   QObject *parent=0);
 
 
-    void setData(const KslArrayView<double> &x,
-                 const KslArrayView<double> &y);
+    void setData(const KslArray1D<double> &x,
+                 const KslArray1D<double> &y);
 
     virtual QRect chartRect() const;
     virtual QRectF dataRect() const;

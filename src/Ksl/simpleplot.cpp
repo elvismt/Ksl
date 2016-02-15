@@ -22,8 +22,8 @@
 #include <Ksl/chartscale.h>
 #include <QPainterPath>
 
-KslSimplePlot::KslSimplePlot(const KslArrayView<double> &x,
-                             const KslArrayView<double> &y,
+KslSimplePlot::KslSimplePlot(const KslArray1D<double> &x,
+                             const KslArray1D<double> &y,
                              const QString &name,
                              const QColor &strokeColor,
                              const QColor &fillColor,
@@ -60,12 +60,12 @@ QRectF KslSimplePlot::dataRect() const {
                   m->width, m->height);
 }
 
-void KslSimplePlot::setData(const KslArrayView<double> &x,
-                            const KslArrayView<double> &y)
+void KslSimplePlot::setData(const KslArray1D<double> &x,
+                            const KslArray1D<double> &y)
 {
     KSL_PUBLIC(KslSimplePlot);
-    m->x.mirror(x);
-    m->y.mirror(y);
+    m->x = x;
+    m->y = y;
     m->checkRanges();
 }
 

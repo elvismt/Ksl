@@ -18,15 +18,15 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Ksl/chartlinearscale_p.h>
+#include <Ksl/chartlinscale_p.h>
 #include <Ksl/chartitem.h>
 
-KslChartLinearScale::KslChartLinearScale(const QString &name)
-    : KslChartScale(new KslChartLinearScalePrivate(this, name))
+KslChartLinscale::KslChartLinscale(const QString &name)
+    : KslChartScale(new KslChartLinscalePrivate(this, name))
 { }
 
-QPoint KslChartLinearScale::map(const QPointF &p) const {
-    KSL_PUBLIC(const KslChartLinearScale);
+QPoint KslChartLinscale::map(const QPointF &p) const {
+    KSL_PUBLIC(const KslChartLinscale);
     QPoint ret;
     double tmp;
 
@@ -37,8 +37,8 @@ QPoint KslChartLinearScale::map(const QPointF &p) const {
     return ret;
 }
 
-QPointF KslChartLinearScale::unmap(const QPoint &p) const {
-    KSL_PUBLIC(const KslChartLinearScale);
+QPointF KslChartLinscale::unmap(const QPoint &p) const {
+    KSL_PUBLIC(const KslChartLinscale);
     QPointF ret;
     double tmp;
 
@@ -49,20 +49,20 @@ QPointF KslChartLinearScale::unmap(const QPoint &p) const {
     return ret;
 }
 
-QRect KslChartLinearScale::chartRect() const {
-    KSL_PUBLIC(const KslChartLinearScale);
+QRect KslChartLinscale::chartRect() const {
+    KSL_PUBLIC(const KslChartLinscale);
     return QRect(m->chartXmin, m->chartYmin,
                  m->chartWidth, m->chartHeight);
 }
 
-QRectF KslChartLinearScale::dataRect() const {
-    KSL_PUBLIC(const KslChartLinearScale);
+QRectF KslChartLinscale::dataRect() const {
+    KSL_PUBLIC(const KslChartLinscale);
     return QRectF(m->xMin, m->yMin,
                   m->width, m->height);
 }
 
-void KslChartLinearScale::rescale() {
-    KSL_PUBLIC(KslChartLinearScale);
+void KslChartLinscale::rescale() {
+    KSL_PUBLIC(KslChartLinscale);
 
     if (m->itemList.isEmpty()) {
         m->xMin = 0.0;
@@ -105,8 +105,8 @@ void KslChartLinearScale::rescale() {
     m->height += 2.0*bound;
 }
 
-void KslChartLinearScale::paint(const QRect &rect, QPainter *painter) {
-    KSL_PUBLIC(KslChartLinearScale);
+void KslChartLinscale::paint(const QRect &rect, QPainter *painter) {
+    KSL_PUBLIC(KslChartLinscale);
 
     m->chartXmin = rect.left() + m->lowXbound;
     m->chartXmax = rect.right() - m->upXbound;
@@ -124,4 +124,4 @@ void KslChartLinearScale::paint(const QRect &rect, QPainter *painter) {
     painter->restore();
 }
 
-// Ksl/chartlinearscale.cpp
+// Ksl/chartlinscale.cpp

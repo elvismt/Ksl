@@ -1,9 +1,9 @@
 
 set(Ksl_HDRS
-    Ksl/arrayview.h
+    Ksl/array1d.h
     Ksl/chart.h
     Ksl/chartitem.h
-    Ksl/chartlinearscale.h
+    Ksl/chartlinscale.h
     Ksl/chartscale.h
     Ksl/chartview.h
     Ksl/global.h
@@ -15,10 +15,10 @@ set(Ksl_HDRS
 set(Ksl_SRCS
     Ksl/chart.cpp
     Ksl/chartitem.cpp
-    Ksl/chartlinearscale.cpp
+    Ksl/chartlinscale.cpp
     Ksl/chartscale.cpp
     Ksl/chartview.cpp
     Ksl/simpleplot.cpp
 )
 
-add_library(Ksl ${Ksl_SRCS})
+add_library(Ksl ${Ksl_SRCS} ${Ksl_HDRS})
