@@ -18,33 +18,30 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHARTLINSCALE_H
-#define KSL_CHARTLINSCALE_H
+#ifndef KSL_PLOT_CHART_P_H
+#define KSL_PLOT_CHART_P_H
 
-#include <Ksl/chartscale.h>
+#include <Ksl/Plot/Chart.h>
+#include <QBrush>
 
-class KSL_EXPORT KslChartLinscale
-    : public KslChartScale
+KSL_BEGIN_PLOT_NAMESPACE
+
+class ChartPrivate
+    : public Ksl::ObjectPrivate
 {
 public:
 
-    KslChartLinscale(const QString &name="scale");
-
-    virtual QPoint map(const QPointF &p) const;
-    virtual QPointF unmap(const QPoint &p) const;
-    virtual void rescale();
-    
-    virtual QRect chartRect() const;
-    virtual QRectF dataRect() const;
-
-
-protected:
-
-    virtual void paint(const QRect &rect, QPainter *painter);
-
-    KslChartLinscale(KslObjectPrivate *priv)
-        : KslChartScale(priv)
+    ChartPrivate(Chart *publ, const QString &iname)
+        : Ksl::ObjectPrivate(publ)
+        , name(iname)
+        , backBrush(Qt::white)
     { }
+
+    QString name;
+    QBrush backBrush;
+    QList<Scale*> scaleList;
 };
 
-#endif // KSL_CHARTLINSCALE_H
+KSL_END_PLOT_NAMESPACE
+
+#endif // KSL_PLOT_CHART_P_H

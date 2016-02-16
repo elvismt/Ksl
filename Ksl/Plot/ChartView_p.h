@@ -18,25 +18,36 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_GLOBAL_H
-#define KSL_GLOBAL_H
+#ifndef KSL_PLOT_CHARTVIEW_P_H
+#define KSL_PLOT_CHARTVIEW_P_H
 
-#include <QString>
-#include <QList>
+#include <Ksl/Plot/ChartView.h>
 
-#define KSL_BEGIN_NAMESPACE namespace Ksl {
-#define KSL_END_NAMESPACE } // namespace Ksl
+KSL_BEGIN_PLOT_NAMESPACE
 
-#define KSL_EXPORT
-#define KSL_CPP2011
+class ChartViewPrivate
+    : public Ksl::ObjectPrivate
+{
+public:
 
-#ifndef KSL_CPP2011
-#define nullptr 0
-#endif
+    ChartViewPrivate(ChartView *publ, Chart *ichart)
+        : Ksl::ObjectPrivate(publ)
+    {
+        if (ichart) {
+            chart = ichart;
+            ownChart = false;
+        }
+        else {
+            chart = new Chart();
+            ownChart = true;
+        }
+    }
 
-KSL_BEGIN_NAMESPACE
-template <typename T> inline T pow2(const T &x) { return x*x; }
-template <typename T> inline T pow3(const T &x) { return x*x*x; }
-KSL_END_NAMESPACE
+    Chart *chart;
+    bool ownChart;
+    QPainter painter;
+};
 
-#endif // KSL_GLOBAL_H
+KSL_END_PLOT_NAMESPACE
+
+#endif // KSL_PLOT_CHARTVIEW_P_H

@@ -21,35 +21,39 @@
 #ifndef KSL_OBJECT_P_H
 #define KSL_OBJECT_P_H
 
-#include <Ksl/global.h>
+#include <Ksl/Global.h>
 
 #define KSL_GET_PUBLIC(Class, instance) \
-    (static_cast<Class*>((instance)->getPublic()))
+    (static_cast<Class*>((instance)->__getpubl()))
 
 #define KSL_PRIVATE(Class) \
-    Class *m = KSL_GET_PUBLIC(Class, this)
+    auto m = KSL_GET_PUBLIC(Class,this)
+
+KSL_BEGIN_NAMESPACE
 
 // forward declaration
-class KslObject;
+class Object;
 
-class KSL_EXPORT KslObjectPrivate
+class KSL_EXPORT ObjectPrivate
 {
 public:
 
-    KslObjectPrivate(KslObject *publ)
+    virtual ~ObjectPrivate()
+    { }
+
+    ObjectPrivate(Object *publ)
         : m_publ(publ)
     { }
 
-    virtual ~KslObjectPrivate()
-    { }
-
-    inline KslObject* getPublic() const {
+    Object* __getpubl() const {
         return m_publ;
     }
 
 protected:
 
-    KslObject *const m_publ;
+    Object *const m_publ;
 };
+
+KSL_END_NAMESPACE
 
 #endif // KSL_OBJECT_P_H

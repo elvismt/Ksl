@@ -21,14 +21,13 @@
 #ifndef KSL_ARRAY1D_H
 #define KSL_ARRAY1D_H
 
-#include <Ksl/global.h>
-#include <initializer_list>
-#include <ostream>
+#include <Ksl/Global.h>
 #include <QVector>
-#include <vector>
+
+KSL_BEGIN_NAMESPACE
 
 template <typename T>
-class KslArray1D
+class Array1D
 {
 public:
 
@@ -41,39 +40,25 @@ public:
     typedef const T* ConstIterator;
 
 
-    KslArray1D()
+    Array1D()
         : m_data(nullptr)
         , m_size(0)
         , m_view(false)
     { }
 
-    KslArray1D(int size)
+    Array1D(int size)
         : m_data(new Data[size])
         , m_size(size)
         , m_view(false)
     { }
 
-    KslArray1D(const KslArray1D &that)
+    Array1D(const Array1D &that)
         : m_data(that.m_data)
         , m_size(that.m_size)
         , m_view(true)
     { }
-    
-    KslArray1D(QVector<Data> &qvec)
-        : m_data(qvec.data())
-        , m_size(qvec.size())
-        , m_view(true)
-    { }
-    
-    KslArray1D(std::vector<Data> &stdvec)
-        : m_data(stdvec.data())
-        , m_size(stdvec.size())
-        , m_view(true)
-    { }
 
-
-#ifdef KSL_CPP2011
-    KslArray1D(KslArray1D &&that)
+    Array1D(Array1D &&that)
         : m_data(that.m_data)
         , m_size(that.m_size)
         , m_view(true)
@@ -84,26 +69,30 @@ public:
         }
     }
 
-    KslArray1D(std::initializer_list<Data> init_list)
-        : m_data(new Data[init_list.size()])
-        , m_size(init_list.size())
+    Array1D(std::initializer_list<Data> initlist)
+        : m_data(new Data[initlist.size()])
+        , m_size(initlist.size())
         , m_view(false)
     {
         Iterator iter = this->begin();
-        for (auto &elem : init_list) {
+        for (auto &elem : initlist) {
             *iter++ = elem;
         }
     }
-#endif // KSL_CPP2011
+    
+    Array1D(std::vector<Data> &vec)
+        : m_data(vec.data())
+        , m_size(vec.size())
+        , m_view(true)
+    { }
 
-    ~KslArray1D() {
+    ~Array1D() {
         if (m_data && !m_view) {
             delete[] m_data;
         }
     }
 
-
-    KslArray1D& operator= (const KslArray1D &that) {
+    Array1D& operator= (const Array1D &that) {
         if (m_data == that.m_data) {
             return *this;
         }
@@ -116,9 +105,7 @@ public:
         return *this;
     }
 
-
-#ifdef KSL_CPP2011
-    KslArray1D& operator= (KslArray1D &&that) {
+    Array1D& operator= (Array1D &&that) {
         if (m_data == that.m_data) {
             if (!that.m_view) {
                 that.m_view = true;
@@ -139,7 +126,6 @@ public:
         m_view = true;
         return *this;
     }
-#endif // KSL_CPP2011
 
 
     int size() const {
@@ -187,22 +173,24 @@ private:
 };
 
 
-#ifdef KSL_CPP2011
+typedef Array1D<double> Array;
+typedef Array1D<int>    IArray;
+
+
 template <typename T = double>
-inline KslArray1D<T> zeros(int size)
+inline Array1D<T> zeros(int size)
 {
-    KslArray1D<T> array(size);
+    Array1D<T> array(size);
     for (auto &elem : array) {
         elem = T(0);
     }
     return std::move(array);
 }
 
-
 template <typename T = double>
-inline KslArray1D<T> linspace(T min, T max, T step=T(1))
+inline Array1D<T> linspace(T min, T max, T step=T(1))
 {
-    KslArray1D<T> array(int((max-min)/step)+1);
+    Array1D<T> array(int((max-min)/step)+1);
     int k = 0;
     for (auto &elem : array) {
         elem = min + k*step;
@@ -211,33 +199,41 @@ inline KslArray1D<T> linspace(T min, T max, T step=T(1))
     return std::move(array);
 }
 
-
 template <typename T = double>
-inline KslArray1D<T> randspace(int size, const T &max=T(1))
+inline Array1D<T> randspace(int size, T max=T(1))
 {
-    KslArray1D<T> array(size);
+    Array1D<T> array(size);
     for (auto &elem : array) {
         elem = max * T(rand())/RAND_MAX;
     }
     return std::move(array);
 }
 
-
-template <typename Func, typename T = double>
-inline KslArray1D<T> apply(Func func, const KslArray1D<T> &operand)
+template <typename T = double>
+inline Array1D<T> copy(const Array1D<T> &array)
 {
-    KslArray1D<T> result(operand.size());
-    auto iter = operand.begin();
-    for (auto &elem : result) {
+    Array1D<T> tmp(array.size());
+    auto iter = array.begin();
+    for (auto &elem : tmp) {
+        elem = *iter++;
+    }
+    return std::move(tmp);
+}
+
+template <typename Functor, typename T = double>
+inline Array1D<T> applied(Functor func, const Array1D<T> &array)
+{
+    Array1D<T> tmp(array.size());
+    auto iter = array.begin();
+    for (auto &elem : tmp) {
         elem = func(*iter++);
     }
-    return std::move(result);
+    return std::move(tmp);
 }
-#endif // KSL_CPP2011
 
 template <typename T>
 inline std::ostream& operator<< (std::ostream &os,
-                                 const KslArray1D<T> &array)
+                                 const Array1D<T> &array)
 {
     os << "[ ";
     for (int k=0; k<array.size()-1; ++k) {
@@ -246,5 +242,7 @@ inline std::ostream& operator<< (std::ostream &os,
     os << array[array.size()-1] << " ]";
     return os;
 }
+
+KSL_END_NAMESPACE
 
 #endif // KSL_ARRAY1D_H

@@ -18,28 +18,17 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHARTITEM_P_H
-#define KSL_CHARTITEM_P_H
+#include <QApplication>
+#include <iostream>
+using namespace std;
 
-#include <Ksl/chartitem.h>
+#include <Ksl/Plot/ChartView.h>
+using namespace KslPlot;
 
-class KslChartItemPrivate
-    : public KslObjectPrivate
+int main(int argc, char *argv[])
 {
-public:
-
-    KslChartItemPrivate(KslChartItem *publ, const QString &iname)
-        : KslObjectPrivate(publ)
-        , name(iname)
-        , visible(true)
-        , scale(0)
-        , chart(0)
-    { }
-
-    QString name;
-    bool visible;
-    KslChartScale *scale;
-    KslChart *chart;
-};
-
-#endif // KSL_CHARTITEM_P_H
+    QApplication app(argc,argv);
+    ChartView view;
+    view.show();
+    return app.exec();
+}

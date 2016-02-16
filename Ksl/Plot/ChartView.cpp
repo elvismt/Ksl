@@ -18,44 +18,47 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Ksl/chartview_p.h>
+#include <Ksl/Plot/ChartView_p.h>
 
-KslChartView::KslChartView(QWidget *parent)
+KSL_BEGIN_PLOT_NAMESPACE
+
+ChartView::ChartView(QWidget *parent)
     : QWidget(parent)
-    , KslObject(new KslChartViewPrivate(this))
+    , Ksl::Object(new ChartViewPrivate(this, nullptr))
 {
-    KSL_PUBLIC(KslChartView);
-    m->chart = new KslChart();
-    m->ownChart = true;
     setMinimumSize(200,200);
     setAutoFillBackground(false);
 }
 
-KslChartView::KslChartView(const QString &title, int width,
-                           int height, QWidget *parent)
+ChartView::ChartView(Chart *chart, QWidget *parent)
     : QWidget(parent)
-    , KslObject(new KslChartViewPrivate(this))
+    , Ksl::Object(new ChartViewPrivate(this, chart))
 {
-    KSL_PUBLIC(KslChartView);
-    m->chart = new KslChart();
-    m->ownChart = true;
+    setMinimumSize(200,200);
+    setAutoFillBackground(false);
+}
+
+ChartView::ChartView(const QString &title, int width, int height, QWidget *parent)
+    : QWidget(parent)
+    , Ksl::Object(new ChartViewPrivate(this, nullptr))
+{
     setWindowTitle(title);
-    resize(width, height);
+    resize(width,height);
     setMinimumSize(200,200);
     setAutoFillBackground(false);
 }
 
-KslChart* KslChartView::chart() const {
-    KSL_PUBLIC(const KslChartView);
+Chart* ChartView::chart() const {
+    KSL_PUBLIC(ChartView);
     return m->chart;
 }
 
-void KslChartView::paintEvent(QPaintEvent *event) {
-    KSL_PUBLIC(KslChartView);
+void ChartView::paintEvent(QPaintEvent *event) {
+    KSL_PUBLIC(ChartView);
     Q_UNUSED(event)
     m->painter.begin(this);
-    m->chart->paint(this->rect(), &m->painter);
+    m->chart->paint(rect(), &m->painter);
     m->painter.end();
 }
 
-// Ksl/chartview.cpp
+KSL_END_PLOT_NAMESPACE

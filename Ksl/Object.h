@@ -18,27 +18,42 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHARTSCALE_P_H
-#define KSL_CHARTSCALE_P_H
+#ifndef KSL_OBJECT_H
+#define KSL_OBJECT_H
 
-#include <Ksl/chartscale.h>
+#include <Ksl/Object_p.h>
 
-class KslChartScalePrivate
-    : public KslObjectPrivate
+#define KSL_GET_PRIVATE(Class, instance) \
+    (static_cast<Class##Private*>((instance)->__getpriv()))
+
+#define KSL_PUBLIC(Class) \
+    auto m = KSL_GET_PRIVATE(Class,this)
+
+KSL_BEGIN_NAMESPACE
+
+class KSL_EXPORT Object
 {
 public:
 
-    KslChartScalePrivate(KslChartScale *publ, const QString &iname)
-        : KslObjectPrivate(publ)
-        , name(iname)
-        , visible(true)
-        , chart(0)
+    virtual ~Object() {
+        if (m_priv != nullptr) {
+            delete m_priv;
+        }
+    }
+
+    ObjectPrivate* __getpriv() const {
+        return m_priv;
+    }
+
+protected:
+
+    Object(ObjectPrivate *priv)
+        : m_priv(priv)
     { }
 
-    QString name;
-    bool visible;
-    KslChart *chart;
-    QList<KslChartItem*> itemList;
+    ObjectPrivate *const m_priv;
 };
 
-#endif // KSL_CHARTSCALE_P_H
+KSL_END_NAMESPACE
+
+#endif // KSL_OBJECT_H

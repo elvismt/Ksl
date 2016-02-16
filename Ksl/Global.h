@@ -18,26 +18,21 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHART_P_H
-#define KSL_CHART_P_H
+#ifndef KSL_GLOBAL_H
+#define KSL_GLOBAL_H
 
-#include <Ksl/chart.h>
-#include <QBrush>
+#include <QString>
 
-class KslChartPrivate
-    : public KslObjectPrivate
-{
-public:
+#define KSL_BEGIN_NAMESPACE namespace Ksl {
+#define KSL_END_NAMESPACE } // namespace Ksl
+#define KSL_BEGIN_PLOT_NAMESPACE namespace KslPlot {
+#define KSL_END_PLOT_NAMESPACE } // namespace KslPlot
 
-    KslChartPrivate(KslChart *publ, const QString &iname)
-        : KslObjectPrivate(publ)
-        , name(iname)
-        , backBrush(Qt::white)
-    { }
+#define KSL_EXPORT
 
-    QString name;
-    QBrush backBrush;
-    QList<KslChartScale*> scaleList;
-};
+KSL_BEGIN_NAMESPACE
+template <typename T> inline T pow2(const T& x) { return x*x; }
+template <typename T> inline T pow3(const T& x) { return x*x*x; }
+KSL_END_NAMESPACE
 
-#endif // KSL_CHART_P_H
+#endif // KSL_GLOBAL_H

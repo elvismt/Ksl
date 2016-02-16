@@ -18,55 +18,58 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHARTITEM_H
-#define KSL_CHARTITEM_H
+#ifndef KSL_PLOT_CHART_H
+#define KSL_PLOT_CHART_H
 
-#include <Ksl/object.h>
+#include <Ksl/Object.h>
 #include <QObject>
 #include <QPainter>
 
-// forward declaration
-class KslChart;
-class KslChartScale;
+KSL_BEGIN_PLOT_NAMESPACE
 
-class KSL_EXPORT KslChartItem
+// forward declaration
+class Scale;
+class Item;
+
+class KSL_EXPORT Chart
     : public QObject
-    , public KslObject
+    , public Ksl::Object
 {
     Q_OBJECT
 
 public:
 
-    KslChartItem(const QString &name="figure", QObject *parent=0);
-    
+    Chart(const QString &name="Ksl", QObject *parent=0);
+
     QString name() const;
-    bool visible() const;
 
-    KslChartScale* scale() const;
-    KslChart* chart() const;
+    QList<Scale*>& scaleList();
+    const QList<Scale*>& scaleList() const;
 
-    virtual QRect chartRect() const = 0;
-    virtual QRectF dataRect() const = 0;
+    virtual void add(Scale *scale);
+    inline void add(Scale &scale) { add(&scale); }
 
+    virtual void paint(const QRect &rect, QPainter *painter);
+    virtual void save(const QString &fileName, const QSize &size=QSize(500,350), const char *format="png");
 
-Q_SIGNALS:
+signals:
 
-    void appearenceChanged(KslChartItem *self);
-    void dataChanged(KslChartItem *self);
+    void errorOccured(Chart *self);
+    void changed(Chart *self);
 
+public slots:
+
+    void onAppearenceChange(Item *item);
+    void onDataChange(Item *item);
 
 protected:
-    
-    friend class KslChartScale;
-    
-    virtual void setScale(KslChartScale *scale);
 
-    virtual void paint(QPainter *painter) = 0;
-    
-    KslChartItem(KslObjectPrivate *priv, QObject *parent)
+    Chart(Ksl::ObjectPrivate *priv, QObject *parent)
         : QObject(parent)
-        , KslObject(priv)
+        , Ksl::Object(priv)
     { }
 };
 
-#endif // KSL_CHARTITEM_H
+KSL_END_PLOT_NAMESPACE
+
+#endif // KSL_PLOT_CHART_H
