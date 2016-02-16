@@ -18,9 +18,11 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Ksl/Plot/Chart_p.h>
+#include <Ksl/Chart_p.h>
+#include <Ksl/ChartScale.h>
+#include <Ksl/ChartItem.h>
 
-KSL_BEGIN_PLOT_NAMESPACE
+KSL_BEGIN_NAMESPACE
 
 Chart::Chart(const QString &name, QObject *parent)
     : QObject(parent)
@@ -32,20 +34,21 @@ QString Chart::name() const {
     return m->name;
 }
 
-QList<Scale*>& Chart::scaleList() {
+QList<ChartScale*>& Chart::scaleList() {
     KSL_PUBLIC(Chart);
     return m->scaleList;
 }
 
-const QList<Scale*>& Chart::scaleList() const {
+const QList<ChartScale*>& Chart::scaleList() const {
     KSL_PUBLIC(const Chart);
     return m->scaleList;
 }
 
-void Chart::add(Scale *scale) {
+void Chart::add(ChartScale *scale) {
     KSL_PUBLIC(Chart);
     if (!m->scaleList.contains(scale)) {
         m->scaleList.append(scale);
+        scale->setChart(this);
         emit changed(this);
     }
 }
@@ -56,23 +59,31 @@ void Chart::paint(const QRect &rect, QPainter *painter) {
     painter->save();
     painter->setClipRect(rect);
     painter->fillRect(rect, m->backBrush);
-
+    for (auto scale : m->scaleList) {
+        if (scale->visible()) {
+            scale->paint(rect, painter);
+        }
+    }
     painter->restore();
 }
 
-void Chart::save(const QString &fileName, const QSize &size, const char *format) {
+void Chart::save(const QString &fileName,
+                 const QSize &size, const char *format)
+{
     QImage image(size, QImage::Format_ARGB32);
     QPainter painter(&image);
     paint(QRect(QPoint(0,0),size), &painter);
     image.save(fileName, format);
 }
 
-void Chart::onAppearenceChange(Item *item) {
-
+void Chart::onAppearenceChange(ChartItem *item) {
+    Q_UNUSED(item)
+    emit changed(this);
 }
 
-void Chart::onDataChange(Item *item) {
-
+void Chart::onDataChange(ChartItem *item) {
+    item->scale()->rescale();
+    emit changed(this);
 }
 
-KSL_END_PLOT_NAMESPACE
+KSL_END_NAMESPACE

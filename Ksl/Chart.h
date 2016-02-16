@@ -18,18 +18,18 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_PLOT_CHART_H
-#define KSL_PLOT_CHART_H
+#ifndef KSL_CHART_H
+#define KSL_CHART_H
 
 #include <Ksl/Object.h>
 #include <QObject>
 #include <QPainter>
 
-KSL_BEGIN_PLOT_NAMESPACE
+KSL_BEGIN_NAMESPACE
 
 // forward declaration
-class Scale;
-class Item;
+class ChartScale;
+class ChartItem;
 
 class KSL_EXPORT Chart
     : public QObject
@@ -43,24 +43,30 @@ public:
 
     QString name() const;
 
-    QList<Scale*>& scaleList();
-    const QList<Scale*>& scaleList() const;
+    QList<ChartScale*>& scaleList();
 
-    virtual void add(Scale *scale);
-    inline void add(Scale &scale) { add(&scale); }
+    const QList<ChartScale*>& scaleList() const;
+
+    virtual void add(ChartScale *scale);
+
+    inline void add(ChartScale &scale) { add(&scale); }
 
     virtual void paint(const QRect &rect, QPainter *painter);
-    virtual void save(const QString &fileName, const QSize &size=QSize(500,350), const char *format="png");
+
+    virtual void save(const QString &fileName, const QSize
+                      &size=QSize(500,350), const char *format="png");
 
 signals:
 
     void errorOccured(Chart *self);
+
     void changed(Chart *self);
 
 public slots:
 
-    void onAppearenceChange(Item *item);
-    void onDataChange(Item *item);
+    void onAppearenceChange(ChartItem *item);
+
+    void onDataChange(ChartItem *item);
 
 protected:
 
@@ -70,6 +76,6 @@ protected:
     { }
 };
 
-KSL_END_PLOT_NAMESPACE
+KSL_END_NAMESPACE
 
-#endif // KSL_PLOT_CHART_H
+#endif // KSL_CHART_H

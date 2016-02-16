@@ -18,22 +18,38 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
-#include <iostream>
-using namespace std;
+#ifndef KSL_CHARTLINSCALE_P_H
+#define KSL_CHARTLINSCALE_P_H
 
-#include <Ksl/ChartView.h>
 #include <Ksl/ChartLinscale.h>
-using namespace Ksl;
+#include <Ksl/ChartScale_p.h>
 
-int main(int argc, char *argv[])
+KSL_BEGIN_NAMESPACE
+
+class ChartLinscalePrivate
+    : public ChartScalePrivate
 {
-    QApplication app(argc,argv);
+public:
 
-    ChartLinscale scale;
-    ChartView view;
-    view.chart()->add(scale);
-    view.show();
+    ChartLinscalePrivate(ChartLinscale *publ, const QString &iname)
+        : ChartScalePrivate(publ, iname)
+        , xLowBound(20), xUpBound(20)
+        , yLowBound(20), yUpBound(20)
+    { }
 
-    return app.exec();
-}
+
+    int xLowBound, xUpBound;
+    int yLowBound, yUpBound;
+
+    int chartXmin, chartXmax;
+    int chartYmin, chartYmax;
+    int chartWidth, chartHeight;
+
+    double xMin, xMax;
+    double yMin, yMax;
+    double width, height;
+};
+
+KSL_END_NAMESPACE
+
+#endif // KSL_CHARTLINSCALE_P_H

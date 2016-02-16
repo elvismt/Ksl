@@ -18,22 +18,30 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
-#include <iostream>
-using namespace std;
+#ifndef KSL_CHART_P_H
+#define KSL_CHART_P_H
 
-#include <Ksl/ChartView.h>
-#include <Ksl/ChartLinscale.h>
-using namespace Ksl;
+#include <Ksl/Chart.h>
+#include <QBrush>
 
-int main(int argc, char *argv[])
+KSL_BEGIN_NAMESPACE
+
+class ChartPrivate
+    : public Ksl::ObjectPrivate
 {
-    QApplication app(argc,argv);
+public:
 
-    ChartLinscale scale;
-    ChartView view;
-    view.chart()->add(scale);
-    view.show();
+    ChartPrivate(Chart *publ, const QString &iname)
+        : Ksl::ObjectPrivate(publ)
+        , name(iname)
+        , backBrush(Qt::white)
+    { }
 
-    return app.exec();
-}
+    QString name;
+    QBrush backBrush;
+    QList<ChartScale*> scaleList;
+};
+
+KSL_END_NAMESPACE
+
+#endif // KSL_CHART_P_H

@@ -18,33 +18,60 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_PLOT_CHARTVIEW_H
-#define KSL_PLOT_CHARTVIEW_H
+#ifndef KSL_CHARTITEM_H
+#define KSL_CHARTITEM_H
 
-#include <QWidget>
-#include <Ksl/Plot/Chart.h>
+#include <Ksl/Object.h>
+#include <QObject>
+#include <QPainter>
 
-KSL_BEGIN_PLOT_NAMESPACE
+KSL_BEGIN_NAMESPACE
 
-class KSL_EXPORT ChartView
-    : public QWidget
+// forward declarations
+class Chart;
+class ChartScale;
+
+
+class KSL_EXPORT ChartItem
+    : public QObject
     , public Ksl::Object
 {
     Q_OBJECT
 
 public:
 
-    ChartView(QWidget *parent);
-    ChartView(Chart *chart, QWidget *parent=0);
-    ChartView(const QString &title="Ksl", int width=500, int height=350, QWidget *parent=0);
-
     Chart* chart() const;
+
+    ChartScale* scale() const;
+
+    QString name() const;
+
+    bool visible() const;
+
+    virtual QRect chartRect() const = 0;
+
+    virtual QRectF dataRect() const = 0;
+
+signals:
+
+    void dataChanged(ChartItem *self);
+
+    void appearenceChanged(ChartItem *self);
 
 protected:
 
-    virtual void paintEvent(QPaintEvent *event);
+    friend class ChartScale;
+
+    virtual void paint(QPainter *painter) = 0;
+
+    virtual void setScale(ChartScale *scale);
+
+    ChartItem(Ksl::ObjectPrivate *priv, QObject *parent)
+        : QObject(parent)
+        , Ksl::Object(priv)
+    { }
 };
 
-KSL_END_PLOT_NAMESPACE
+KSL_END_NAMESPACE
 
-#endif // KSL_PLOT_CHARTVIEW_H
+#endif // KSL_CHARTITEM_H

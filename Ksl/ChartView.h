@@ -18,30 +18,35 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_PLOT_CHART_P_H
-#define KSL_PLOT_CHART_P_H
+#ifndef KSL_CHARTVIEW_H
+#define KSL_CHARTVIEW_H
 
-#include <Ksl/Plot/Chart.h>
-#include <QBrush>
+#include <QWidget>
+#include <Ksl/Chart.h>
 
-KSL_BEGIN_PLOT_NAMESPACE
+KSL_BEGIN_NAMESPACE
 
-class ChartPrivate
-    : public Ksl::ObjectPrivate
+class KSL_EXPORT ChartView
+    : public QWidget
+    , public Ksl::Object
 {
+    Q_OBJECT
+
 public:
 
-    ChartPrivate(Chart *publ, const QString &iname)
-        : Ksl::ObjectPrivate(publ)
-        , name(iname)
-        , backBrush(Qt::white)
-    { }
+    ChartView(QWidget *parent);
 
-    QString name;
-    QBrush backBrush;
-    QList<Scale*> scaleList;
+    ChartView(Chart *chart, QWidget *parent=0);
+
+    ChartView(const QString &title="Ksl", int width=500, int height=350, QWidget *parent=0);
+
+    Chart* chart() const;
+
+protected:
+
+    virtual void paintEvent(QPaintEvent *event);
 };
 
-KSL_END_PLOT_NAMESPACE
+KSL_END_NAMESPACE
 
-#endif // KSL_PLOT_CHART_P_H
+#endif // KSL_CHARTVIEW_H

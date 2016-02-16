@@ -25,8 +25,6 @@
 
 #define KSL_BEGIN_NAMESPACE namespace Ksl {
 #define KSL_END_NAMESPACE } // namespace Ksl
-#define KSL_BEGIN_PLOT_NAMESPACE namespace KslPlot {
-#define KSL_END_PLOT_NAMESPACE } // namespace KslPlot
 
 #define KSL_EXPORT
 

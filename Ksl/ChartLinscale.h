@@ -18,36 +18,39 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_PLOT_CHARTVIEW_P_H
-#define KSL_PLOT_CHARTVIEW_P_H
+#ifndef KSL_CHARTLINSCALE_H
+#define KSL_CHARTLINSCALE_H
 
-#include <Ksl/Plot/ChartView.h>
+#include <Ksl/ChartScale.h>
 
-KSL_BEGIN_PLOT_NAMESPACE
+KSL_BEGIN_NAMESPACE
 
-class ChartViewPrivate
-    : public Ksl::ObjectPrivate
+class KSL_EXPORT ChartLinscale
+    : public ChartScale
 {
 public:
 
-    ChartViewPrivate(ChartView *publ, Chart *ichart)
-        : Ksl::ObjectPrivate(publ)
-    {
-        if (ichart) {
-            chart = ichart;
-            ownChart = false;
-        }
-        else {
-            chart = new Chart();
-            ownChart = true;
-        }
-    }
+    ChartLinscale(const QString &name="scale");
 
-    Chart *chart;
-    bool ownChart;
-    QPainter painter;
+    QPoint map(const QPointF &p) const;
+
+    QPointF unmap(const QPoint &p) const;
+
+    QRect chartRect() const;
+
+    QRectF dataRect() const;
+
+    void rescale();
+
+protected:
+
+    void paint(const QRect &rect, QPainter *painter);
+
+    ChartLinscale(Ksl::ObjectPrivate *priv)
+        : ChartScale(priv)
+    { }
 };
 
-KSL_END_PLOT_NAMESPACE
+KSL_END_NAMESPACE
 
-#endif // KSL_PLOT_CHARTVIEW_P_H
+#endif // KSL_CHARTLINSCALE_H

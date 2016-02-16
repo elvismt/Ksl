@@ -18,9 +18,9 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Ksl/Plot/ChartView_p.h>
+#include <Ksl/ChartView_p.h>
 
-KSL_BEGIN_PLOT_NAMESPACE
+KSL_BEGIN_NAMESPACE
 
 ChartView::ChartView(QWidget *parent)
     : QWidget(parent)
@@ -61,4 +61,4 @@ void ChartView::paintEvent(QPaintEvent *event) {
     m->painter.end();
 }
 
-KSL_END_PLOT_NAMESPACE
+KSL_END_NAMESPACE
