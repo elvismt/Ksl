@@ -24,7 +24,7 @@ HEADERS += src/Ksl/Array.h \
            src/Ksl/SeriesPlot_p.h \
     src/Ksl/ChartAxis.h \
     src/Ksl/ChartAxis_p.h
-SOURCES += demos/sinusoidal.cpp \
+SOURCES += demos/scatter.cpp \
            src/Ksl/Chart.cpp \
            src/Ksl/ChartItem.cpp \
            src/Ksl/ChartLinscale.cpp \

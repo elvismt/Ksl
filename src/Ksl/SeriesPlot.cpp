@@ -39,9 +39,11 @@ SeriesPlot::SeriesPlot(const Array<double> &vx,
     switch (scatter) {
     case Line:
         m->pen.setWidth(2);
+        m->antialias = true;
         break;
     case Circles:
         m->pen.setWidth(1);
+        m->antialias = false;
         break;
     }
     setData(vx,vy);

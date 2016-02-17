@@ -37,7 +37,7 @@ ChartLinscale::ChartLinscale(const QString &name)
     for (auto axis : m->axisHash) {
         axis->setScale(this);
     }
-    setAxis("bottom,left");
+    setAxis("bottom,left,top,right");
     rescale();
 }
 
@@ -47,12 +47,12 @@ ChartLinscalePrivate::~ChartLinscalePrivate() {
     }
 }
 
-QHash<QString,ChartAxis*>& ChartLinscale::axisList() {
+QHash<QString,ChartAxis*>& ChartLinscale::axisHash() {
     KSL_PUBLIC(ChartLinscale);
     return m->axisHash;
 }
 
-const QHash<QString,ChartAxis *> &ChartLinscale::axisList() const {
+const QHash<QString,ChartAxis *> &ChartLinscale::axisHash() const {
     KSL_PUBLIC(const ChartLinscale);
     return m->axisHash;
 }

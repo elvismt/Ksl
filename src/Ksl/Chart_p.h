@@ -33,7 +33,12 @@ public:
 
     ChartPrivate(Chart *publ, const QString &iname)
         : Ksl::ObjectPrivate(publ)
+#if defined(Q_OS_WIN32)
         , font("Times New Roman", 12)
+#elif defined(Q_OS_LINUX)
+        // let system decide
+        //, font("FreeMono", 12)
+#endif
         , name(iname)
         , showName(true)
         , nameColor(Qt::black)

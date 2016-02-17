@@ -37,7 +37,7 @@ public:
         , brush(Qt::green)
         , scatter(SeriesPlot::Circles)
         , scattRadius(3)
-        , antialias(false)
+        , antialias(true)
     { }
 
     QPen pen;
