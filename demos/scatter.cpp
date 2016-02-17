@@ -2,14 +2,15 @@
 #include <Ksl/ChartView.h>
 #include <Ksl/ChartLinscale.h>
 #include <Ksl/SeriesPlot.h>
+#include <Ksl/ChartAxis.h>
 using namespace Ksl;
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc,argv);
 
-    auto x = randspace(5000, 1000.0);
-    auto y = randspace(5000, 1000.0);
+    auto x = randspace(50000, 1000.0);
+    auto y = randspace(50000, 1000.0);
     
     SeriesPlot plot(x,y);
     ChartLinscale scale;

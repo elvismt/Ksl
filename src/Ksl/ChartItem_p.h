@@ -36,12 +36,14 @@ public:
         , visible(true)
         , chart(nullptr)
         , scale(nullptr)
+        , rescalable(true)
     { }
 
     QString name;
     bool visible;
     Chart *chart;
     ChartScale *scale;
+    bool rescalable;
 };
 
 KSL_END_NAMESPACE

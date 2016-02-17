@@ -22,6 +22,7 @@
 #define KSL_CHARTLINSCALE_H
 
 #include <Ksl/ChartScale.h>
+#include <Ksl/ChartAxis.h>
 
 KSL_BEGIN_NAMESPACE
 
@@ -31,6 +32,14 @@ class KSL_EXPORT ChartLinscale
 public:
 
     ChartLinscale(const QString &name="scale");
+
+    QHash<QString,ChartAxis*>& axisList();
+
+    const QHash<QString,ChartAxis*>& axisList() const;
+
+    ChartAxis* axis(const QString &name) const;
+
+    void setAxis(const QString &axisSet);
 
     QPoint map(const QPointF &p) const;
 

@@ -18,44 +18,41 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHARTLINSCALE_P_H
-#define KSL_CHARTLINSCALE_P_H
+#ifndef KSL_CHARTAXIS_P_H
+#define KSL_CHARTAXIS_P_H
 
-#include <Ksl/ChartLinscale.h>
-#include <Ksl/ChartScale_p.h>
+#include <Ksl/ChartAxis.h>
+#include <Ksl/ChartItem_p.h>
 
 KSL_BEGIN_NAMESPACE
 
-class ChartLinscalePrivate
-    : public ChartScalePrivate
+class ChartAxisPrivate
+    : public ChartItemPrivate
 {
 public:
 
-    ChartLinscalePrivate(ChartLinscale *publ, const QString &iname)
-        : ChartScalePrivate(publ, iname)
-        , xLowBound(20), xUpBound(20)
-        , yLowBound(20), yUpBound(20)
+    ChartAxisPrivate(ChartAxis *publ, const QString &name)
+        : ChartItemPrivate(publ, name)
+        , pen(Qt::black)
+        , brush(Qt::black)
+        , components(ChartAxis::AllComponents)
+        , antialias(false)
     { }
 
-    ~ChartLinscalePrivate();
+    QPen pen;
+    QBrush brush;
+    ChartAxis::Component components;
+    bool antialias;
+    Qt::Orientation orient;
 
+    double minCoord;
+    double maxCoord;
+    double anchor;
 
-    int xLowBound, xUpBound;
-    int yLowBound, yUpBound;
-
-    int chartXmin, chartXmax;
-    int chartYmin, chartYmax;
-    int chartWidth, chartHeight;
-
-    double xMin, xMax;
-    double yMin, yMax;
-    double width, height;
-
-    QHash<QString,ChartAxis*> axisHash;
-
-    void setupAxis();
+    void paintHorizontal(QPainter *painter);
+    void paintVertical(QPainter *painter);
 };
 
 KSL_END_NAMESPACE
 
-#endif // KSL_CHARTLINSCALE_P_H
+#endif // KSL_CHARTAXIS_P_H

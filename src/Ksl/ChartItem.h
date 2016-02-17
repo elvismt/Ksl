@@ -48,6 +48,8 @@ public:
 
     bool visible() const;
 
+    bool rescalable() const;
+
     virtual QRect chartRect() const = 0;
 
     virtual QRectF dataRect() const = 0;
@@ -57,6 +59,12 @@ signals:
     void dataChanged(ChartItem *self);
 
     void appearenceChanged(ChartItem *self);
+
+public slots:
+
+    void setName(const QString &name);
+
+    void setVisible(bool visible);
 
 protected:
 

@@ -10,6 +10,7 @@ set(Ksl_HDRS
     Ksl/Object.h
     Ksl/Object_p.h
     Ksl/SeriesPlot.h
+    Ksl/ChartAxis.h
 )
 
 set(Ksl_SRCS
@@ -19,6 +20,7 @@ set(Ksl_SRCS
     Ksl/ChartScale.cpp
     Ksl/ChartView.cpp
     Ksl/SeriesPlot.cpp
+    Ksl/ChartAxis.cpp
 )
 
 add_library(Ksl ${Ksl_SRCS})

@@ -44,6 +44,11 @@ bool ChartItem::visible() const {
     return m->visible;
 }
 
+bool ChartItem::rescalable() const {
+    KSL_PUBLIC(const ChartItem);
+    return m->rescalable;
+}
+
 void ChartItem::setScale(ChartScale *scale) {
     KSL_PUBLIC(ChartItem);
     Chart *newChart = scale ? scale->chart() : nullptr;
@@ -63,6 +68,22 @@ void ChartItem::setScale(ChartScale *scale) {
                 newChart, &Chart::onAppearenceChange);
         connect(this, &ChartItem::dataChanged,
                 newChart, &Chart::onDataChange);
+    }
+}
+
+void ChartItem::setName(const QString &name) {
+    KSL_PUBLIC(ChartItem);
+    if (m->name != name) {
+        m->name = name;
+        emit appearenceChanged(this);
+    }
+}
+
+void ChartItem::setVisible(bool visible) {
+    KSL_PUBLIC(ChartItem);
+    if (m->visible != visible) {
+        m->visible = visible;
+        emit appearenceChanged(this);
     }
 }
 
