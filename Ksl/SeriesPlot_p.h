@@ -18,26 +18,42 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
-#include <Ksl/ChartView.h>
-#include <Ksl/ChartLinscale.h>
+#ifndef KSL_SERIESPLOT_P_H
+#define KSL_SERIESPLOT_P_H
+
 #include <Ksl/SeriesPlot.h>
-using namespace Ksl;
+#include <Ksl/ChartItem_p.h>
 
-int main(int argc, char *argv[])
+KSL_BEGIN_NAMESPACE
+
+class SeriesPlotPrivate
+    : public ChartItemPrivate
 {
-    QApplication app(argc,argv);
+public:
 
-    auto x = randspace(2000, 2000.0);
-    auto y = randspace(2000, 2000.0);
-    SeriesPlot plot(x, y);
+    SeriesPlotPrivate(SeriesPlot *publ, const QString &name)
+        : ChartItemPrivate(publ, name)
+        , pen(Qt::blue)
+        , brush(Qt::green)
+        , scatter(SeriesPlot::Circles)
+        , scattRadius(3)
+    { }
 
-    ChartLinscale scale;
-    scale.add(plot);
+    QPen pen;
+    QBrush brush;
+    SeriesPlot::Scatter scatter;
+    int scattRadius;
 
-    ChartView view;
-    view.chart()->add(scale);
-    view.show();
+    Array vx, vy;
+    double xMin, xMax;
+    double yMin, yMax;
+    int ptNum;
 
-    return app.exec();
-}
+    void checkRanges();
+    void paintLine(QPainter *painter);
+    void paintCircles(QPainter *painter);
+};
+
+KSL_END_NAMESPACE
+
+#endif // KSL_SERIESPLOT_P_H

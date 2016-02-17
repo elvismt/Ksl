@@ -86,6 +86,12 @@ public:
         , m_view(true)
     { }
 
+    Array1D(QVector<Data> &qvec)
+        : m_data(qvec.data())
+        , m_size(qvec.size())
+        , m_view(true)
+    { }
+
     ~Array1D() {
         if (m_data && !m_view) {
             delete[] m_data;

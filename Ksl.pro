@@ -23,7 +23,9 @@ HEADERS += \
     Ksl/ChartItem.h \
     Ksl/ChartItem_p.h \
     Ksl/ChartLinscale.h \
-    Ksl/ChartLinscale_p.h
+    Ksl/ChartLinscale_p.h \
+    Ksl/SeriesPlot.h \
+    Ksl/SeriesPlot_p.h
 
 SOURCES += \
     Ksl/Chart.cpp \
@@ -31,4 +33,5 @@ SOURCES += \
     Ksl/main.cpp \
     Ksl/ChartScale.cpp \
     Ksl/ChartItem.cpp \
-    Ksl/ChartLinscale.cpp
+    Ksl/ChartLinscale.cpp \
+    Ksl/SeriesPlot.cpp
