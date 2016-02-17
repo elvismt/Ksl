@@ -33,13 +33,13 @@ public:
 
     ChartLinscale(const QString &name="scale");
 
-    QHash<QString,ChartAxis*>& axisHash();
+    QHash<QString,ChartAxis*>& axis();
 
-    const QHash<QString,ChartAxis*>& axisHash() const;
+    const QHash<QString,ChartAxis*>& axis() const;
 
     ChartAxis* axis(const QString &name) const;
 
-    void setAxis(const QString &axisSet);
+    void showAxis(const QString &axisSet);
 
     QPoint map(const QPointF &p) const;
 

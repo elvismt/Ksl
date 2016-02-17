@@ -38,7 +38,7 @@ public:
         , components(ChartAxis::AllComponents)
         , antialias(false)
     {
-        components &= ~ChartAxis::Arrow;
+        // components &= ~ChartAxis::Arrow;
     }
 
     QPen pen;

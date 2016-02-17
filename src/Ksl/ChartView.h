@@ -38,13 +38,18 @@ public:
 
     ChartView(Chart *chart, QWidget *parent=0);
 
-    ChartView(const QString &title="Ksl", int width=600, int height=450, QWidget *parent=0);
+    ChartView(const QString &title="Ksl", int width=500, int height=350, QWidget *parent=0);
 
     Chart* chart() const;
 
 protected:
 
     virtual void paintEvent(QPaintEvent *event);
+    
+    ChartView(Ksl::ObjectPrivate *priv, QWidget *parent)
+        : QWidget(parent)
+        , Ksl::Object(priv)
+    { }
 };
 
 KSL_END_NAMESPACE

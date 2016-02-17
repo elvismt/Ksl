@@ -28,8 +28,14 @@
 
 KSL_BEGIN_NAMESPACE
 
+// All array types in Ksl are specializations
+// this class template
+template <size_t D, typename T=double> class Array{};
+
+
+// This is the 1D array type
 template <typename T>
-class Array
+class Array<1,T>
 {
 public:
 
@@ -53,146 +59,152 @@ public:
     Array& operator= (const Array &that);
     Array& operator= (Array &&that);
 
-    void alloc(size_type n);
+    size_type size() const { return m_data ? m_data->size : 0; }
 
-    size_type size() const { return m_size; }
+    reference operator[] (size_type index) { return m_data->data[index]; }
+    const_reference operator[] (size_type index) const { return m_data->data[index]; }
 
-    reference operator[] (size_type index) { return m_data[index]; }
-    const_reference operator[] (size_type index) const { return m_data[index]; }
-
-    iterator begin() { return m_data; }
-    iterator end() { return m_data + m_size; }
-
-    const_iterator begin() const { return m_data; }
-    const_iterator end() const { return m_data + m_size; }
+    iterator begin() { return m_data ? m_data->data : nullptr; }
+    iterator end() { return m_data ? m_data->data + m_data->size : nullptr; }
+    const_iterator begin() const { return m_data ? m_data->data : nullptr; }
+    const_iterator end() const { return m_data ? m_data->data + m_data->size : nullptr; }
 
 
 private:
 
-    pointer m_data;
-    size_type m_size;
-    bool m_view;
+    struct SharedData {
+        pointer data;
+        size_type size;
+        size_type refc;
+    };
 
-    void _clean();
+    SharedData *m_data;
+    inline void _free();
+    inline void _alloc(size_type n);
 };
 
-template <typename T>
-Array<T>::Array(size_type n)
-    : m_data(n>0 ? new data_type[n] : nullptr)
-    , m_size(n)
-    , m_view(false)
-{ }
 
-template <typename T>
-Array<T>::Array(size_type n, const data_type &value)
-    : m_data(n>0 ? new data_type[n] : nullptr)
-    , m_size(n)
-    , m_view(false)
+template <typename T> inline
+void Array<1,T>::_free()
 {
-    for (auto &elem : *this)
-        elem = value;
-}
-
-
-template <typename T>
-Array<T>::Array(const Array &that)
-    : m_data(that.m_data)
-    , m_size(that.m_size)
-    , m_view(true)
-{ }
-
-template <typename T>
-Array<T>::Array(Array &&that)
-    : m_data(that.m_data)
-    , m_size(that.m_size)
-    , m_view(true)
-{
-    if (!that.m_view) {
-        that.m_view = true;
-        this->m_view = false;
+    if (m_data) {
+        m_data->refc -= 1;
+        if (m_data->refc == 0) {
+            delete[] m_data->data;
+            delete m_data;
+        }
+        m_data = nullptr;
     }
 }
 
-template <typename T>
-Array<T>::~Array()
+
+template <typename T> inline
+void Array<1,T>::_alloc(size_type n)
 {
-    _clean();
+    m_data = new SharedData();
+    m_data->data = new data_type[n];
+    m_data->size = n;
+    m_data->refc = 1;
 }
 
+
 template <typename T>
-Array<T>& Array<T>::operator= (const Array &that)
+Array<1,T>::Array(size_type n)
 {
-    if (m_data == that.m_data) {
-        return *this;
+    if (n > 0) {
+        _alloc(n);
     }
-    _clean();
-    m_data = that.m_data;
-    m_size = that.m_size;
-    m_view = true;
+    else {
+        m_data = nullptr;
+    }
+}
+
+
+template <typename T>
+Array<1,T>::Array(size_type n, const data_type &value)
+{
+    if (n > 0) {
+        _alloc(n);
+        for (auto &elem : *this) {
+            elem = value;
+        }
+    }
+    else {
+        m_data = nullptr;
+    }
+}
+
+
+template <typename T>
+Array<1,T>::Array(const Array &that)
+{
+    if (that.m_data) {
+        m_data = that.m_data;
+        if (m_data) {
+            m_data->refc += 1;
+        }
+    }
+    else {
+        m_data = nullptr;
+    }
+}
+
+
+template <typename T>
+Array<1,T>::Array(Array &&that)
+{
+    if (that.m_data) {
+        m_data = that.m_data;
+        if (m_data) {
+            m_data->refc += 1;
+        }
+    }
+    else {
+        m_data = nullptr;
+    }
+}
+
+
+template <typename T>
+Array<1,T>::~Array()
+{
+    _free();
+}
+
+
+template <typename T>
+Array<1,T>& Array<1,T>::operator= (const Array<1,T> &that)
+{
+    if (m_data != that.m_data) {
+        _free();
+        m_data = that.m_data;
+        if (m_data) {
+            m_data->refc += 1;
+        }
+    }
     return *this;
 }
 
+
 template <typename T>
-Array<T>& Array<T>::operator= (Array &&that)
+Array<1,T>& Array<1,T>::operator= (Array<1,T> &&that)
 {
-    if (m_data == that.m_data) {
-        if (!that.m_view) {
-            that.m_view = true;
-            this->m_view = false;
+    if (m_data != that.m_data) {
+        _free();
+        m_data = that.m_data;
+        if (m_data) {
+            m_data->refc += 1;
         }
-        return *this;
-    }
-    _clean();
-    m_data = that.m_data;
-    m_size = that.m_size;
-    m_view = true;
-    if (!that.m_view) {
-        that.m_view = true;
-        this->m_view = false;
     }
     return *this;
 }
 
-template <typename T>
-void Array<T>::_clean()
-{
-    if (m_data && !m_view) {
-        delete[] m_data;
-    }
-    m_data = nullptr;
-    m_size = 0;
-    m_view = false;
-}
-
-template <typename T>
-void Array<T>::alloc(size_type n)
-{
-    if (m_size != n || m_view) {
-        _clean();
-        if (n > 0) {
-            m_data = new data_type[n];
-            m_size = n;
-            m_view = false;
-        }
-    }
-}
 
 template <typename T> inline
-Array<T> copy(const Array<T> &array)
+Array<1,T> linspace(T min, T max, T step=T(1))
 {
-    Array<T> ret(array.size());
-    auto iter = array.begin();
-    for (auto &elem : ret) {
-        elem = *iter++;
-    }
-    return std::move(ret);
-}
-
-template <typename T> inline
-Array<T> linspace(T min, T max, T step=T(1))
-{
-    Array<T> ret(int((max-min)/step)+1);
-    int k = 0;
+    Array<1,T> ret(int((max-min)/step)+1);
+    size_t k = 0;
     for (auto &elem : ret) {
         elem = min + k*step;
         ++k;
@@ -200,20 +212,22 @@ Array<T> linspace(T min, T max, T step=T(1))
     return std::move(ret);
 }
 
+
 template <typename T> inline
-Array<T> randspace(int size, T max=T(1))
+Array<1,T> randspace(size_t size, T max=T(1))
 {
-    Array<T> array(size);
-    for (auto &elem : array) {
+    Array<1,T> ret(size);
+    for (auto &elem : ret) {
         elem = max * T(rand())/RAND_MAX;
     }
-    return std::move(array);
+    return std::move(ret);
 }
 
+
 template <typename Func, typename T> inline
-Array<T> applyed(Func func, const Array<T> &array)
+Array<1,T> apply(Func func, const Array<1,T> &array)
 {
-    Array<T> ret(array.size());
+    Array<1,T> ret(array.size());
     auto iter = array.begin();
     for (auto &elem : ret) {
         elem = func(*iter++);
@@ -221,8 +235,21 @@ Array<T> applyed(Func func, const Array<T> &array)
     return std::move(ret);
 }
 
+
 template <typename T> inline
-std::ostream& operator << (std::ostream &out, const Array<T> &array)
+Array<1,T> copy(const Array<1,T> &array)
+{
+    Array<1,T> ret(array.size());
+    auto iter = array.begin();
+    for (auto &elem : ret) {
+        elem = *iter++;
+    }
+    return std::move(ret);
+}
+
+
+template <typename T> inline
+std::ostream& operator << (std::ostream &out, const Array<1,T> &array)
 {
     out << "[ ";
     for (size_t k=0; k<array.size()-1; ++k) {
@@ -233,7 +260,7 @@ std::ostream& operator << (std::ostream &out, const Array<T> &array)
 }
 
 template <typename T> inline
-QTextStream& operator << (QTextStream &out, const Array<T> &array)
+QTextStream& operator << (QTextStream &out, const Array<1,T> &array)
 {
     out << "[ ";
     for (size_t k=0; k<array.size()-1; ++k) {

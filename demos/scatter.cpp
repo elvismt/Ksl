@@ -9,8 +9,8 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc,argv);
 
-    auto x = randspace(5000, 1000.0);
-    auto y = randspace(5000, 1000.0);
+    auto x = randspace(2000, 1000.0);
+    auto y = randspace(2000, 1000.0);
     
     SeriesPlot plot(x,y);
     ChartLinscale scale;

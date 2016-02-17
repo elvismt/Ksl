@@ -23,8 +23,8 @@
 
 KSL_BEGIN_NAMESPACE
 
-SeriesPlot::SeriesPlot(const Array<double> &vx,
-                       const Array<double> &vy,
+SeriesPlot::SeriesPlot(const Array<1> &vx,
+                       const Array<1> &vy,
                        Scatter scatter,
                        const QColor &stroke,
                        const QColor &fill,
@@ -50,7 +50,7 @@ SeriesPlot::SeriesPlot(const Array<double> &vx,
 }
 
 
-void SeriesPlot::setData(const Array<double> &vx, const Array<double> &vy) {
+void SeriesPlot::setData(const Array<1> &vx, const Array<1> &vy) {
     KSL_PUBLIC(SeriesPlot);
     m->vx = vx;
     m->vy = vy;
@@ -75,7 +75,9 @@ void SeriesPlot::paint(QPainter *painter) {
     if (m->ptNum == 0) {
         return;
     }
-    painter->setRenderHint(QPainter::Antialiasing, m->antialias);
+    painter->setRenderHint(
+        QPainter::Antialiasing,
+        m->antialias);
     switch (m->scatter) {
     case Line:
         m->paintLine(painter);

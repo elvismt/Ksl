@@ -37,9 +37,10 @@ ChartLinscale::ChartLinscale(const QString &name)
     for (auto axis : m->axisHash) {
         axis->setScale(this);
     }
-    setAxis("bottom,left,top,right");
+    showAxis("bottom,left");
     rescale();
 }
+
 
 ChartLinscalePrivate::~ChartLinscalePrivate() {
     for (auto axis : axisHash) {
@@ -47,15 +48,18 @@ ChartLinscalePrivate::~ChartLinscalePrivate() {
     }
 }
 
-QHash<QString,ChartAxis*>& ChartLinscale::axisHash() {
+
+QHash<QString,ChartAxis*>& ChartLinscale::axis() {
     KSL_PUBLIC(ChartLinscale);
     return m->axisHash;
 }
 
-const QHash<QString,ChartAxis *> &ChartLinscale::axisHash() const {
+
+const QHash<QString,ChartAxis*>& ChartLinscale::axis() const {
     KSL_PUBLIC(const ChartLinscale);
     return m->axisHash;
 }
+
 
 ChartAxis* ChartLinscale::axis(const QString &name) const {
     KSL_PUBLIC(const ChartLinscale);
@@ -63,6 +67,7 @@ ChartAxis* ChartLinscale::axis(const QString &name) const {
         return m->axisHash[name];
     return nullptr;
 }
+
 
 QPoint ChartLinscale::map(const QPointF &p) const {
     KSL_PUBLIC(const ChartLinscale);
@@ -77,6 +82,7 @@ QPoint ChartLinscale::map(const QPointF &p) const {
     return ret;
 }
 
+
 QPointF ChartLinscale::unmap(const QPoint &p) const {
     KSL_PUBLIC(const ChartLinscale);
     QPointF ret;
@@ -90,17 +96,20 @@ QPointF ChartLinscale::unmap(const QPoint &p) const {
     return ret;
 }
 
+
 QRect ChartLinscale::chartRect() const {
     KSL_PUBLIC(const ChartLinscale);
     return QRect(m->chartXmin, m->chartYmin,
                  m->chartWidth, m->chartHeight);
 }
 
+
 QRectF ChartLinscale::dataRect() const {
     KSL_PUBLIC(const ChartLinscale);
     return QRect(m->xMin, m->yMin,
                  m->width, m->height);
 }
+
 
 void ChartLinscale::rescale() {
     KSL_PUBLIC(ChartLinscale);
@@ -160,6 +169,7 @@ void ChartLinscale::rescale() {
     m->height += 2.0*bound;
 }
 
+
 void ChartLinscale::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(ChartLinscale);
     if (!qIsFinite(m->width) || ! qIsFinite(m->height)) {
@@ -188,6 +198,7 @@ void ChartLinscale::paint(const QRect &rect, QPainter *painter) {
     }
 }
 
+
 void ChartLinscalePrivate::setupAxis() {
     ChartAxis *axis;
 
@@ -210,7 +221,8 @@ void ChartLinscalePrivate::setupAxis() {
     axis->setEnds(yMin, yMax, 0.0);
 }
 
-void ChartLinscale::setAxis(const QString &axisSet) {
+
+void ChartLinscale::showAxis(const QString &axisSet) {
     KSL_PUBLIC(ChartLinscale);
     m->axisHash["bottom"]->setVisible(axisSet.contains("bottom", Qt::CaseInsensitive));
     m->axisHash["top"]->setVisible(axisSet.contains("top", Qt::CaseInsensitive));
