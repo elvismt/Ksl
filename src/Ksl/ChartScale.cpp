@@ -50,6 +50,9 @@ const QList<ChartItem*>& ChartScale::itemList() const {
 
 void ChartScale::add(ChartItem *item) {
     KSL_PUBLIC(ChartScale);
+    if (!item) {
+        return;
+    }
     if (!m->itemList.contains(item)) {
         m->itemList.append(item);
         item->setScale(this);

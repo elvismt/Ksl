@@ -23,8 +23,8 @@
 
 KSL_BEGIN_NAMESPACE
 
-SeriesPlot::SeriesPlot(const Array<1> &vx,
-                       const Array<1> &vy,
+SeriesPlot::SeriesPlot(const Array<double> &vx,
+                       const Array<double> &vy,
                        Scatter scatter,
                        const QColor &stroke,
                        const QColor &fill,
@@ -48,7 +48,7 @@ SeriesPlot::SeriesPlot(const Array<1> &vx,
 }
 
 
-void SeriesPlot::setData(const Array<1> &vx, const Array<1> &vy) {
+void SeriesPlot::setData(const Array<double> &vx, const Array<double> &vy) {
     KSL_PUBLIC(SeriesPlot);
     m->vx = vx;
     m->vy = vy;

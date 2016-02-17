@@ -54,6 +54,7 @@ void Chart::add(ChartScale *scale) {
 void Chart::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(Chart);
     painter->save();
+    painter->setFont(m->font);
     painter->setClipRect(rect);
     if (m->paintBack) {
         painter->fillRect(rect, m->backBrush);

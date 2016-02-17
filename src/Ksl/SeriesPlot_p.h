@@ -46,7 +46,7 @@ public:
     int scattRadius;
     bool antialias;
 
-    Array<1> vx, vy;
+    Array<double> vx, vy;
     double xMin, xMax;
     double yMin, yMax;
     int ptNum;

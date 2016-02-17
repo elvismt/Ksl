@@ -45,14 +45,14 @@ public:
     )
 
 
-    SeriesPlot(const Array<1> &vx, const Array<1> &vy,
+    SeriesPlot(const Array<double> &vx, const Array<double> &vy,
                Scatter scatter=Circles,
                const QColor &stroke=Qt::blue,
                const QColor &fill=Qt::green,
                const QString &name="series",
                QObject *parent=0);
 
-    void setData(const Array<1> &vx, const Array<1> &vy);
+    void setData(const Array<double> &vx, const Array<double> &vy);
 
     virtual QRect chartRect() const;
 

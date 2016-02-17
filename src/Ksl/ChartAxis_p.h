@@ -37,7 +37,9 @@ public:
         , brush(Qt::black)
         , components(ChartAxis::AllComponents)
         , antialias(false)
-    { }
+    {
+        components &= ~ChartAxis::Arrow;
+    }
 
     QPen pen;
     QBrush brush;

@@ -31,7 +31,6 @@ ChartAxis::ChartAxis(Qt::Orientation orient,
     KSL_PUBLIC(ChartAxis);
     m->orient = orient;
     m->rescalable = false;
-    m->pen.setWidthF(1.5);
 }
 
 void ChartAxis::setOrientation(Qt::Orientation orient) {

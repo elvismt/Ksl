@@ -33,6 +33,7 @@ public:
 
     ChartPrivate(Chart *publ, const QString &iname)
         : Ksl::ObjectPrivate(publ)
+        , font("Times New Roman", 12)
         , name(iname)
         , showName(true)
         , nameColor(Qt::black)
@@ -40,6 +41,7 @@ public:
         , paintBack(true)
     { }
 
+    QFont font;
     QString name;
     bool showName;
     QColor nameColor;
