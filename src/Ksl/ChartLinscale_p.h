@@ -33,11 +33,15 @@ public:
 
     ChartLinscalePrivate(ChartLinscale *publ, const QString &iname)
         : ChartScalePrivate(publ, iname)
+        , frameColor(Qt::black)
+        , showFrame(true)
         , xLowBound(20), xUpBound(20)
         , yLowBound(20), yUpBound(20)
     { }
 
 
+    QColor frameColor;
+    bool showFrame;
     int xLowBound, xUpBound;
     int yLowBound, yUpBound;
 

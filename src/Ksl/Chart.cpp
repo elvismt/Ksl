@@ -29,11 +29,6 @@ Chart::Chart(const QString &name, QObject *parent)
     , Ksl::Object(new ChartPrivate(this,name))
 { }
 
-QString Chart::name() const {
-    KSL_PUBLIC(Chart);
-    return m->name;
-}
-
 QList<ChartScale*>& Chart::scaleList() {
     KSL_PUBLIC(Chart);
     return m->scaleList;
@@ -46,6 +41,9 @@ const QList<ChartScale*>& Chart::scaleList() const {
 
 void Chart::add(ChartScale *scale) {
     KSL_PUBLIC(Chart);
+    if (!scale) {
+        return;
+    }
     if (!m->scaleList.contains(scale)) {
         m->scaleList.append(scale);
         scale->setChart(this);
@@ -55,14 +53,24 @@ void Chart::add(ChartScale *scale) {
 
 void Chart::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(Chart);
-
     painter->save();
     painter->setClipRect(rect);
-    painter->fillRect(rect, m->backBrush);
+    if (m->paintBack) {
+        painter->fillRect(rect, m->backBrush);
+    }
     for (auto scale : m->scaleList) {
         if (scale->visible()) {
             scale->paint(rect, painter);
         }
+    }
+    if (m->showName) {
+        painter->setPen(QPen(m->nameColor));
+        QFontMetrics fm = painter->fontMetrics();
+        painter->drawText(
+            rect.center().x() - fm.width(m->name)/2,
+            fm.height(),
+            m->name
+        );
     }
     painter->restore();
 }
@@ -84,6 +92,45 @@ void Chart::onAppearenceChange(ChartItem *item) {
 void Chart::onDataChange(ChartItem *item) {
     item->scale()->rescale();
     emit changed(this);
+}
+
+QString Chart::name() const {
+    KSL_PUBLIC(const Chart);
+    return m->name;
+}
+
+bool Chart::showName() const {
+    KSL_PUBLIC(const Chart);
+    return m->showName;
+}
+
+QColor Chart::nameColor() const {
+    KSL_PUBLIC(const Chart);
+    return m->nameColor;
+}
+
+void Chart::setName(const QString &name) {
+    KSL_PUBLIC(Chart);
+    if (m->name != name) {
+        m->name = name;
+        emit changed(this);
+    }
+}
+
+void Chart::setShowName(bool showName) {
+    KSL_PUBLIC(Chart);
+    if (m->showName != showName) {
+        m->showName = showName;
+        emit changed(this);
+    }
+}
+
+void Chart::setNameColor(const QColor &color) {
+    KSL_PUBLIC(Chart);
+    if (m->nameColor != color) {
+        m->nameColor = color;
+        emit changed(this);
+    }
 }
 
 KSL_END_NAMESPACE

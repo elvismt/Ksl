@@ -37,14 +37,16 @@ public:
         , brush(Qt::green)
         , scatter(SeriesPlot::Circles)
         , scattRadius(3)
+        , antialias(true)
     { }
 
     QPen pen;
     QBrush brush;
     SeriesPlot::Scatter scatter;
     int scattRadius;
+    bool antialias;
 
-    Array vx, vy;
+    Array<1> vx, vy;
     double xMin, xMax;
     double yMin, yMax;
     int ptNum;

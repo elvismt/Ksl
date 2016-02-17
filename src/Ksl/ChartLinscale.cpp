@@ -20,6 +20,7 @@
 
 #include <Ksl/ChartLinscale_p.h>
 #include <Ksl/ChartItem.h>
+#include <Ksl/Chart.h>
 
 KSL_BEGIN_NAMESPACE
 
@@ -73,6 +74,8 @@ void ChartLinscale::rescale() {
         m->xMax = 1.0;
         m->yMin = 0.0;
         m->yMax = 1.0;
+        m->width = 1.0;
+        m->height = 1.0;
         return;
     }
 
@@ -110,6 +113,12 @@ void ChartLinscale::rescale() {
 
 void ChartLinscale::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(ChartLinscale);
+    if (!qIsFinite(m->width) || ! qIsFinite(m->height)) {
+        if (m->chart) {
+            emit m->chart->errorOccured(m->chart);
+        }
+        return;
+    }
     m->chartXmin = rect.left() + m->xLowBound;
     m->chartXmax = rect.right() - m->xUpBound;
     m->chartWidth = m->chartXmax - m->chartXmin;
@@ -117,9 +126,10 @@ void ChartLinscale::paint(const QRect &rect, QPainter *painter) {
     m->chartYmax = rect.bottom() - m->yUpBound;
     m->chartHeight = m->chartYmax - m->chartYmin;
 
-    painter->setPen(QPen(Qt::black));
-    painter->drawRect(chartRect());
-
+    if (m->showFrame) {
+        painter->setPen(QPen(m->frameColor));
+        painter->drawRect(chartRect());
+    }
     painter->save();
     painter->setClipRect(chartRect());
     ChartScale::paint(rect, painter);

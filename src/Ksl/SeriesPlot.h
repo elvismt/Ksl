@@ -22,7 +22,7 @@
 #define KSL_SERIESPLOT_H
 
 #include <Ksl/ChartItem.h>
-#include <Ksl/Array1D.h>
+#include <Ksl/Array.h>
 #include <QPen>
 #include <QBrush>
 
@@ -45,14 +45,14 @@ public:
     )
 
 
-    SeriesPlot(const Array &vx, const Array &vy,
+    SeriesPlot(const Array<1> &vx, const Array<1> &vy,
                Scatter scatter=Circles,
                const QColor &stroke=Qt::blue,
                const QColor &fill=Qt::green,
                const QString &name="series",
                QObject *parent=0);
 
-    void setData(const Array &vx, const Array &vy);
+    void setData(const Array<1> &vx, const Array<1> &vy);
 
     virtual QRect chartRect() const;
 

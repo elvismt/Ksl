@@ -43,6 +43,10 @@ public:
 
     QString name() const;
 
+    bool showName() const;
+
+    QColor nameColor() const;
+
     QList<ChartScale*>& scaleList();
 
     const QList<ChartScale*>& scaleList() const;
@@ -63,6 +67,12 @@ signals:
     void changed(Chart *self);
 
 public slots:
+
+    void setName(const QString &name);
+
+    void setShowName(bool showName);
+
+    void setNameColor(const QColor &color);
 
     void onAppearenceChange(ChartItem *item);
 
