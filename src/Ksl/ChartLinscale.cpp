@@ -29,11 +29,11 @@ ChartLinscale::ChartLinscale(const QString &name)
 {
     KSL_PUBLIC(ChartLinscale);
     m->axisHash["bottom"] = new ChartAxis(Qt::Horizontal, "BottomAxis");
-    m->axisHash["top"] = new ChartAxis(Qt::Horizontal, "TopAxis");
-    m->axisHash["left"] = new ChartAxis(Qt::Vertical, "LeftAxis");
-    m->axisHash["right"] = new ChartAxis(Qt::Vertical, "RightAxis");
-    m->axisHash["x"] = new ChartAxis(Qt::Horizontal, "X_Axis");
-    m->axisHash["y"] = new ChartAxis(Qt::Vertical, "Y_Axis");
+    m->axisHash["top"]    = new ChartAxis(Qt::Horizontal, "TopAxis");
+    m->axisHash["left"]   = new ChartAxis(Qt::Vertical,   "LeftAxis");
+    m->axisHash["right"]  = new ChartAxis(Qt::Vertical,   "RightAxis");
+    m->axisHash["x"]      = new ChartAxis(Qt::Horizontal, "X_Axis");
+    m->axisHash["y"]      = new ChartAxis(Qt::Vertical,   "Y_Axis");
     for (auto axis : m->axisHash) {
         axis->setScale(this);
     }
@@ -172,7 +172,9 @@ void ChartLinscale::rescale() {
 
 void ChartLinscale::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(ChartLinscale);
-    if (!qIsFinite(m->width) || ! qIsFinite(m->height)) {
+    if (!qIsFinite(m->width) || ! qIsFinite(m->height) ||
+        m->width==0 || m->height==0)
+    {
         if (m->chart) {
             emit m->chart->errorOccured(m->chart);
         }

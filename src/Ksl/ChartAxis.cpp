@@ -31,8 +31,8 @@ ChartAxis::ChartAxis(Qt::Orientation orient,
     KSL_PUBLIC(ChartAxis);
     m->orient = orient;
     m->rescalable = false;
-    m->pen.setWidth(2);
-    m->antialias = true;
+    //m->pen.setWidth(2);
+    m->antialias = false;
 }
 
 void ChartAxis::setOrientation(Qt::Orientation orient) {
@@ -93,8 +93,8 @@ void ChartAxisPrivate::paintHorizontal(QPainter *painter) {
     if (components & ChartAxis::Arrow) {
         QPainterPath path;
         path.moveTo(xMax, y);
-        path.lineTo(xMax-6, y+4);
-        path.lineTo(xMax-6, y-4);
+        path.lineTo(xMax-8, y+3);
+        path.lineTo(xMax-8, y-3);
         path.closeSubpath();
         painter->setBrush(QBrush(pen.color()));
         painter->drawPath(path);
@@ -116,8 +116,8 @@ void ChartAxisPrivate::paintVertical(QPainter *painter) {
     if (components & ChartAxis::Arrow) {
         QPainterPath path;
         path.moveTo(x, yMax);
-        path.lineTo(x-4, yMax+6);
-        path.lineTo(x+4, yMax+6);
+        path.lineTo(x-3, yMax+8);
+        path.lineTo(x+3, yMax+8);
         path.closeSubpath();
         painter->setBrush(QBrush(pen.color()));
         painter->drawPath(path);

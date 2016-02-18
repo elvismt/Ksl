@@ -14,6 +14,7 @@ set(Ksl_HDRS
 )
 
 set(Ksl_SRCS
+    Ksl/Math.cpp
     Ksl/Chart.cpp
     Ksl/ChartItem.cpp
     Ksl/ChartLinscale.cpp
@@ -23,5 +24,5 @@ set(Ksl_SRCS
     Ksl/ChartAxis.cpp
 )
 
-add_library(Ksl ${Ksl_SRCS})
+add_library(Ksl SHARED ${Ksl_SRCS})
 target_link_libraries(Ksl Qt5::Widgets)
