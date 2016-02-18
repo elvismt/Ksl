@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     ChartLinscale scale;
     scale.add(plot);
 
-    ChartView view;
+    ChartView view("2000 Scattered dots");
     view.chart()->add(scale);
     view.show();
 

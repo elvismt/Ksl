@@ -43,9 +43,15 @@ ChartView::ChartView(const QString &title, int width, int height, QWidget *paren
     , Ksl::Object(new ChartViewPrivate(this, nullptr))
 {
     setWindowTitle(title);
+    chart()->setName(title);
     resize(width,height);
     setMinimumSize(200,200);
     setAutoFillBackground(false);
+}
+
+ChartViewPrivate::~ChartViewPrivate() {
+    if (ownChart)
+        delete chart;
 }
 
 Chart* ChartView::chart() const {

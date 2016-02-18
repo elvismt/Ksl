@@ -36,8 +36,7 @@ public:
 #if defined(Q_OS_WIN32)
         , font("Times New Roman", 13)
 #elif defined(Q_OS_LINUX)
-        // let system decide
-        //, font("FreeMono", 12)
+        , font("FreeMono", 13)
 #endif
         , name(iname)
         , showName(true)

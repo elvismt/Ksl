@@ -43,6 +43,8 @@ public:
         }
     }
 
+    ~ChartViewPrivate();
+
     Chart *chart;
     bool ownChart;
     QPainter painter;

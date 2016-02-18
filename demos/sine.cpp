@@ -9,15 +9,13 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc,argv);
 
-    auto x = linspace(0.0, 6.29, 0.1);
-    SeriesPlot splot(x, apply(Math::sin, x), SeriesPlot::Line, Qt::blue);
-    SeriesPlot cplot(x, apply(Math::cos, x), SeriesPlot::Line, Qt::red);
+    auto x = linspace(0.0, 12.58, 0.3);
+    SeriesPlot plot(x, apply(Math::sin, x), SeriesPlot::Line, Qt::blue);
 
     ChartLinscale scale;
-    scale.add(splot);
-    scale.add(cplot);
+    scale.add(plot);
 
-    ChartView view;
+    ChartView view("Sin(X) function");
     view.chart()->add(scale);
     view.show();
 

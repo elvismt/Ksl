@@ -5,6 +5,7 @@ INCLUDEPATH += ./ src/
 CONFIG += c++11
 QT += widgets
 
+
 # Input
 HEADERS += \
     src/Ksl/Array.h \
@@ -27,8 +28,9 @@ HEADERS += \
     src/Ksl/ChartAxis_p.h \
     src/Ksl/Math.h
 
+
 SOURCES += \
-    demos/scatter.cpp \
+    demos/sine.cpp \
     src/Ksl/Chart.cpp \
     src/Ksl/ChartItem.cpp \
     src/Ksl/ChartLinscale.cpp \
