@@ -21,9 +21,9 @@ is not an official KDE component.
 
 The figures below ware created with KSL's chart widget:
 
-   * Sine function
+   * Cossine function
 
-![](https://github.com/elvismt/Ksl/blob/master/demos/sine.png)
+![](https://github.com/elvismt/Ksl/blob/master/demos/cossine.png)
 
    * Scattered data points
 
