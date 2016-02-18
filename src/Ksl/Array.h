@@ -21,7 +21,7 @@
 #ifndef KSL_ARRAY_H
 #define KSL_ARRAY_H
 
-#include <Ksl/Global.h>
+#include <Ksl/Math.h>
 #include <QTextStream>
 #include <QVector>
 #include <ostream>
@@ -260,6 +260,18 @@ QTextStream& operator << (QTextStream &out, const Array<1,T> &array)
     out << array[array.size()-1] << " ]";
     return out;
 }
+
+
+// Aplication of common functions to arrays, all element by element
+template <typename T> inline Array<1,T> sin(const Array<1,T> &array) { return std::move(apply(Math::sin, array)); }
+template <typename T> inline Array<1,T> cos(const Array<1,T> &array) { return std::move(apply(Math::cos, array)); }
+template <typename T> inline Array<1,T> tan(const Array<1,T> &array) { return std::move(apply(Math::tan, array)); }
+template <typename T> inline Array<1,T> asin(const Array<1,T> &array) { return std::move(apply(Math::asin, array)); }
+template <typename T> inline Array<1,T> acos(const Array<1,T> &array) { return std::move(apply(Math::acos, array)); }
+template <typename T> inline Array<1,T> atan(const Array<1,T> &array) { return std::move(apply(Math::atan, array)); }
+template <typename T> inline Array<1,T> log(const Array<1,T> &array) { return std::move(apply(Math::log, array)); }
+template <typename T> inline Array<1,T> log10(const Array<1,T> &array) { return std::move(apply(Math::log10, array)); }
+template <typename T> inline Array<1,T> exp(const Array<1,T> &array) { return std::move(apply(Math::exp, array)); }
 
 
 // This is the 2D (Matrix) array type

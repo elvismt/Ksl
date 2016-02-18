@@ -9,12 +9,8 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc,argv);
 
-    auto x = randspace(2000, 1000.0);
-    auto y = randspace(2000, 1000.0);
-    
-    SeriesPlot plot(x,y);
     ChartLinscale scale;
-    scale.add(plot);
+    scale.add(new SeriesPlot(randspace(2000, 1000.0), randspace(2000, 1000.0)));
 
     ChartView view("2000 Scattered dots");
     view.chart()->add(scale);
