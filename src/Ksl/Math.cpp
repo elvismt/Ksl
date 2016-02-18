@@ -22,8 +22,6 @@
 
 KSL_BEGIN_MATH_NAMESPACE
 
-// Mathematical constants
-const double Pi = 3.141592653589793;
-const double E =  2.718281828459045;
+// nothing here, yet
 
 KSL_END_MATH_NAMESPACE
