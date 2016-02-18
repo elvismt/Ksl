@@ -28,43 +28,42 @@ ChartLinscale::ChartLinscale(const QString &name)
     : ChartScale(new ChartLinscalePrivate(this, name))
 {
     KSL_PUBLIC(ChartLinscale);
-    m->axisHash["bottom"] = new ChartAxis(Qt::Horizontal, "BottomAxis");
-    m->axisHash["top"]    = new ChartAxis(Qt::Horizontal, "TopAxis");
-    m->axisHash["left"]   = new ChartAxis(Qt::Vertical,   "LeftAxis");
-    m->axisHash["right"]  = new ChartAxis(Qt::Vertical,   "RightAxis");
-    m->axisHash["x"]      = new ChartAxis(Qt::Horizontal, "X_Axis");
-    m->axisHash["y"]      = new ChartAxis(Qt::Vertical,   "Y_Axis");
-    for (auto axis : m->axisHash) {
+    m->axisList.append(new ChartAxis(Qt::Horizontal, "BottomAxis"));
+    m->axisList.append(new ChartAxis(Qt::Horizontal, "TopAxis"));
+    m->axisList.append(new ChartAxis(Qt::Vertical,   "LeftAxis"));
+    m->axisList.append(new ChartAxis(Qt::Vertical,   "RightAxis"));
+    m->axisList.append(new ChartAxis(Qt::Horizontal, "X_Axis"));
+    m->axisList.append(new ChartAxis(Qt::Vertical,   "Y_Axis"));
+    rescale();
+    for (auto axis : m->axisList) {
         axis->setScale(this);
     }
-    showAxis("bottom,left");
-    rescale();
 }
 
 
 ChartLinscalePrivate::~ChartLinscalePrivate() {
-    for (auto axis : axisHash) {
+    for (auto axis : axisList) {
         delete axis;
     }
 }
 
 
-QHash<QString,ChartAxis*>& ChartLinscale::axis() {
-    KSL_PUBLIC(ChartLinscale);
-    return m->axisHash;
-}
-
-
-const QHash<QString,ChartAxis*>& ChartLinscale::axis() const {
+ChartAxis* ChartLinscale::axis(AxisKey key) const {
     KSL_PUBLIC(const ChartLinscale);
-    return m->axisHash;
-}
-
-
-ChartAxis* ChartLinscale::axis(const QString &name) const {
-    KSL_PUBLIC(const ChartLinscale);
-    if (m->axisHash.contains(name))
-        return m->axisHash[name];
+    switch (key) {
+        case BottomAxis:
+            return m->axisList[0];
+        case TopAxis:
+            return m->axisList[1];
+        case LeftAxis:
+            return m->axisList[2];
+        case RightAxis:
+            return m->axisList[3];
+        case X_Axis:
+            return m->axisList[4];
+        case Y_Axis:
+            return m->axisList[5];
+    }
     return nullptr;
 }
 
@@ -193,7 +192,7 @@ void ChartLinscale::paint(const QRect &rect, QPainter *painter) {
     painter->restore();
 
     m->setupAxis();
-    for (auto axis : m->axisHash) {
+    for (auto axis : m->axisList) {
         if (axis->visible()) {
             axis->paint(painter);
         }
@@ -204,34 +203,64 @@ void ChartLinscale::paint(const QRect &rect, QPainter *painter) {
 void ChartLinscalePrivate::setupAxis() {
     ChartAxis *axis;
 
-    axis = axisHash["bottom"];
+    axis = axisList[0];
     axis->setEnds(xMin, xMax, yMin);
-
-    axis = axisHash["top"];
+    axis = axisList[1];
     axis->setEnds(xMin, xMax, yMax);
-
-    axis = axisHash["left"];
+    axis = axisList[2];
     axis->setEnds(yMin, yMax, xMin);
-
-    axis = axisHash["right"];
+    axis = axisList[3];
     axis->setEnds(yMin, yMax, xMax);
-
-    axis = axisHash["x"];
+    axis = axisList[4];
     axis->setEnds(xMin, xMax, 0.0);
-
-    axis = axisHash["y"];
+    axis = axisList[5];
     axis->setEnds(yMin, yMax, 0.0);
+
+    if (autoChooseAxis) {
+        bool xAxisOut = yMin > 0.0 || yMax < 0.0;
+        bool yAxisOut = xMin > 0.0 || xMax < 0.0;
+        if (xAxisOut || yAxisOut) {
+            axisKeys = BottomAxis|TopAxis|LeftAxis|RightAxis;
+            axisList[0]->setVisible(true);
+            axisList[1]->setVisible(true);
+            axisList[2]->setVisible(true);
+            axisList[3]->setVisible(true);
+            axisList[4]->setVisible(false);
+            axisList[5]->setVisible(false);
+        }
+        else {
+            axisKeys = X_Axis|Y_Axis;
+            axisList[0]->setVisible(false);
+            axisList[1]->setVisible(false);
+            axisList[2]->setVisible(false);
+            axisList[3]->setVisible(false);
+            axisList[4]->setVisible(true);
+            axisList[5]->setVisible(true);
+        }
+    }
 }
 
 
-void ChartLinscale::showAxis(const QString &axisSet) {
+void ChartLinscale::showAxis(AxisKey keys) {
     KSL_PUBLIC(ChartLinscale);
-    m->axisHash["bottom"]->setVisible(axisSet.contains("bottom", Qt::CaseInsensitive));
-    m->axisHash["top"]->setVisible(axisSet.contains("top", Qt::CaseInsensitive));
-    m->axisHash["left"]->setVisible(axisSet.contains("left", Qt::CaseInsensitive));
-    m->axisHash["right"]->setVisible(axisSet.contains("right", Qt::CaseInsensitive));
-    m->axisHash["x"]->setVisible(axisSet.contains("x", Qt::CaseInsensitive));
-    m->axisHash["y"]->setVisible(axisSet.contains("y", Qt::CaseInsensitive));
+    m->autoChooseAxis = false;
+    m->axisKeys = keys;
+    m->axisList[0]->setVisible(keys & BottomAxis);
+    m->axisList[1]->setVisible(keys & TopAxis);
+    m->axisList[2]->setVisible(keys & LeftAxis);
+    m->axisList[3]->setVisible(keys & RightAxis);
+    m->axisList[4]->setVisible(keys & X_Axis);
+    m->axisList[5]->setVisible(keys & Y_Axis);
+    if (m->chart)
+        emit m->chart->changed(m->chart);
+}
+
+
+void ChartLinscale::autoChooseAxis() {
+    KSL_PUBLIC(ChartLinscale);
+    m->autoChooseAxis = true;
+    if (m->chart)
+        emit m->chart->changed(m->chart);
 }
 
 KSL_END_NAMESPACE

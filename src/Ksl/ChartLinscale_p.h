@@ -33,8 +33,9 @@ public:
 
     ChartLinscalePrivate(ChartLinscale *publ, const QString &iname)
         : ChartScalePrivate(publ, iname)
-        , xLowBound(20), xUpBound(20)
-        , yLowBound(20), yUpBound(20)
+        , xLowBound(30), xUpBound(30)
+        , yLowBound(30), yUpBound(30)
+        , autoChooseAxis(true)
     { }
 
     ~ChartLinscalePrivate();
@@ -43,6 +44,10 @@ public:
     int xLowBound, xUpBound;
     int yLowBound, yUpBound;
 
+    bool autoChooseAxis;
+    AxisKey axisKeys;
+    QVector<ChartAxis*> axisList;
+
     int chartXmin, chartXmax;
     int chartYmin, chartYmax;
     int chartWidth, chartHeight;
@@ -50,8 +55,6 @@ public:
     double xMin, xMax;
     double yMin, yMax;
     double width, height;
-
-    QHash<QString,ChartAxis*> axisHash;
 
     void setupAxis();
 };

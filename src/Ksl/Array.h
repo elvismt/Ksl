@@ -205,7 +205,7 @@ Array<1,T> linspace(T min, T max, T step=T(1))
 }
 
 
-template <typename T = double> inline
+template <typename T> inline
 Array<1,T> randspace(size_t size, T max=T(1))
 {
     Array<1,T> ret(size);
@@ -449,7 +449,7 @@ Array<1,T> getcol(const Array<2,T> &array, size_t k)
 }
 
 
-template <typename T = double>
+template <typename T>
 Array<2,T> randmat(size_t rows, size_t cols, T max=T(1))
 {
     Array<2,T> ret(rows,cols);
@@ -459,7 +459,7 @@ Array<2,T> randmat(size_t rows, size_t cols, T max=T(1))
 }
 
 
-template <typename T = double>
+template <typename T>
 Array<2,T> unitmat(size_t size)
 {
     Array<2,T> ret(size, size, T(0));

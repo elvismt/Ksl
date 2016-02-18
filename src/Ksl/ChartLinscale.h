@@ -26,6 +26,23 @@
 
 KSL_BEGIN_NAMESPACE
 
+enum AxisKeyEnum {
+    BottomAxis  = 0x00000001,
+    LeftAxis    = 0x00000002,
+    TopAxis     = 0x00000004,
+    RightAxis   = 0x00000008,
+    X_Axis      = 0x00000010,
+    Y_Axis      = 0x00000020
+};
+Q_DECLARE_FLAGS(
+    AxisKey,
+    AxisKeyEnum
+)
+Q_DECLARE_OPERATORS_FOR_FLAGS(
+    AxisKey
+)
+
+
 class KSL_EXPORT ChartLinscale
     : public ChartScale
 {
@@ -33,13 +50,11 @@ public:
 
     ChartLinscale(const QString &name="scale");
 
-    QHash<QString,ChartAxis*>& axis();
+    ChartAxis* axis(AxisKey key) const;
 
-    const QHash<QString,ChartAxis*>& axis() const;
+    void showAxis(AxisKey keys);
 
-    ChartAxis* axis(const QString &name) const;
-
-    void showAxis(const QString &axisSet);
+    void autoChooseAxis();
 
     QPoint map(const QPointF &p) const;
 

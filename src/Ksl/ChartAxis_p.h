@@ -36,7 +36,7 @@ public:
         , pen(Qt::black)
         , brush(Qt::black)
         , components(ChartAxis::AllComponents)
-        , antialias(false)
+        , antialias(true)
     {
         // components &= ~ChartAxis::Arrow;
     }
