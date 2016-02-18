@@ -18,16 +18,12 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_GLOBAL_H
-#define KSL_GLOBAL_H
+#include <Ksl/Math.h>
 
-#include <QString>
+KSL_BEGIN_MATH_NAMESPACE
 
-#define KSL_BEGIN_NAMESPACE namespace Ksl {
-#define KSL_END_NAMESPACE } // namespace Ksl
-#define KSL_BEGIN_MATH_NAMESPACE namespace Ksl { namespace Math {
-#define KSL_END_MATH_NAMESPACE }} // namespace Ksl::Math
+// Mathematical constants
+const double Pi = 3.141592653589793;
+const double E =  2.718281828459045;
 
-#define KSL_EXPORT
-
-#endif // KSL_GLOBAL_H
+KSL_END_MATH_NAMESPACE

@@ -24,14 +24,16 @@ HEADERS += \
     src/Ksl/SeriesPlot.h \
     src/Ksl/SeriesPlot_p.h \
     src/Ksl/ChartAxis.h \
-    src/Ksl/ChartAxis_p.h
+    src/Ksl/ChartAxis_p.h \
+    src/Ksl/Math.h
 
 SOURCES += \
-    demos/scatter.cpp \
+    demos/sinusoidal.cpp \
     src/Ksl/Chart.cpp \
     src/Ksl/ChartItem.cpp \
     src/Ksl/ChartLinscale.cpp \
     src/Ksl/ChartScale.cpp \
     src/Ksl/ChartView.cpp \
     src/Ksl/SeriesPlot.cpp \
-    src/Ksl/ChartAxis.cpp
+    src/Ksl/ChartAxis.cpp \
+    src/Ksl/Math.cpp

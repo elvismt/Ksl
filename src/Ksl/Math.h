@@ -18,16 +18,26 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_GLOBAL_H
-#define KSL_GLOBAL_H
+#ifndef KSL_MATH_H
+#define KSL_MATH_H
 
-#include <QString>
+#include <Ksl/Global.h>
+#include <cmath>
 
-#define KSL_BEGIN_NAMESPACE namespace Ksl {
-#define KSL_END_NAMESPACE } // namespace Ksl
-#define KSL_BEGIN_MATH_NAMESPACE namespace Ksl { namespace Math {
-#define KSL_END_MATH_NAMESPACE }} // namespace Ksl::Math
+KSL_BEGIN_MATH_NAMESPACE
 
-#define KSL_EXPORT
+template <typename T> inline T pow2(const T& x) { return x*x; }
+template <typename T> inline T pow3(const T& x) { return x*x*x; }
 
-#endif // KSL_GLOBAL_H
+inline double sin(double x) { return std::sin(x); }
+inline double cos(double x) { return std::cos(x); }
+inline double tan(double x) { return std::tan(x); }
+inline double log(double x) { return std::log(x); }
+inline double exp(double x) { return std::exp(x); }
+
+extern const double Pi;
+extern const double E;
+
+KSL_END_MATH_NAMESPACE
+
+#endif // KSL_MATH_H
