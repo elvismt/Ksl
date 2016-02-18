@@ -25,10 +25,10 @@ KSL_BEGIN_NAMESPACE
 
 SeriesPlot::SeriesPlot(const Array<1> &vx,
                        const Array<1> &vy,
-                       Scatter scatter,
-                       const QColor &stroke,
-                       const QColor &fill,
                        const QString &name,
+                       const QColor &stroke,
+                       Scatter scatter,
+                       const QColor &fill,
                        QObject *parent)
     : ChartItem(new SeriesPlotPrivate(this, name), parent)
 {

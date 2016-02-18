@@ -47,11 +47,12 @@ public:
 
     SeriesPlot(const Array<1> &vx,
                const Array<1> &vy,
-               Scatter scatter=Circles,
-               const QColor &stroke=Qt::blue,
-               const QColor &fill=Qt::green,
                const QString &name="series",
+               const QColor &stroke=Qt::blue,
+               Scatter scatter=Line,
+               const QColor &fill=Qt::green,
                QObject *parent=0);
+
 
     void setData(const Array<1> &vx,
                  const Array<1> &vy);

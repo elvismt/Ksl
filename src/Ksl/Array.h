@@ -216,19 +216,18 @@ Array<1,T> randspace(size_t size, T max=T(1))
 }
 
 
-template <typename Func, typename T> inline
+template <typename Func, typename T>
 Array<1,T> apply(Func func, const Array<1,T> &array)
 {
     Array<1,T> ret(array.size());
     auto iter = array.begin();
-    for (auto &elem : ret) {
+    for (auto &elem : ret)
         elem = func(*iter++);
-    }
     return std::move(ret);
 }
 
 
-template <typename T> inline
+template <typename Func, typename T>
 Array<1,T> copy(const Array<1,T> &array)
 {
     Array<1,T> ret(array.size());
@@ -261,17 +260,6 @@ QTextStream& operator << (QTextStream &out, const Array<1,T> &array)
     return out;
 }
 
-
-// Aplication of common functions to arrays, all element by element
-template <typename T> inline Array<1,T> sin(const Array<1,T> &array) { return std::move(apply(Math::sin, array)); }
-template <typename T> inline Array<1,T> cos(const Array<1,T> &array) { return std::move(apply(Math::cos, array)); }
-template <typename T> inline Array<1,T> tan(const Array<1,T> &array) { return std::move(apply(Math::tan, array)); }
-template <typename T> inline Array<1,T> asin(const Array<1,T> &array) { return std::move(apply(Math::asin, array)); }
-template <typename T> inline Array<1,T> acos(const Array<1,T> &array) { return std::move(apply(Math::acos, array)); }
-template <typename T> inline Array<1,T> atan(const Array<1,T> &array) { return std::move(apply(Math::atan, array)); }
-template <typename T> inline Array<1,T> log(const Array<1,T> &array) { return std::move(apply(Math::log, array)); }
-template <typename T> inline Array<1,T> log10(const Array<1,T> &array) { return std::move(apply(Math::log10, array)); }
-template <typename T> inline Array<1,T> exp(const Array<1,T> &array) { return std::move(apply(Math::exp, array)); }
 
 
 // This is the 2D (Matrix) array type
@@ -481,6 +469,28 @@ Array<2,T> unitmat(size_t size)
 }
 
 
+template <typename Func, typename T>
+Array<2,T> apply(Func func, const Array<2,T> &array)
+{
+    Array<2,T> ret(array.rows(), array.cols());
+    auto iter = array.begin();
+    for (auto &elem : ret)
+        elem = func(*iter++);
+    return std::move(ret);
+}
+
+
+template <typename Func, typename T>
+Array<2,T> copy(const Array<2,T> &array)
+{
+    Array<2,T> ret(array.rows(), array.cols());
+    auto iter = array.begin();
+    for (auto &elem : ret)
+        elem = *iter++;
+    return std::move(ret);
+}
+
+
 template <typename T> inline
 QTextStream& operator<< (QTextStream &out, const Array<2,T> &array)
 {
@@ -505,6 +515,18 @@ std::ostream& operator<< (std::ostream &out, const Array<2,T> &array)
     }
     return out;
 }
+
+
+// Aplication of common functions to arrays, all element by element
+template <size_t D, typename T> inline Array<D,T> sin(const Array<D,T> &array)   { return std::move(apply(Math::sin, array)); }
+template <size_t D, typename T> inline Array<D,T> cos(const Array<D,T> &array)   { return std::move(apply(Math::cos, array)); }
+template <size_t D, typename T> inline Array<D,T> tan(const Array<D,T> &array)   { return std::move(apply(Math::tan, array)); }
+template <size_t D, typename T> inline Array<D,T> asin(const Array<D,T> &array)  { return std::move(apply(Math::asin, array)); }
+template <size_t D, typename T> inline Array<D,T> acos(const Array<D,T> &array)  { return std::move(apply(Math::acos, array)); }
+template <size_t D, typename T> inline Array<D,T> atan(const Array<D,T> &array)  { return std::move(apply(Math::atan, array)); }
+template <size_t D, typename T> inline Array<D,T> log(const Array<D,T> &array)   { return std::move(apply(Math::log, array)); }
+template <size_t D, typename T> inline Array<D,T> log10(const Array<D,T> &array) { return std::move(apply(Math::log10, array)); }
+template <size_t D, typename T> inline Array<D,T> exp(const Array<D,T> &array)   { return std::move(apply(Math::exp, array)); }
 
 KSL_END_NAMESPACE
 

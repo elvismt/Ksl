@@ -29,15 +29,18 @@ Chart::Chart(const QString &name, QObject *parent)
     , Ksl::Object(new ChartPrivate(this,name))
 { }
 
+
 QList<ChartScale*>& Chart::scaleList() {
     KSL_PUBLIC(Chart);
     return m->scaleList;
 }
 
+
 const QList<ChartScale*>& Chart::scaleList() const {
     KSL_PUBLIC(const Chart);
     return m->scaleList;
 }
+
 
 void Chart::add(ChartScale *scale) {
     KSL_PUBLIC(Chart);
@@ -50,6 +53,7 @@ void Chart::add(ChartScale *scale) {
         emit changed(this);
     }
 }
+
 
 void Chart::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(Chart);
@@ -76,6 +80,7 @@ void Chart::paint(const QRect &rect, QPainter *painter) {
     painter->restore();
 }
 
+
 void Chart::save(const QString &fileName,
                  const QSize &size, const char *format)
 {
@@ -85,30 +90,36 @@ void Chart::save(const QString &fileName,
     image.save(fileName, format);
 }
 
+
 void Chart::onAppearenceChange(ChartItem *item) {
     Q_UNUSED(item)
     emit changed(this);
 }
+
 
 void Chart::onDataChange(ChartItem *item) {
     item->scale()->rescale();
     emit changed(this);
 }
 
+
 QString Chart::name() const {
     KSL_PUBLIC(const Chart);
     return m->name;
 }
+
 
 bool Chart::showName() const {
     KSL_PUBLIC(const Chart);
     return m->showName;
 }
 
+
 QColor Chart::nameColor() const {
     KSL_PUBLIC(const Chart);
     return m->nameColor;
 }
+
 
 void Chart::setName(const QString &name) {
     KSL_PUBLIC(Chart);
@@ -118,6 +129,7 @@ void Chart::setName(const QString &name) {
     }
 }
 
+
 void Chart::setShowName(bool showName) {
     KSL_PUBLIC(Chart);
     if (m->showName != showName) {
@@ -125,6 +137,7 @@ void Chart::setShowName(bool showName) {
         emit changed(this);
     }
 }
+
 
 void Chart::setNameColor(const QColor &color) {
     KSL_PUBLIC(Chart);
