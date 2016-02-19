@@ -65,6 +65,8 @@ public:
 #if !defined(_MSC_VER) || _MSC_VER > 1700
     void setSamples(std::initializer_list<Sample> initList);
 #endif
+
+    void addSample(const QString &label, double coord);
 };
 
 KSL_END_NAMESPACE

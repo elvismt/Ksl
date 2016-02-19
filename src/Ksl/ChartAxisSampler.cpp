@@ -63,4 +63,11 @@ void ChartAxisSampler::setSamples(std::initializer_list<Sample> initList) {
 }
 #endif
 
+
+void ChartAxisSampler::addSample(const QString &label, double coord) {
+    KSL_PUBLIC(ChartAxisSampler);
+    m->mode = CustomSamples;
+    m->sampleList.append(Sample(label, coord));
+}
+
 KSL_END_NAMESPACE

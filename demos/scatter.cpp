@@ -15,17 +15,13 @@ int main(int argc, char *argv[])
                              "Scatter", Qt::blue,
                              SeriesPlot::Circles));
 
-    scale.axis(X_Axis)->sampler()->setSamples({
-        { "300", 300.0 },
-        { "600", 600.0 },
-        { "1000", 1000.0 }
-    });
+    auto sampler = scale.axis(X_Axis)->sampler();
+    sampler->addSample("L/2", 500.0);
+    sampler->addSample("L", 1000.0);
 
-    scale.axis(Y_Axis)->sampler()->setSamples({
-        { "300", 300.0 },
-        { "600", 600.0 },
-        { "1000", 1000.0 }
-    });
+    sampler = scale.axis(Y_Axis)->sampler();
+    sampler->addSample("L/2", 500.0);
+    sampler->addSample("L", 1000.0);
 
     ChartView view("2000 Scattered dots");
     view.chart()->add(scale);

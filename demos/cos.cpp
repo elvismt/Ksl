@@ -13,13 +13,11 @@ int main(int argc, char *argv[])
     ChartLinscale scale;
     scale.add(new SeriesPlot(x, cos(x), "Cos(X)", Qt::blue));
 
-
-    scale.axis(X_Axis)->sampler()->setSamples({
-        { "-π", -M_PI },
-        { "-π/2", -M_PI/2 },
-        { "π/2", M_PI/2 },
-        { "π", M_PI }
-    });
+    auto sampler = scale.axis(X_Axis)->sampler();
+    sampler->addSample("-π", -M_PI);
+    sampler->addSample("-π/2", -M_PI/2);
+    sampler->addSample("π/2", M_PI/2);
+    sampler->addSample("π", M_PI);
 
     ChartView view("Cos(X)");
     view.chart()->add(scale);
