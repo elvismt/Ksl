@@ -22,18 +22,25 @@
 #define KSL_ARRAY_H
 
 #include <Ksl/Math.h>
-#include <QTextStream>
-#include <QVector>
+#include <vector>
+#include <list>
 #include <ostream>
+#include <QVector>
+#include <QList>
+#include <QTextStream>
 
 KSL_BEGIN_NAMESPACE
 
-// All array types in Ksl are specializations
-// this class template
+/*****************************************************
+ * All array types in Ksl are specializations
+ * this class template
+ ****************************************************/
 template <size_t D, typename T=double> class Array{};
 
 
-// This is the 1D (Vector) array type
+/*****************************************************
+ * This is the 1D (Vector) Array type
+ ****************************************************/
 template <typename T>
 class Array<1,T>
 {
@@ -88,6 +95,16 @@ private:
 
 
 template <typename T> inline
+void Array<1,T>::_alloc(size_type n)
+{
+    m_data = new SharedData();
+    m_data->data = new data_type[n];
+    m_data->size = n;
+    m_data->refc = 1;
+}
+
+
+template <typename T> inline
 void Array<1,T>::_free()
 {
     if (m_data) {
@@ -98,16 +115,6 @@ void Array<1,T>::_free()
         }
         m_data = nullptr;
     }
-}
-
-
-template <typename T> inline
-void Array<1,T>::_alloc(size_type n)
-{
-    m_data = new SharedData();
-    m_data->data = new data_type[n];
-    m_data->size = n;
-    m_data->refc = 1;
 }
 
 
@@ -211,6 +218,11 @@ Array<1,T>& Array<1,T>::operator= (Array<1,T> &&that)
 }
 
 
+/********************************************
+ * Utilities for creating 1D number series
+ *******************************************/
+
+
 template <typename T> inline
 Array<1,T> linspace(T min, T max, T step=T(1))
 {
@@ -256,6 +268,43 @@ Array<1,T> maxsize(const Array<1,T> &a1, const Array<1,T> &a2)
 }
 
 
+/********************************************
+ * These copies data from other containers
+ ********************************************/
+
+
+template <typename T, typename Iterator> inline
+Array<1,T> makeArray(const Iterator &begin, size_t size)
+{
+    Array<1,T> ret(size);
+    Iterator iter = begin;
+    for (auto &elem : ret)
+        elem = *iter++;
+    return std::move(ret);
+}
+
+template <typename T> inline
+Array<1,T> makeArray(const std::vector<T> &vec)
+{ return std::move(makeArray<T>(vec.begin(), vec.size())); }
+
+template <typename T> inline
+Array<1,T> makeArray(const std::list<T> &lst)
+{ return std::move(makeArray<T>(lst.begin(), lst.size())); }
+
+template <typename T> inline
+Array<1,T> makeArray(const QVector<T> &qvec)
+{ return std::move(makeArray<T>(qvec.begin(), qvec.size())); }
+
+template <typename T> inline
+Array<1,T> makeArray(const QList<T> &qlst)
+{ return std::move(makeArray<T>(qlst.begin(), qlst.size())); }
+
+
+/*******************************************************
+ * Stream operator for easy text output of 1D Arrays
+ ******************************************************/
+
+
 template <typename T> inline
 std::ostream& operator << (std::ostream &out, const Array<1,T> &array)
 {
@@ -266,6 +315,7 @@ std::ostream& operator << (std::ostream &out, const Array<1,T> &array)
     out << array[array.size()-1] << " ]";
     return out;
 }
+
 
 template <typename T> inline
 QTextStream& operator << (QTextStream &out, const Array<1,T> &array)
@@ -279,8 +329,9 @@ QTextStream& operator << (QTextStream &out, const Array<1,T> &array)
 }
 
 
-
-// This is the 2D (Matrix) array type
+/**********************************************
+ * This is the 2D (Matrix) Array type
+ **********************************************/
 template <typename T>
 class Array<2,T>
 {
@@ -480,6 +531,11 @@ Array<2,T>& Array<2,T>::operator= (Array &&that)
 }
 
 
+/*********************************************************
+ * These copy rows or columns of a matrix to an 1D array
+ ********************************************************/
+
+
 template <typename T>
 Array<1,T> getrow(const Array<2,T> &array, size_t k)
 {
@@ -498,6 +554,11 @@ Array<1,T> getcol(const Array<2,T> &array, size_t k)
         ret[j] = array[j][k];
     return std::move(ret);
 }
+
+
+/********************************************
+ * Utilities for creating 2D number series
+ *******************************************/
 
 
 template <typename T>
@@ -541,6 +602,46 @@ Array<2,T> maxsize(const Array<2,T> &a1, const Array<2,T> &a2)
     return std::move(Array<2,T>(qMax(a1.rows(), a2.rows()),
                                 qMax(a1.cols(), a2.cols()) ));
 }
+
+
+/**************************************
+ * Copies data from other containers
+ *************************************/
+
+template <typename T, typename Iterator>
+Array<2,T> make2D(size_t m, size_t n, const Iterator &begin)
+{
+    Array<2,T> ret(m, n);
+    Iterator iter = begin;
+    for (auto &elem : ret)
+        elem = *iter++;
+    return std::move(ret);
+}
+
+template <typename T>
+Array<2,T> make2D(size_t m, size_t n, const Array<1,T> &array)
+{ return std::move(make2D<T>(m, n, array.begin())); }
+
+template <typename T>
+Array<2,T> make2D(size_t m, size_t n, const std::vector<T> &vec)
+{ return std::move(make2D<T>(m, n, vec.begin())); }
+
+template <typename T>
+Array<2,T> make2D(size_t m, size_t n, const std::list<T> &lst)
+{ return std::move(make2D<T>(m, n, lst.begin())); }
+
+template <typename T>
+Array<2,T> make2D(size_t m, size_t n, const QVector<T> &qvec)
+{ return std::move(make2D<T>(m, n, qvec.begin())); }
+
+template <typename T>
+Array<2,T> make2D(size_t m, size_t n, const QList<T> &qlst)
+{ return std::move(make2D<T>(m, n, qlst.begin())); }
+
+
+/*******************************************************
+ * Stream operator for easy text output of 2D Arrays
+ ******************************************************/
 
 
 template <typename T> inline

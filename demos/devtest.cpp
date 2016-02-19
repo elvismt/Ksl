@@ -1,24 +1,20 @@
-#include <iostream>
-using namespace std;
-
 #include <Ksl/Array.h>
 using namespace Ksl;
 
-#include <QHash>
-#include <QVariant>
-
+#include <iostream>
+using namespace std;
 
 int main()
 {
-    QTextStream out(stdout);
-    
-    QHash<QString,QVariant> dict;
-    dict["name"] = "Elvis";
-    dict["age"] = 27;
-    dict["height"] = 1.86;
-    
-    out << dict["name"].toString() << endl;
-    out << dict["age"].toInt() << endl;
-    out << dict["height"].toDouble() << endl;
+    QList<double> cont;
+    cont << 1 << 3 << 7;
+    cont << 1 << 3 << 7;
+    cont << 1 << 3 << 7;
+    cont << 1 << 3 << 7;
+
+    auto a = make2D(4, 3, cont);
+    cout << a << endl;
+    cout << mean(a) << endl;
+
     return 0;
 }
