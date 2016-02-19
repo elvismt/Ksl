@@ -53,6 +53,7 @@ public:
     Array(size_type n, const data_type &value);
     Array(const Array &that);
     Array(Array &&that);
+    Array(std::initializer_list<data_type> initlist);
 
     ~Array();
 
@@ -156,6 +157,20 @@ Array<1,T>::Array(Array &&that)
     else {
         m_data = nullptr;
     }
+}
+
+
+template <typename T>
+Array<1,T>::Array(std::initializer_list<data_type> initlist)
+{
+   if (initlist.size() > 0) {
+      _alloc(initlist.size());
+      auto iter = this->begin();
+      for (const auto &elem : initlist)
+         *iter++ = elem;
+   }
+   else
+      m_data = nullptr;
 }
 
 
@@ -283,6 +298,8 @@ public:
     Array(size_type m, size_type n, const data_type &value);
     Array(const Array &that);
     Array(Array &&that);
+    Array(std::initializer_list<
+             std::initializer_list<data_type> >  initlist);
 
     ~Array();
 
@@ -393,6 +410,32 @@ Array<2,T>::Array(Array &&that)
     }
     else
         m_data = nullptr;
+}
+
+
+template <typename T>
+Array<2,T>::Array(std::initializer_list<
+                     std::initializer_list<data_type> > initlist)
+{
+    // find biggest row provided
+    size_type bigrow = 0;
+    for (const auto &row : initlist)
+        if (row.size() > bigrow) bigrow = row.size();
+    // fill matrix with provided rows and padd remaining entries with zeros
+    if (initlist.size() > 0 && bigrow > 0) {
+        _alloc(initlist.size(), bigrow);
+        size_type j = 0;
+        for (const auto &row : initlist) {
+           size_type k = 0;
+           for (const auto &elem : row)
+               (*this)[j][k++] = elem;
+           for ( ; k<bigrow; ++k)
+               (*this)[j][k] = data_type(0);
+           ++j;
+        }
+    }
+    else
+       m_data = nullptr;
 }
 
 
@@ -581,6 +624,15 @@ T mean(const Array<D,T> &array) {
     for (const auto &elem : array)
         ret += elem;
     return ret / array.size();
+}
+
+
+template <size_t D, typename T> inline
+T sum(const Array<D,T> &array) {
+    T ret = T(0);
+    for (const auto &elem : array)
+        ret += elem;
+    return ret;
 }
 
 
