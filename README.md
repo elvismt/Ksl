@@ -21,10 +21,11 @@ is not an official KDE component.
 
 The figures below ware created with KSL's chart widget:
 
-   * Cossine function
+   * Scattered data points. On Linux/KDE
+
+![](https://github.com/elvismt/Ksl/blob/master/demos/scatter.png)
+
+   * Cossine function. On Windows(R)
 
 ![](https://github.com/elvismt/Ksl/blob/master/demos/cossine.png)
 
-   * Scattered data points
-
-![](https://github.com/elvismt/Ksl/blob/master/demos/scatter.png)

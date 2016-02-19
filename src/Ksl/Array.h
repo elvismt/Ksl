@@ -53,7 +53,9 @@ public:
     Array(size_type n, const data_type &value);
     Array(const Array &that);
     Array(Array &&that);
+#if !defined(_MSC_VER) || _MSC_VER > 1700
     Array(std::initializer_list<data_type> initlist);
+#endif
 
     ~Array();
 
@@ -160,6 +162,7 @@ Array<1,T>::Array(Array &&that)
 }
 
 
+#if !defined(_MSC_VER) || _MSC_VER > 1700
 template <typename T>
 Array<1,T>::Array(std::initializer_list<data_type> initlist)
 {
@@ -172,6 +175,7 @@ Array<1,T>::Array(std::initializer_list<data_type> initlist)
    else
       m_data = nullptr;
 }
+#endif
 
 
 template <typename T>
@@ -298,8 +302,10 @@ public:
     Array(size_type m, size_type n, const data_type &value);
     Array(const Array &that);
     Array(Array &&that);
+#if !defined(_MSC_VER) || _MSC_VER > 1700
     Array(std::initializer_list<
              std::initializer_list<data_type> >  initlist);
+#endif
 
     ~Array();
 
@@ -413,6 +419,7 @@ Array<2,T>::Array(Array &&that)
 }
 
 
+#if !defined(_MSC_VER) || _MSC_VER > 1700
 template <typename T>
 Array<2,T>::Array(std::initializer_list<
                      std::initializer_list<data_type> > initlist)
@@ -437,6 +444,7 @@ Array<2,T>::Array(std::initializer_list<
     else
        m_data = nullptr;
 }
+#endif
 
 
 template <typename T>
