@@ -26,11 +26,13 @@ HEADERS += \
     src/Ksl/SeriesPlot_p.h \
     src/Ksl/ChartAxis.h \
     src/Ksl/ChartAxis_p.h \
-    src/Ksl/Math.h
+    src/Ksl/Math.h \
+    src/Ksl/ChartAxisSampler.h \
+    src/Ksl/ChartAxisSampler_p.h
 
 
 SOURCES += \
-    demos/devtest.cpp \
+    demos/sine.cpp \
     src/Ksl/Chart.cpp \
     src/Ksl/ChartItem.cpp \
     src/Ksl/ChartLinscale.cpp \
@@ -38,4 +40,5 @@ SOURCES += \
     src/Ksl/ChartView.cpp \
     src/Ksl/SeriesPlot.cpp \
     src/Ksl/ChartAxis.cpp \
-    src/Ksl/Math.cpp
+    src/Ksl/Math.cpp \
+    src/Ksl/ChartAxisSampler.cpp

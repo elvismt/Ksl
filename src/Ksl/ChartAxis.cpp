@@ -20,6 +20,7 @@
 
 #include <Ksl/ChartAxis_p.h>
 #include <Ksl/ChartScale.h>
+#include <QDebug>
 
 KSL_BEGIN_NAMESPACE
 
@@ -33,6 +34,10 @@ ChartAxis::ChartAxis(Qt::Orientation orient,
     m->rescalable = false;
     m->pen.setWidth(2);
     m->antialias = true;
+}
+
+ChartAxisPrivate::~ChartAxisPrivate() {
+    delete sampler;
 }
 
 void ChartAxis::setOrientation(Qt::Orientation orient) {
@@ -51,6 +56,11 @@ void ChartAxis::setEnds(double min, double max, double anchor) {
     m->minCoord = min;
     m->maxCoord = max;
     m->anchor = anchor;
+}
+
+ChartAxisSampler* ChartAxis::sampler() const {
+    KSL_PUBLIC(const ChartAxis);
+    return m->sampler;
 }
 
 QRect ChartAxis::chartRect() const {
@@ -79,14 +89,29 @@ void ChartAxis::paint(QPainter *painter) {
 }
 
 void ChartAxisPrivate::paintHorizontal(QPainter *painter) {
+    auto fontMetrics = painter->fontMetrics();
+
     // fixed coordinates
     int y = scale->map(QPointF(minCoord, anchor)).y();
     int xMin = scale->map(QPointF(minCoord, anchor)).x();
     int xMax = scale->map(QPointF(maxCoord, anchor)).x();
 
+    int txtHei = fontMetrics.height() + 2;
+    int txtWid = 0;
+
     // draw main axis line
     if (components & ChartAxis::Line) {
         painter->drawLine(xMin, y, xMax, y);
+    }
+
+    // draw downwards ticks
+    if (components & ChartAxis::TicksDown) {
+        for (const auto &sample : sampler->sampleList()) {
+            int x = scale->map(QPointF(sample.coord, anchor)).x();
+            txtWid = fontMetrics.width(sample.label);
+            painter->drawLine(x, y, x, y+5);
+            painter->drawText(x-txtWid/2, y+txtHei, sample.label);
+        }
     }
 
     // draw arrow
@@ -102,14 +127,29 @@ void ChartAxisPrivate::paintHorizontal(QPainter *painter) {
 }
 
 void ChartAxisPrivate::paintVertical(QPainter *painter) {
+    auto fontMetrics = painter->fontMetrics();
+
     // fixed coordinates
     int x = scale->map(QPointF(anchor, minCoord)).x();
     int yMin = scale->map(QPointF(anchor, minCoord)).y();
     int yMax = scale->map(QPointF(anchor, maxCoord)).y();
 
+    int txtHei = fontMetrics.height() + 2;
+    int txtWid = 0;
+
     // draw main axis line
     if (components & ChartAxis::Line) {
         painter->drawLine(x, yMin, x, yMax);
+    }
+
+    // draw leftwards ticks
+    if (components & ChartAxis::TicksDown) {
+        for (const auto &sample : sampler->sampleList()) {
+            int y = scale->map(QPointF(anchor, sample.coord)).y();
+            txtWid = fontMetrics.width(sample.label);
+            painter->drawLine(x, y, x-5, y);
+            painter->drawText(x-txtWid-12, y+txtHei/4, sample.label);
+        }
     }
 
     // draw arrow

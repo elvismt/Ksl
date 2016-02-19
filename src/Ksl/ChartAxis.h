@@ -22,6 +22,7 @@
 #define KSL_CHARTAXIS_H
 
 #include <Ksl/ChartItem.h>
+#include <Ksl/ChartAxisSampler.h>
 
 KSL_BEGIN_NAMESPACE
 
@@ -64,6 +65,8 @@ public:
     void setEnds(double min, double max);
 
     void setEnds(double min, double max, double anchor);
+
+    ChartAxisSampler* sampler() const;
 
     virtual QRect chartRect() const;
 

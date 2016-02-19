@@ -33,6 +33,7 @@ public:
 
     ChartAxisPrivate(ChartAxis *publ, const QString &name)
         : ChartItemPrivate(publ, name)
+        , sampler(new ChartAxisSampler())
         , pen(Qt::black)
         , brush(Qt::black)
         , components(ChartAxis::AllComponents)
@@ -41,6 +42,9 @@ public:
         // components &= ~ChartAxis::Arrow;
     }
 
+    ~ChartAxisPrivate();
+
+    ChartAxisSampler* sampler;
     QPen pen;
     QBrush brush;
     ChartAxis::Component components;

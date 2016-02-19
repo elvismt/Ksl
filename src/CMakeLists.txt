@@ -11,6 +11,7 @@ set(Ksl_HDRS
     Ksl/Object_p.h
     Ksl/SeriesPlot.h
     Ksl/ChartAxis.h
+    Ksl/ChartAxisSampler.h
 )
 
 set(Ksl_SRCS
@@ -22,6 +23,7 @@ set(Ksl_SRCS
     Ksl/ChartView.cpp
     Ksl/SeriesPlot.cpp
     Ksl/ChartAxis.cpp
+    Ksl/ChartAxisSampler.cpp
 )
 
 add_library(Ksl SHARED ${Ksl_SRCS})
