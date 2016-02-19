@@ -216,25 +216,24 @@ Array<1,T> randspace(size_t size, T max=T(1))
 }
 
 
-template <typename Func, typename T>
-Array<1,T> apply(Func func, const Array<1,T> &array)
+template <typename T>
+Array<1,T> samesize(const Array<1,T> &array)
 {
-    Array<1,T> ret(array.size());
-    auto iter = array.begin();
-    for (auto &elem : ret)
-        elem = func(*iter++);
-    return std::move(ret);
+    return std::move(Array<1,T>(array.size()));
 }
 
 
-template <typename Func, typename T>
-Array<1,T> copy(const Array<1,T> &array)
+template <typename T>
+Array<1,T> minsize(const Array<1,T> &a1, const Array<1,T> &a2)
 {
-    Array<1,T> ret(array.size());
-    auto iter = array.begin();
-    for (auto &elem : ret)
-        elem = *iter++;
-    return std::move(ret);
+    return std::move(Array<1,T>(qMin(a1.size(), a2.size())));
+}
+
+
+template <typename T>
+Array<1,T> maxsize(const Array<1,T> &a1, const Array<1,T> &a2)
+{
+    return std::move(Array<1,T>(qMax(a1.size(), a2.size())));
 }
 
 
@@ -294,6 +293,7 @@ public:
 
     size_type rows() const { return m_data ? m_data->rows : 0; }
     size_type cols() const { return m_data ? m_data->cols : 0; }
+    size_type size() const { return m_data ? m_data->rows*m_data->cols : 0; }
 
 
     pointer operator[] (size_type index) { return m_data->data[index]; }
@@ -460,34 +460,35 @@ Array<2,T> randmat(size_t rows, size_t cols, T max=T(1))
 
 
 template <typename T>
-Array<2,T> unitmat(size_t size)
+Array<2,T> unitmat(size_t size, const T &factor=T(1))
 {
     Array<2,T> ret(size, size, T(0));
     for (size_t k=0; k<size; ++k)
-        ret[k][k] = T(1);
+        ret[k][k] = factor;
     return std::move(ret);
 }
 
 
-template <typename Func, typename T>
-Array<2,T> apply(Func func, const Array<2,T> &array)
+template <typename T>
+Array<2,T> samesize(const Array<2,T> &array)
 {
-    Array<2,T> ret(array.rows(), array.cols());
-    auto iter = array.begin();
-    for (auto &elem : ret)
-        elem = func(*iter++);
-    return std::move(ret);
+    return std::move(Array<2,T>(array.rows(), array.cols()));
 }
 
 
-template <typename Func, typename T>
-Array<2,T> copy(const Array<2,T> &array)
+template <typename T>
+Array<2,T> minsize(const Array<2,T> &a1, const Array<2,T> &a2)
 {
-    Array<2,T> ret(array.rows(), array.cols());
-    auto iter = array.begin();
-    for (auto &elem : ret)
-        elem = *iter++;
-    return std::move(ret);
+    return std::move(Array<2,T>(qMin(a1.rows(), a2.rows()),
+                                qMin(a1.cols(), a2.cols()) ));
+}
+
+
+template <typename T>
+Array<2,T> maxsize(const Array<2,T> &a1, const Array<2,T> &a2)
+{
+    return std::move(Array<2,T>(qMax(a1.rows(), a2.rows()),
+                                qMax(a1.cols(), a2.cols()) ));
 }
 
 
@@ -517,16 +518,227 @@ std::ostream& operator<< (std::ostream &out, const Array<2,T> &array)
 }
 
 
-// Aplication of common functions to arrays, all element by element
-template <size_t D, typename T> inline Array<D,T> sin(const Array<D,T> &array)   { return std::move(apply(Math::sin, array)); }
-template <size_t D, typename T> inline Array<D,T> cos(const Array<D,T> &array)   { return std::move(apply(Math::cos, array)); }
-template <size_t D, typename T> inline Array<D,T> tan(const Array<D,T> &array)   { return std::move(apply(Math::tan, array)); }
-template <size_t D, typename T> inline Array<D,T> asin(const Array<D,T> &array)  { return std::move(apply(Math::asin, array)); }
-template <size_t D, typename T> inline Array<D,T> acos(const Array<D,T> &array)  { return std::move(apply(Math::acos, array)); }
-template <size_t D, typename T> inline Array<D,T> atan(const Array<D,T> &array)  { return std::move(apply(Math::atan, array)); }
-template <size_t D, typename T> inline Array<D,T> log(const Array<D,T> &array)   { return std::move(apply(Math::log, array)); }
-template <size_t D, typename T> inline Array<D,T> log10(const Array<D,T> &array) { return std::move(apply(Math::log10, array)); }
-template <size_t D, typename T> inline Array<D,T> exp(const Array<D,T> &array)   { return std::move(apply(Math::exp, array)); }
+/****************************************************************
+ * Operations that can be generalized to arrays of any dimension
+ ****************************************************************/
+
+/// @brief Creates a new hard copy of array
+template <size_t D, typename T>
+Array<D,T> copy(const Array<D,T> &array)
+{
+    Array<D,T> ret = samesize(array);
+    auto iter = array.begin();
+    for (auto &elem : ret)
+        elem = *iter++;
+    return std::move(ret);
+}
+
+
+/// @brief Apply func to each element of array
+template <typename Func, size_t D, typename T>
+void apply(Func func, Array<D,T> &array)
+{
+    for (auto &elem : array)
+        elem = func(elem);
+}
+
+
+/// @brief Produces a new array as a result of func applied to array
+template <typename Func, size_t D, typename T>
+Array<D,T> applied(Func func, const Array<D,T> &array)
+{
+    Array<D,T> ret = samesize(array);
+    auto iter = array.begin();
+    for (auto &elem : ret)
+        elem = func(*iter++);
+    return std::move(ret);
+}
+
+
+template <size_t D, typename T> inline
+T min(const Array<D,T> &array) {
+    T ret = *array.begin();
+    for (const auto &elem : array)
+        if (elem < ret)
+            ret = elem;
+    return ret;
+}
+
+
+template <size_t D, typename T> inline
+T max(const Array<D,T> &array) {
+    T ret = *array.begin();
+    for (const auto &elem : array)
+        if (elem > ret)
+            ret = elem;
+    return ret;
+}
+
+
+template <size_t D, typename T> inline
+T mean(const Array<D,T> &array) {
+    T ret = T(0);
+    for (const auto &elem : array)
+        ret += elem;
+    return ret / array.size();
+}
+
+
+template <size_t D, typename T> inline
+void sort(const Array<D,T> &array) {
+    std::sort(array.begin(), array.end());
+}
+
+
+template <size_t D, typename T> inline
+Array<D,T> sorted(const Array<D,T> &array) {
+    auto ret = copy(array);
+    std::sort(ret.begin(), ret.end());
+    return std::move(ret);
+}
+
+
+/**********************************
+ * Element-wise arithmetics
+ **********************************/
+
+
+/// @brief Element-wise sum. Produces copy.
+template <size_t D, typename T> inline
+Array<D,T> operator+ (const Array<D,T> &a1, const Array<D,T> &a2) {
+    auto ret = minsize(a1, a2);
+    auto a1iter = a1.begin();
+    auto a2iter = a2.begin();
+    for (auto &elem : ret)
+        elem = (*a1iter++) + (*a2iter++);
+    return std::move(ret);
+}
+
+
+/// @brief Element-wise subtraction. Produces copy.
+template <size_t D, typename T> inline
+Array<D,T> operator- (const Array<D,T> &a1, const Array<D,T> &a2) {
+    auto ret = minsize(a1, a2);
+    auto a1iter = a1.begin();
+    auto a2iter = a2.begin();
+    for (auto &elem : ret)
+        elem = (*a1iter++) - (*a2iter++);
+    return std::move(ret);
+}
+
+
+/// @brief Element-wise multiplication. Produces copy.
+template <size_t D, typename T> inline
+Array<D,T> operator* (const Array<D,T> &a1, const Array<D,T> &a2) {
+    auto ret = minsize(a1, a2);
+    auto a1iter = a1.begin();
+    auto a2iter = a2.begin();
+    for (auto &elem : ret)
+        elem = (*a1iter++) * (*a2iter++);
+    return std::move(ret);
+}
+
+
+/// @brief Element-wise division. Produces copy.
+template <size_t D, typename T> inline
+Array<D,T> operator/ (const Array<D,T> &a1, const Array<D,T> &a2) {
+    auto ret = minsize(a1, a2);
+    auto a1iter = a1.begin();
+    auto a2iter = a2.begin();
+    for (auto &elem : ret)
+        elem = (*a1iter++) / (*a2iter++);
+    return std::move(ret);
+}
+
+
+/// @brief Element-wise sum to scalar. Produces copy.
+template <size_t D, typename T> inline
+Array<D,T> operator+ (const Array<D,T> &array, const T &x) {
+    auto ret = copy(array);
+    for (auto &elem : ret)
+        elem += x;
+    return std::move(ret);
+}
+
+
+/// @brief Element-wise subtraction to scalar. Produces copy.
+template <size_t D, typename T> inline
+Array<D,T> operator- (const Array<D,T> &array, const T &x) {
+    auto ret = copy(array);
+    for (auto &elem : ret)
+        elem -= x;
+    return std::move(ret);
+}
+
+
+/// @brief Element-wise multiplication to scalar. Produces copy.
+template <size_t D, typename T> inline
+Array<D,T> operator* (const Array<D,T> &array, const T &x) {
+    auto ret = copy(array);
+    for (auto &elem : ret)
+        elem *= x;
+    return std::move(ret);
+}
+
+
+/// @brief Element-wise division to scalar. Produces copy.
+template <size_t D, typename T> inline
+Array<D,T> operator/ (const Array<D,T> &array, const T &x) {
+    auto ret = copy(array);
+    for (auto &elem : ret)
+        elem /= x;
+    return std::move(ret);
+}
+
+
+/********************************************
+ * Common math functions applied element-wise
+ *******************************************/
+
+/// @brief Apply sin() to each element.
+template <size_t D, typename T>
+inline Array<D,T> sin(const Array<D,T> &array)
+{ return std::move(applied(Math::sin, array)); }
+
+/// @brief Apply cos() to each element.
+template <size_t D, typename T>
+inline Array<D,T> cos(const Array<D,T> &array)
+{ return std::move(applied(Math::cos, array)); }
+
+/// @brief Apply tan() to each element.
+template <size_t D, typename T>
+inline Array<D,T> tan(const Array<D,T> &array)
+{ return std::move(applied(Math::tan, array)); }
+
+/// @brief Apply asin() to each element.
+template <size_t D, typename T>
+inline Array<D,T> asin(const Array<D,T> &array)
+{ return std::move(applied(Math::asin, array)); }
+
+/// @brief Apply acos() to each element.
+template <size_t D, typename T>
+inline Array<D,T> acos(const Array<D,T> &array)
+{ return std::move(applied(Math::acos, array)); }
+
+/// @brief Apply atan() to each element.
+template <size_t D, typename T>
+inline Array<D,T> atan(const Array<D,T> &array)
+{ return std::move(applied(Math::atan, array)); }
+
+/// @brief Apply log() to each element.
+template <size_t D, typename T>
+inline Array<D,T> log(const Array<D,T> &array)
+{ return std::move(applied(Math::log, array)); }
+
+/// @brief Apply log10() to each element.
+template <size_t D, typename T>
+inline Array<D,T> log10(const Array<D,T> &array)
+{ return std::move(applied(Math::log10, array)); }
+
+/// @brief Apply exp() to each element.
+template <size_t D, typename T>
+inline Array<D,T> exp(const Array<D,T> &array)
+{ return std::move(applied(Math::exp, array)); }
 
 KSL_END_NAMESPACE
 

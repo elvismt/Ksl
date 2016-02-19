@@ -4,9 +4,6 @@
 #include <Ksl/SeriesPlot.h>
 using namespace Ksl;
 
-#include <iostream>
-using namespace std;
-
 int main(int argc, char *argv[])
 {
     QApplication app(argc,argv);
@@ -27,7 +24,6 @@ int main(int argc, char *argv[])
     scale3.add(new SeriesPlot(x, tan(x), "Tan(X)", Qt::green));
     ChartView view3("Tan(X)");
     view3.chart()->add(scale3);
-
 
     view1.show();
     view2.show();
