@@ -38,18 +38,21 @@ public:
 
 
     struct Sample {
-        Sample(const QString &ilabel, double icoord)
+        Sample(const QString &ilabel, double icoord, bool ismajor=true)
             : label(ilabel)
             , coord(icoord)
+            , isMajor(ismajor)
         { }
 
-        Sample(const char *ilabel, double icoord)
+        Sample(const char *ilabel, double icoord, bool ismajor=true)
             : label(QString::fromUtf8(ilabel))
             , coord(icoord)
+            , isMajor(ismajor)
         { }
 
         QString label;
         double coord;
+        bool isMajor;
     };
 
 
@@ -57,6 +60,8 @@ public:
 
     QList<Sample>& sampleList();
     const QList<Sample>& sampleList() const;
+
+    Mode mode() const;
 
     void setMode(Mode mode);
 
@@ -66,7 +71,9 @@ public:
     void setSamples(std::initializer_list<Sample> initList);
 #endif
 
-    void addSample(const QString &label, double coord);
+    void addSample(const QString &label, double coord, bool isMajor=true);
+
+    void autoSampleDecimal(double min, double max, double hint);
 };
 
 KSL_END_NAMESPACE

@@ -32,10 +32,15 @@ public:
 
     ChartAxisSamplerPrivate(ChartAxisSampler *publ)
         : ObjectPrivate(publ)
+        , min(1.0)
+        , max(-1.0)
+        , hint(0.0)
         , mode(ChartAxisSampler::AutoDecimal)
     { }
 
 
+    double min, max;
+    double hint;
     ChartAxisSampler::Mode mode;
     QList<ChartAxisSampler::Sample> sampleList;
 };

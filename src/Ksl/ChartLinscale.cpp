@@ -28,16 +28,35 @@ ChartLinscale::ChartLinscale(const QString &name)
     : ChartScale(new ChartLinscalePrivate(this, name))
 {
     KSL_PUBLIC(ChartLinscale);
-    m->axisList.append(new ChartAxis(Qt::Horizontal, "BottomAxis"));
-    m->axisList.append(new ChartAxis(Qt::Horizontal, "TopAxis"));
-    m->axisList.append(new ChartAxis(Qt::Vertical,   "LeftAxis"));
-    m->axisList.append(new ChartAxis(Qt::Vertical,   "RightAxis"));
-    m->axisList.append(new ChartAxis(Qt::Horizontal, "X_Axis"));
-    m->axisList.append(new ChartAxis(Qt::Vertical,   "Y_Axis"));
-    rescale();
-    for (auto axis : m->axisList) {
+
+    // The order of creation must be preserved!
+    auto axis = new ChartAxis(Qt::Horizontal, "X_Axis");
+    m->axisList.append(axis);
+    axis->setComponents("line,ticksDown,arrow,title");
+
+    axis = new ChartAxis(Qt::Horizontal, "BottomAxis");
+    axis->setComponents("line,ticksDown,title");
+    m->axisList.append(axis);
+
+    axis = new ChartAxis(Qt::Horizontal, "TopAxis");
+    axis->setComponents("line,ticksDown,title");
+    m->axisList.append(axis);
+
+    axis = new ChartAxis(Qt::Vertical, "Y_Axis");
+    axis->setComponents("line,ticksDown,arrow,title");
+    m->axisList.append(axis);
+
+    axis = new ChartAxis(Qt::Vertical, "LeftAxis");
+    axis->setComponents("line,ticksDown,title");
+    m->axisList.append(axis);
+
+    axis = new ChartAxis(Qt::Vertical, "RightAxis");
+    axis->setComponents("line,ticksDown,title");
+    m->axisList.append(axis);
+
+    for (auto axis : m->axisList)
         axis->setScale(this);
-    }
+    rescale();
 }
 
 
@@ -50,18 +69,20 @@ ChartLinscalePrivate::~ChartLinscalePrivate() {
 
 ChartAxis* ChartLinscale::axis(AxisKey key) const {
     KSL_PUBLIC(const ChartLinscale);
+
+    // As you can see order is important
     switch (key) {
-        case BottomAxis:
-            return m->axisList[0];
-        case TopAxis:
-            return m->axisList[1];
-        case LeftAxis:
-            return m->axisList[2];
-        case RightAxis:
-            return m->axisList[3];
         case X_Axis:
-            return m->axisList[4];
+            return m->axisList[0];
+        case BottomAxis:
+            return m->axisList[1];
+        case TopAxis:
+            return m->axisList[2];
         case Y_Axis:
+            return m->axisList[3];
+        case LeftAxis:
+            return m->axisList[4];
+        case RightAxis:
             return m->axisList[5];
     }
     return nullptr;
@@ -203,39 +224,69 @@ void ChartLinscale::paint(const QRect &rect, QPainter *painter) {
 void ChartLinscalePrivate::setupAxis() {
     ChartAxis *axis;
 
-    axis = axisList[0];
-    axis->setEnds(xMin, xMax, yMin);
-    axis = axisList[1];
-    axis->setEnds(xMin, xMax, yMax);
-    axis = axisList[2];
-    axis->setEnds(yMin, yMax, xMin);
-    axis = axisList[3];
-    axis->setEnds(yMin, yMax, xMax);
-    axis = axisList[4];
-    axis->setEnds(xMin, xMax, 0.0);
-    axis = axisList[5];
-    axis->setEnds(yMin, yMax, 0.0);
+    for (int k=0; k<3; ++k) {
+        axis = axisList[k];
+        axis->setEnds(xMin, xMax, yMin);
+        if (axis->sampler()->mode() == ChartAxisSampler::AutoDecimal)
+            axis->sampler()->autoSampleDecimal(
+                 xMin, xMax, chartWidth / 90);
+    }
+    // X axis have another anchor
+    axisList[0]->setEnds(xMin, xMax, 0.0);
 
+    for (int k=3; k<6; ++k) {
+    axis = axisList[k];
+        axis->setEnds(yMin, yMax, xMin);
+        if (axis->sampler()->mode() == ChartAxisSampler::AutoDecimal)
+            axis->sampler()->autoSampleDecimal(
+                 yMin, yMax, chartHeight / 90);
+    }
+    // Y axis have another anchor
+    axisList[3]->setEnds(yMin, yMax, 0.0);
+
+    // Axis choosing strategy is the following: show X and Y axis
+    // if the origin is in the viewport. Otherwise show the bounding axis
     if (autoChooseAxis) {
         bool xAxisOut = yMin > 0.0 || yMax < 0.0;
         bool yAxisOut = xMin > 0.0 || xMax < 0.0;
         if (xAxisOut || yAxisOut) {
             axisKeys = BottomAxis|TopAxis|LeftAxis|RightAxis;
-            axisList[0]->setVisible(true);
+            axisList[0]->setVisible(false);
             axisList[1]->setVisible(true);
             axisList[2]->setVisible(true);
-            axisList[3]->setVisible(true);
-            axisList[4]->setVisible(false);
-            axisList[5]->setVisible(false);
-        }
-        else {
-            axisKeys = X_Axis|Y_Axis;
-            axisList[0]->setVisible(false);
-            axisList[1]->setVisible(false);
-            axisList[2]->setVisible(false);
             axisList[3]->setVisible(false);
             axisList[4]->setVisible(true);
             axisList[5]->setVisible(true);
+        }
+        else {
+            axisKeys = X_Axis|Y_Axis;
+            axisList[0]->setVisible(true);
+            axisList[1]->setVisible(false);
+            axisList[2]->setVisible(false);
+            axisList[3]->setVisible(true);
+            axisList[4]->setVisible(false);
+            axisList[5]->setVisible(false);
+
+            // Zero coordinate stands above the intersection
+            // of the axis, remove these
+            auto sampler = axisList[0]->sampler();
+            if (sampler->mode() == ChartAxisSampler::AutoDecimal) {
+                int k = 0;
+                for (auto &sample : sampler->sampleList()) {
+                    if (sample.coord == 0.0)
+                        sampler->sampleList().removeAt(k);
+                    ++k;
+                }
+            }
+            sampler = axisList[3]->sampler();
+            if (sampler->mode() == ChartAxisSampler::AutoDecimal) {
+                int k = 0;
+                for (auto &sample : sampler->sampleList()) {
+                    if (sample.coord == 0.0)
+                        sampler->sampleList().removeAt(k);
+                    ++k;
+                }
+            }
         }
     }
 }
@@ -245,12 +296,12 @@ void ChartLinscale::showAxis(AxisKey keys) {
     KSL_PUBLIC(ChartLinscale);
     m->autoChooseAxis = false;
     m->axisKeys = keys;
-    m->axisList[0]->setVisible(keys & BottomAxis);
-    m->axisList[1]->setVisible(keys & TopAxis);
-    m->axisList[2]->setVisible(keys & LeftAxis);
-    m->axisList[3]->setVisible(keys & RightAxis);
-    m->axisList[4]->setVisible(keys & X_Axis);
-    m->axisList[5]->setVisible(keys & Y_Axis);
+    m->axisList[0]->setVisible(keys & X_Axis);
+    m->axisList[1]->setVisible(keys & BottomAxis);
+    m->axisList[2]->setVisible(keys & TopAxis);
+    m->axisList[3]->setVisible(keys & Y_Axis);
+    m->axisList[4]->setVisible(keys & LeftAxis);
+    m->axisList[5]->setVisible(keys & RightAxis);
     if (m->chart)
         emit m->chart->changed(m->chart);
 }

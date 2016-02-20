@@ -52,6 +52,8 @@ ChartView::ChartView(const QString &title, int width, int height, QWidget *paren
 ChartViewPrivate::~ChartViewPrivate() {
     if (ownChart)
         delete chart;
+    if (backPixmap)
+        delete backPixmap;
 }
 
 Chart* ChartView::chart() const {
@@ -59,11 +61,29 @@ Chart* ChartView::chart() const {
     return m->chart;
 }
 
+void ChartView::updateBackPixmap() {
+    KSL_PUBLIC(ChartView);
+    auto rec = rect();
+    if (m->backPixmap)
+        delete m->backPixmap;
+    m->backPixmap = new QPixmap(rec.size());
+    m->painter.begin(m->backPixmap);
+    m->chart->paint(rec, &m->painter);
+    m->painter.end();
+}
+
+void ChartView::onChartChange(Chart *chart) {
+    Q_UNUSED(chart)
+    repaint();
+}
+
 void ChartView::paintEvent(QPaintEvent *event) {
     KSL_PUBLIC(ChartView);
     Q_UNUSED(event)
+    QRect rec = rect();
+
     m->painter.begin(this);
-    m->chart->paint(rect(), &m->painter);
+    m->chart->paint(rec, &m->painter);
     m->painter.end();
 }
 

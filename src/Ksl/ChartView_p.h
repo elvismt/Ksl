@@ -22,6 +22,7 @@
 #define KSL_PLOT_CHARTVIEW_P_H
 
 #include <Ksl/ChartView.h>
+#include <QPixmap>
 
 KSL_BEGIN_NAMESPACE
 
@@ -32,6 +33,7 @@ public:
 
     ChartViewPrivate(ChartView *publ, Chart *ichart)
         : Ksl::ObjectPrivate(publ)
+        , backPixmap(nullptr)
     {
         if (ichart) {
             chart = ichart;
@@ -41,10 +43,13 @@ public:
             chart = new Chart();
             ownChart = true;
         }
+        QObject::connect(chart, &Chart::changed,
+                         publ, &ChartView::onChartChange);
     }
 
     ~ChartViewPrivate();
 
+    QPixmap *backPixmap;
     Chart *chart;
     bool ownChart;
     QPainter painter;

@@ -38,6 +38,9 @@ public:
         , brush(Qt::black)
         , components(ChartAxis::AllComponents)
         , antialias(true)
+        , minTicks(true)
+        , smallTick(2)
+        , bigTick(6)
     {
         // components &= ~ChartAxis::Arrow;
     }
@@ -49,11 +52,19 @@ public:
     QBrush brush;
     ChartAxis::Component components;
     bool antialias;
+    bool minTicks;
+    int smallTick;
+    int bigTick;
+
     Qt::Orientation orient;
 
     double minCoord;
     double maxCoord;
     double anchor;
+
+    int chartMin;
+    int chartMax;
+    int chartAnchor;
 
     void paintHorizontal(QPainter *painter);
     void paintVertical(QPainter *painter);

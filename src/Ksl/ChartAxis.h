@@ -40,9 +40,8 @@ public:
         Line           = 0x00000001,
         TicksUp        = 0x00000002,
         TicksDown      = 0x00000004,
-        TitleUp        = 0x00000008,
-        TitleDown      = 0x00000010,
-        Arrow          = 0x00000020,
+        Title          = 0x00000008,
+        Arrow          = 0x00000010,
         AllComponents  = 0xFFFFFFFF
     };
     Q_DECLARE_FLAGS(
@@ -56,11 +55,9 @@ public:
               QObject *parent=0);
 
 
-    void setComponents(Component components);
+    double min() const;
 
-    void setComponents(const QString &components);
-
-    void setOrientation(Qt::Orientation orient);
+    double max() const;
 
     void setEnds(double min, double max);
 
@@ -71,6 +68,16 @@ public:
     virtual QRect chartRect() const;
 
     virtual QRectF dataRect() const;
+
+public slots:
+
+    void setComponents(Component components);
+
+    void setComponents(const QString &components);
+
+    void setOrientation(Qt::Orientation orient);
+
+    void setShowMinorTicks(bool show=true);
 
 protected:
 

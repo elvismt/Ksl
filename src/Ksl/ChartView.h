@@ -38,9 +38,18 @@ public:
 
     ChartView(Chart *chart, QWidget *parent=0);
 
-    ChartView(const QString &title="Ksl", int width=500, int height=350, QWidget *parent=0);
+    ChartView(const QString &title="Ksl", int width=500,
+              int height=400, QWidget *parent=0);
 
     Chart* chart() const;
+
+
+public slots:
+
+    virtual void onChartChange(Chart *chart);
+
+    virtual void updateBackPixmap();
+
 
 protected:
 
