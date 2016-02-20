@@ -62,7 +62,7 @@ public:
 
 signals:
 
-    void errorOccured(Chart *self);
+    void errorOccurred(Chart *self);
 
     void changed(Chart *self);
 

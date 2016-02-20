@@ -196,7 +196,7 @@ void ChartLinscale::paint(const QRect &rect, QPainter *painter) {
         m->width==0 || m->height==0)
     {
         if (m->chart) {
-            emit m->chart->errorOccured(m->chart);
+            emit m->chart->errorOccurred(m->chart);
         }
         return;
     }
