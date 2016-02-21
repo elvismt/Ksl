@@ -36,20 +36,21 @@ public:
         , sampler(new ChartAxisSampler())
         , pen(Qt::black)
         , brush(Qt::black)
-        , components(ChartAxis::AllComponents)
+        , selectBrush(QColor(0, 0, 255, 127))
+        , components(ChartAxis::Line|ChartAxis::TicksDown|ChartAxis::Title)
         , antialias(true)
         , minTicks(true)
         , smallTick(2)
         , bigTick(6)
-    {
-        // components &= ~ChartAxis::Arrow;
-    }
+    { }
 
     ~ChartAxisPrivate();
+
 
     ChartAxisSampler* sampler;
     QPen pen;
     QBrush brush;
+    QBrush selectBrush;
     ChartAxis::Component components;
     bool antialias;
     bool minTicks;

@@ -43,6 +43,7 @@ public:
         , nameColor(Qt::black)
         , backBrush(Qt::white)
         , paintBack(true)
+        , onError(false)
     { }
 
     QFont font;
@@ -51,6 +52,7 @@ public:
     QColor nameColor;
     QBrush backBrush;
     bool paintBack;
+    bool onError;
     QList<ChartScale*> scaleList;
 };
 

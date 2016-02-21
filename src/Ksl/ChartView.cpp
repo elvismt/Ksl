@@ -38,7 +38,8 @@ ChartView::ChartView(Chart *chart, QWidget *parent)
     setAutoFillBackground(false);
 }
 
-ChartView::ChartView(const QString &title, int width, int height, QWidget *parent)
+ChartView::ChartView(const QString &title, int width,
+                     int height, QWidget *parent)
     : QWidget(parent)
     , Ksl::Object(new ChartViewPrivate(this, nullptr))
 {
@@ -77,24 +78,13 @@ void ChartView::onChartChange(Chart *chart) {
     repaint();
 }
 
-void ChartView::onChartError(Chart *chart) {
-    Q_UNUSED(chart)
-    KSL_PUBLIC(ChartView);
-    m->chartError = true;
-}
-
 void ChartView::paintEvent(QPaintEvent *event) {
     KSL_PUBLIC(ChartView);
     Q_UNUSED(event)
-    m->chartError = false;
     QRect rec = rect();
 
     m->painter.begin(this);
     m->chart->paint(rec, &m->painter);
-    if (m->chartError) {
-        m->painter.setPen(QPen(Qt::red));
-        m->painter.drawText(10, 40, "CHART ERROR: NON NUMERIC VALUES");
-    }
     m->painter.end();
 }
 

@@ -21,7 +21,7 @@ is not an official KDE component.
 
 The figures below ware created with KSL's chart widget:
 
-   * Scattered data points.
+   * Particles in a box of edge length L.
 
 ![](https://github.com/elvismt/Ksl/blob/master/demos/scatter.png)
 

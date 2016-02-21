@@ -34,7 +34,6 @@ public:
     ChartViewPrivate(ChartView *publ, Chart *ichart)
         : Ksl::ObjectPrivate(publ)
         , backPixmap(nullptr)
-        , chartError(false)
     {
         if (ichart) {
             chart = ichart;
@@ -46,14 +45,11 @@ public:
         }
         QObject::connect(chart, &Chart::changed,
                          publ, &ChartView::onChartChange);
-        QObject::connect(chart, &Chart::errorOccurred,
-                         publ, &ChartView::onChartError);
     }
 
     ~ChartViewPrivate();
 
     QPixmap *backPixmap;
-    bool chartError;
     Chart *chart;
     bool ownChart;
     QPainter painter;

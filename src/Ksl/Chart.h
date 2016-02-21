@@ -60,13 +60,17 @@ public:
     virtual void save(const QString &fileName, const QSize
                       &size=QSize(500,350), const char *format="png");
 
+
 signals:
 
     void errorOccurred(Chart *self);
 
     void changed(Chart *self);
 
+
 public slots:
+
+    virtual void informError();
 
     void setName(const QString &name);
 

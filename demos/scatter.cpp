@@ -16,7 +16,19 @@ int main(int argc, char *argv[])
                   "Scatter", Qt::blue,
                   SeriesPlot::Circles));
 
-    ChartView view("2000 Scattered dots");
+    scale.showAxis(BottomAxis|LeftAxis);
+    auto sampler = scale.axis(BottomAxis)->sampler();
+    sampler->addSample("0", 0.0);
+    sampler->addSample("L/2", 500.0);
+    sampler->addSample("L", 1000.0);
+    sampler = scale.axis(LeftAxis)->sampler();
+    sampler->addSample("0", 0.0);
+    sampler->addSample("L/2", 500.0);
+    sampler->addSample("L", 1000.0);
+    // we can visually select an axis
+    scale.axis(BottomAxis)->setSelected(true);
+
+    ChartView view("BOXED PARTICLES");
     view.chart()->add(scale);
     view.show();
 

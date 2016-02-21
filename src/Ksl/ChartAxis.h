@@ -37,11 +37,13 @@ class KSL_EXPORT ChartAxis
 public:
 
     enum ComponentEnum {
+        NullComponent  = 0x00000000,
         Line           = 0x00000001,
         TicksUp        = 0x00000002,
         TicksDown      = 0x00000004,
         Title          = 0x00000008,
         Arrow          = 0x00000010,
+        SelectionRect  = 0x00000020,
         AllComponents  = 0xFFFFFFFF
     };
     Q_DECLARE_FLAGS(
@@ -69,6 +71,9 @@ public:
 
     virtual QRectF dataRect() const;
 
+    bool selected() const;
+
+
 public slots:
 
     void setComponents(Component components);
@@ -78,6 +83,9 @@ public slots:
     void setOrientation(Qt::Orientation orient);
 
     void setShowMinorTicks(bool show=true);
+
+    void setSelected(bool selected);
+
 
 protected:
 

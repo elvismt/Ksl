@@ -33,8 +33,8 @@ public:
 
     ChartLinscalePrivate(ChartLinscale *publ, const QString &iname)
         : ChartScalePrivate(publ, iname)
-        , xLowBound(30), xUpBound(30)
-        , yLowBound(30), yUpBound(30)
+        , xLowBound(60), xUpBound(60)
+        , yLowBound(40), yUpBound(40)
         , autoChooseAxis(true)
     { }
 

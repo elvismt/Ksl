@@ -55,8 +55,16 @@ void Chart::add(ChartScale *scale) {
 }
 
 
+void Chart::informError() {
+    KSL_PUBLIC(Chart);
+    m->onError = true;
+    emit errorOccurred(this);
+}
+
+
 void Chart::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(Chart);
+    m->onError = false;
     painter->save();
     painter->setFont(m->font);
     painter->setClipRect(rect);
@@ -76,6 +84,11 @@ void Chart::paint(const QRect &rect, QPainter *painter) {
             fm.height(),
             m->name
         );
+    }
+
+    if (m->onError) {
+        painter->setPen(QPen(Qt::red));
+        painter->drawText(20, 40, "Ksl::Chart ERROR: NON NUMERIC VALUES");
     }
     painter->restore();
 }

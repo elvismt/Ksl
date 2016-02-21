@@ -192,11 +192,14 @@ void ChartLinscale::rescale() {
 
 void ChartLinscale::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(ChartLinscale);
+
+    // Tell the chart that something is wrong if there is NaN or Inf
+    // In the data ranges.
     if (!qIsFinite(m->width) || ! qIsFinite(m->height) ||
         m->width==0 || m->height==0)
     {
         if (m->chart) {
-            emit m->chart->errorOccurred(m->chart);
+            m->chart->informError();
         }
         return;
     }
@@ -212,6 +215,8 @@ void ChartLinscale::paint(const QRect &rect, QPainter *painter) {
     ChartScale::paint(rect, painter);
     painter->restore();
 
+    // This set axis limits and manages minor
+    // details
     m->setupAxis();
     for (auto axis : m->axisList) {
         if (axis->visible()) {
@@ -267,7 +272,7 @@ void ChartLinscalePrivate::setupAxis() {
             axisList[4]->setVisible(false);
             axisList[5]->setVisible(false);
 
-            // Zero coordinate stands above the intersection
+            // Zero coordinate stands right on the intersection
             // of the axis, remove these
             auto sampler = axisList[0]->sampler();
             if (sampler->mode() == ChartAxisSampler::AutoDecimal) {

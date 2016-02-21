@@ -47,8 +47,6 @@ public:
 public slots:
 
     virtual void onChartChange(Chart *chart);
-    
-    virtual void onChartError(Chart *chart);
 
     virtual void updateBackPixmap();
 
