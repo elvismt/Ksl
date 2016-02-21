@@ -41,9 +41,10 @@ public:
         Line           = 0x00000001,
         TicksUp        = 0x00000002,
         TicksDown      = 0x00000004,
-        Title          = 0x00000008,
-        Arrow          = 0x00000010,
-        SelectionRect  = 0x00000020,
+        MiddleTitle    = 0x00000008,
+        EndTitle       = 0x00000010,
+        Arrow          = 0x00000020,
+        SelectionRect  = 0x00000040,
         AllComponents  = 0xFFFFFFFF
     };
     Q_DECLARE_FLAGS(

@@ -30,28 +30,29 @@ ChartLinscale::ChartLinscale(const QString &name)
     KSL_PUBLIC(ChartLinscale);
 
     // The order of creation must be preserved!
-    auto axis = new ChartAxis(Qt::Horizontal, "X_Axis");
+    // x axis
+    auto axis = new ChartAxis(Qt::Horizontal, "X");
     m->axisList.append(axis);
-    axis->setComponents("line,ticksDown,arrow,title");
-
-    axis = new ChartAxis(Qt::Horizontal, "BottomAxis");
-    axis->setComponents("line,ticksDown,title");
+    axis->setComponents("line,ticksDown,arrow,endTitle");
+    // bottom axis
+    axis = new ChartAxis(Qt::Horizontal, "X");
+    axis->setComponents("line,ticksDown,middleTitle");
     m->axisList.append(axis);
-
-    axis = new ChartAxis(Qt::Horizontal, "TopAxis");
-    axis->setComponents("line,ticksDown,title");
+    // top axis
+    axis = new ChartAxis(Qt::Horizontal, "X");
+    axis->setComponents("line");
     m->axisList.append(axis);
-
-    axis = new ChartAxis(Qt::Vertical, "Y_Axis");
-    axis->setComponents("line,ticksDown,arrow,title");
+    // y axis
+    axis = new ChartAxis(Qt::Vertical, "Y");
+    axis->setComponents("line,ticksDown,arrow,endTitle");
     m->axisList.append(axis);
-
-    axis = new ChartAxis(Qt::Vertical, "LeftAxis");
-    axis->setComponents("line,ticksDown,title");
+    // left axis
+    axis = new ChartAxis(Qt::Vertical, "Y");
+    axis->setComponents("line,ticksDown,middleTitle");
     m->axisList.append(axis);
-
-    axis = new ChartAxis(Qt::Vertical, "RightAxis");
-    axis->setComponents("line,ticksDown,title");
+    // right axis
+    axis = new ChartAxis(Qt::Vertical, "Y");
+    axis->setComponents("line");
     m->axisList.append(axis);
 
     for (auto axis : m->axisList)
@@ -229,25 +230,41 @@ void ChartLinscale::paint(const QRect &rect, QPainter *painter) {
 void ChartLinscalePrivate::setupAxis() {
     ChartAxis *axis;
 
-    for (int k=0; k<3; ++k) {
-        axis = axisList[k];
-        axis->setEnds(xMin, xMax, yMin);
-        if (axis->sampler()->mode() == ChartAxisSampler::AutoDecimal)
-            axis->sampler()->autoSampleDecimal(
-                 xMin, xMax, chartWidth / 90);
-    }
-    // X axis have another anchor
-    axisList[0]->setEnds(xMin, xMax, 0.0);
+    axis = axisList[0];
+    axis->setEnds(xMin, xMax, 0.0);
+    if (axis->sampler()->mode() == ChartAxisSampler::AutoDecimal)
+        axis->sampler()->autoSampleDecimal(
+             xMin, xMax, chartWidth / 90);
 
-    for (int k=3; k<6; ++k) {
-    axis = axisList[k];
-        axis->setEnds(yMin, yMax, xMin);
-        if (axis->sampler()->mode() == ChartAxisSampler::AutoDecimal)
-            axis->sampler()->autoSampleDecimal(
-                 yMin, yMax, chartHeight / 90);
-    }
-    // Y axis have another anchor
-    axisList[3]->setEnds(yMin, yMax, 0.0);
+    axis = axisList[1];
+    axis->setEnds(xMin, xMax, yMin);
+    if (axis->sampler()->mode() == ChartAxisSampler::AutoDecimal)
+        axis->sampler()->autoSampleDecimal(
+             xMin, xMax, chartWidth / 90);
+
+    axis = axisList[2];
+    axis->setEnds(xMin, xMax, yMax);
+    if (axis->sampler()->mode() == ChartAxisSampler::AutoDecimal)
+        axis->sampler()->autoSampleDecimal(
+             xMin, xMax, chartWidth / 90);
+
+    axis = axisList[3];
+    axis->setEnds(yMin, yMax, 0.0);
+    if (axis->sampler()->mode() == ChartAxisSampler::AutoDecimal)
+        axis->sampler()->autoSampleDecimal(
+             yMin, yMax, chartHeight / 90);
+
+    axis = axisList[4];
+    axis->setEnds(yMin, yMax, xMin);
+    if (axis->sampler()->mode() == ChartAxisSampler::AutoDecimal)
+        axis->sampler()->autoSampleDecimal(
+             yMin, yMax, chartHeight / 90);
+
+    axis = axisList[5];
+    axis->setEnds(yMin, yMax, xMax);
+    if (axis->sampler()->mode() == ChartAxisSampler::AutoDecimal)
+        axis->sampler()->autoSampleDecimal(
+             yMin, yMax, chartHeight / 90);
 
     // Axis choosing strategy is the following: show X and Y axis
     // if the origin is in the viewport. Otherwise show the bounding axis

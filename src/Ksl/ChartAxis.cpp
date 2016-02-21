@@ -32,7 +32,6 @@ ChartAxis::ChartAxis(Qt::Orientation orient,
     KSL_PUBLIC(ChartAxis);
     m->orient = orient;
     m->rescalable = false;
-    // m->pen.setWidth(2);
 }
 
 ChartAxisPrivate::~ChartAxisPrivate() {
@@ -170,7 +169,6 @@ void ChartAxisPrivate::paintHorizontal(QPainter *painter) {
                 painter->drawLine(x, y, x, y+smallTick);
         }
     }
-
     // draw upwards ticks
     if (components & ChartAxis::TicksUp) {
         for (const auto &sample : sampler->sampleList()) {
@@ -186,14 +184,28 @@ void ChartAxisPrivate::paintHorizontal(QPainter *painter) {
                 painter->drawLine(x, y, x, y-smallTick);
         }
     }
-
+    // draw middle title
+    if (components & ChartAxis::MiddleTitle) {
+        txtWid = fontMetrics.width(name);
+        int x = chartMin+(chartMax-chartMin-txtWid)/2;
+        y = components & ChartAxis::TicksUp ?
+            chartAnchor -txtHei -15 : chartAnchor+2*txtHei+15;
+        painter->drawText(x, y, name);
+    }
+    // draw end title
+    if (components & ChartAxis::EndTitle) {
+        txtWid = fontMetrics.width(name);
+        int x = chartMax +4;
+        y = chartAnchor -4;
+        painter->drawText(x, y, name);
+    }
     // draw arrow
     if (components & ChartAxis::Arrow) {
         painter->setRenderHint(QPainter::Antialiasing, true);
         QPainterPath path;
-        path.moveTo(chartMax, y);
-        path.lineTo(chartMax-8, y+3);
-        path.lineTo(chartMax-8, y-3);
+        path.moveTo(chartMax, chartAnchor);
+        path.lineTo(chartMax-8, chartAnchor+3);
+        path.lineTo(chartMax-8, chartAnchor-3);
         path.closeSubpath();
         painter->setBrush(QBrush(pen.color()));
         painter->drawPath(path);
@@ -212,13 +224,12 @@ void ChartAxisPrivate::paintVertical(QPainter *painter) {
 
     // A little hack to make txtHei better reflect character height
     int txtHei = qRound(float(fontMetrics.height())*0.65);
-    int txtWid = 0;
+    int txtWid, maxTxtWid = 0;
 
     // draw main axis line
     if (components & ChartAxis::Line) {
         painter->drawLine(x, chartMin, x, chartMax);
     }
-
     // draw leftwards ticks
     if (components & ChartAxis::TicksDown) {
         for (const auto &sample : sampler->sampleList()) {
@@ -227,6 +238,7 @@ void ChartAxisPrivate::paintVertical(QPainter *painter) {
                 continue;
             if (sample.isMajor) {
                 txtWid = fontMetrics.width(sample.label);
+                if (txtWid > maxTxtWid) maxTxtWid = txtWid;
                 painter->drawLine(x, y, x-bigTick, y);
                 painter->drawText(x-txtWid-10, y+txtHei/2, sample.label);
             }
@@ -234,7 +246,6 @@ void ChartAxisPrivate::paintVertical(QPainter *painter) {
                 painter->drawLine(x, y, x-smallTick, y);
         }
     }
-
     // draw rightwards ticks
     if (components & ChartAxis::TicksUp) {
         for (const auto &sample : sampler->sampleList()) {
@@ -243,6 +254,7 @@ void ChartAxisPrivate::paintVertical(QPainter *painter) {
                 continue;
             if (sample.isMajor) {
                 txtWid = fontMetrics.width(sample.label);
+                if (txtWid > maxTxtWid) maxTxtWid = txtWid;
                 painter->drawLine(x, y, x+bigTick, y);
                 painter->drawText(x+10, y+txtHei/2, sample.label);
             }
@@ -250,14 +262,31 @@ void ChartAxisPrivate::paintVertical(QPainter *painter) {
                 painter->drawLine(x, y, x+smallTick, y);
         }
     }
-
+    // draw middle title
+    if (components & ChartAxis::MiddleTitle) {
+        painter->save();
+        painter->rotate(-90.0);
+        txtWid = fontMetrics.width(name);
+        x = -chartMin -(chartMax-chartMin+txtWid)/2;
+        int y = (components & ChartAxis::TicksUp) ?
+            chartAnchor +maxTxtWid +txtHei +15 :
+            chartAnchor -maxTxtWid -15;
+        painter->drawText(x, y, name);
+        painter->restore();
+    }
+    // draw end title
+    if (components & ChartAxis::EndTitle) {
+        x = chartAnchor;
+        int y = chartMin -4;
+        painter->drawText(x, y, name);
+    }
     // draw arrow
     if (components & ChartAxis::Arrow) {
         painter->setRenderHint(QPainter::Antialiasing, true);
         QPainterPath path;
-        path.moveTo(x, chartMin);
-        path.lineTo(x-3, chartMin+8);
-        path.lineTo(x+3, chartMin+8);
+        path.moveTo(chartAnchor, chartMin);
+        path.lineTo(chartAnchor-3, chartMin+8);
+        path.lineTo(chartAnchor+3, chartMin+8);
         path.closeSubpath();
         painter->setBrush(QBrush(pen.color()));
         painter->drawPath(path);
@@ -282,7 +311,8 @@ void ChartAxis::setComponents(const QString &components) {
     if (components.contains("arrow", Qt::CaseInsensitive)) m->components |= Arrow;
     if (components.contains("ticksUp", Qt::CaseInsensitive)) m->components |= TicksUp;
     if (components.contains("ticksDown", Qt::CaseInsensitive)) m->components |= TicksDown;
-    if (components.contains("title", Qt::CaseInsensitive)) m->components |= Title;
+    if (components.contains("middleTitle", Qt::CaseInsensitive)) m->components |= MiddleTitle;
+    if (components.contains("endTitle", Qt::CaseInsensitive)) m->components |= EndTitle;
     if (components.contains("selectionRect", Qt::CaseInsensitive)) m->components |= SelectionRect;
 
     if (oldValue != m->components) {

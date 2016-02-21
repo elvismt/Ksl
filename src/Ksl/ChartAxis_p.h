@@ -37,7 +37,7 @@ public:
         , pen(Qt::black)
         , brush(Qt::black)
         , selectBrush(QColor(0, 0, 255, 127))
-        , components(ChartAxis::Line|ChartAxis::TicksDown|ChartAxis::Title)
+        , components(ChartAxis::Line|ChartAxis::TicksDown|ChartAxis::MiddleTitle)
         , minTicks(true)
         , smallTick(2)
         , bigTick(6)

@@ -28,3 +28,7 @@ set(Ksl_SRCS
 
 add_library(Ksl SHARED ${Ksl_SRCS})
 target_link_libraries(Ksl Qt5::Widgets)
+
+install(FILES ${Ksl_HDRS} DESTINATION /usr/include/Ksl)
+install(TARGETS Ksl DESTINATION /usr/lib)
+
