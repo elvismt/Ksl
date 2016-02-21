@@ -39,6 +39,13 @@ class KSL_EXPORT Chart
 
 public:
 
+
+    enum ColorTheme {
+        LightTheme,
+        DarkTheme
+    };
+
+
     Chart(const QString &name="Ksl", QObject *parent=0);
 
     QString name() const;
@@ -69,6 +76,8 @@ signals:
 
 
 public slots:
+
+    virtual void setColorTheme(ColorTheme theme);
 
     virtual void informError();
 

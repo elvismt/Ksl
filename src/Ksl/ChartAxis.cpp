@@ -32,8 +32,7 @@ ChartAxis::ChartAxis(Qt::Orientation orient,
     KSL_PUBLIC(ChartAxis);
     m->orient = orient;
     m->rescalable = false;
-    m->pen.setWidth(2);
-    m->antialias = true;
+    // m->pen.setWidth(2);
 }
 
 ChartAxisPrivate::~ChartAxisPrivate() {
@@ -123,7 +122,7 @@ void ChartAxis::paint(QPainter *painter) {
     KSL_PUBLIC(ChartAxis);
     painter->setPen(m->pen);
     painter->setBrush(m->brush);
-    painter->setRenderHint(QPainter::Antialiasing, m->antialias);
+    painter->setRenderHint(QPainter::Antialiasing, false);
 
     if (m->orient == Qt::Horizontal)
         m->paintHorizontal(painter);
@@ -190,6 +189,7 @@ void ChartAxisPrivate::paintHorizontal(QPainter *painter) {
 
     // draw arrow
     if (components & ChartAxis::Arrow) {
+        painter->setRenderHint(QPainter::Antialiasing, true);
         QPainterPath path;
         path.moveTo(chartMax, y);
         path.lineTo(chartMax-8, y+3);
@@ -253,6 +253,7 @@ void ChartAxisPrivate::paintVertical(QPainter *painter) {
 
     // draw arrow
     if (components & ChartAxis::Arrow) {
+        painter->setRenderHint(QPainter::Antialiasing, true);
         QPainterPath path;
         path.moveTo(x, chartMin);
         path.lineTo(x-3, chartMin+8);
@@ -295,6 +296,36 @@ void ChartAxis::setShowMinorTicks(bool show) {
         m->minTicks = show;
         emit appearenceChanged(this);
     }
+}
+
+void ChartAxis::setPen(const QPen &pen) {
+    KSL_PUBLIC(ChartAxis);
+    m->pen = pen;
+}
+
+void ChartAxis::setBrush(const QBrush &brush) {
+    KSL_PUBLIC(ChartAxis);
+    m->brush = brush;
+}
+
+void ChartAxis::setSelectBrush(const QBrush &brush) {
+    KSL_PUBLIC(ChartAxis);
+    m->selectBrush = brush;
+}
+
+QPen ChartAxis::pen() const {
+    KSL_PUBLIC(const ChartAxis);
+    return m->pen;
+}
+
+QBrush ChartAxis::brush() const {
+    KSL_PUBLIC(const ChartAxis);
+    return m->brush;
+}
+
+QBrush ChartAxis::selectBrush() const {
+    KSL_PUBLIC(const ChartAxis);
+    return m->selectBrush;
 }
 
 KSL_END_NAMESPACE

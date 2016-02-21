@@ -21,7 +21,7 @@
 #ifndef KSL_CHARTSCALE_H
 #define KSL_CHARTSCALE_H
 
-#include <Ksl/Object.h>
+#include <Ksl/Chart.h>
 #include <QPainter>
 
 KSL_BEGIN_NAMESPACE
@@ -59,6 +59,8 @@ public:
     virtual QRectF dataRect() const = 0;
 
     virtual void rescale() = 0;
+
+    virtual void setColorTheme(Chart::ColorTheme theme);
 
 
 protected:

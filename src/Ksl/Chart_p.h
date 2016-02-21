@@ -42,6 +42,7 @@ public:
         , showName(true)
         , nameColor(Qt::black)
         , backBrush(Qt::white)
+        , colorTheme(Chart::LightTheme)
         , paintBack(true)
         , onError(false)
     { }
@@ -51,6 +52,7 @@ public:
     bool showName;
     QColor nameColor;
     QBrush backBrush;
+    Chart::ColorTheme colorTheme;
     bool paintBack;
     bool onError;
     QList<ChartScale*> scaleList;

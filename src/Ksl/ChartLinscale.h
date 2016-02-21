@@ -66,6 +66,8 @@ public:
 
     void rescale();
 
+    virtual void setColorTheme(Chart::ColorTheme theme);
+
 protected:
 
     void paint(const QRect &rect, QPainter *painter);

@@ -32,7 +32,7 @@ HEADERS += \
 
 
 SOURCES += \
-    demos/scatter.cpp \
+    demos/sinusoidal.cpp \
     src/Ksl/Chart.cpp \
     src/Ksl/ChartItem.cpp \
     src/Ksl/ChartLinscale.cpp \

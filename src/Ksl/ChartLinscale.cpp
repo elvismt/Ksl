@@ -319,4 +319,27 @@ void ChartLinscale::autoChooseAxis() {
         emit m->chart->changed(m->chart);
 }
 
+
+void ChartLinscale::setColorTheme(Chart::ColorTheme theme) {
+    KSL_PUBLIC(ChartLinscale);
+    Qt::GlobalColor color = (theme == Chart::LightTheme) ?
+                Qt::black : Qt::white;
+    QColor selectColor = (theme == Chart::LightTheme) ?
+                QColor(0, 0, 255, 127) : QColor(0, 255, 0, 127);
+
+    for (auto axis : m->axisList) {
+        auto pen = axis->pen();
+        pen.setColor(color);
+        axis->setPen(pen);
+
+        auto brush = axis->brush();
+        brush.setColor(color);
+        axis->setBrush(brush);
+
+        brush = axis->selectBrush();
+        brush.setColor(selectColor);
+        axis->setSelectBrush(brush);
+    }
+}
+
 KSL_END_NAMESPACE

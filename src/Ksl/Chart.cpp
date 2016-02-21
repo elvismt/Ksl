@@ -27,7 +27,9 @@ KSL_BEGIN_NAMESPACE
 Chart::Chart(const QString &name, QObject *parent)
     : QObject(parent)
     , Ksl::Object(new ChartPrivate(this,name))
-{ }
+{
+    setColorTheme(DarkTheme);
+}
 
 
 QList<ChartScale*>& Chart::scaleList() {
@@ -50,8 +52,20 @@ void Chart::add(ChartScale *scale) {
     if (!m->scaleList.contains(scale)) {
         m->scaleList.append(scale);
         scale->setChart(this);
+        scale->setColorTheme(m->colorTheme);
         emit changed(this);
     }
+}
+
+
+void Chart::setColorTheme(ColorTheme theme) {
+    KSL_PUBLIC(Chart);
+    m->colorTheme = theme;
+    m->backBrush.setColor(Qt::black);
+    m->nameColor = Qt::white;
+    for (auto scale : m->scaleList)
+        scale->setColorTheme(theme);
+    emit changed(this);
 }
 
 

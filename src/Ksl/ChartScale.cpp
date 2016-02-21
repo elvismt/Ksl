@@ -48,6 +48,10 @@ const QList<ChartItem*>& ChartScale::itemList() const {
     return m->itemList;
 }
 
+void ChartScale::setColorTheme(Chart::ColorTheme theme) {
+    Q_UNUSED(theme)
+}
+
 void ChartScale::add(ChartItem *item) {
     KSL_PUBLIC(ChartScale);
     if (!item) {

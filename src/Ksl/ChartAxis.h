@@ -73,8 +73,20 @@ public:
 
     bool selected() const;
 
+    QPen pen() const;
+
+    QBrush brush() const;
+
+    QBrush selectBrush() const;
+
 
 public slots:
+
+    void setPen(const QPen &pen);
+
+    void setBrush(const QBrush &brush);
+
+    void setSelectBrush(const QBrush &brush);
 
     void setComponents(Component components);
 
