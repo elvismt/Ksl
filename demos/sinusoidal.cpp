@@ -9,8 +9,8 @@ int main(int argc, char *argv[])
     QApplication app(argc,argv);
 
     auto x = linspace(-M_PI, M_PI, 0.05);
-    ChartLinscale scales[4];
-    ChartView views[4];
+    ChartLinscale scales[3];
+    ChartView views[3];
 
     // Add sme functions
     scales[0].add(new SeriesPlot(x, sin(x), "Sin(X)", Qt::red));
@@ -22,13 +22,7 @@ int main(int argc, char *argv[])
     scales[2].add(new SeriesPlot(x, tan(x), "Tan(X)", Qt::blue));
     views[2].setWindowTitle("TAN");
 
-    // asin() will return NaN or Infinity somewhere in this range.
-    // This plot was put here to demonstrate our hability to detect
-    // and broadcast errors
-    scales[3].add(new SeriesPlot(x, asin(x), "Asin(X)", Qt::blue));
-    views[3].setWindowTitle("ASIN");
-
-    for (int k=0; k<4; ++k) {
+    for (int k=0; k<3; ++k) {
         // We will use custom axis labels, in terms of pi
         auto sampler = scales[k].axis(X_Axis)->sampler();
         sampler->addSample("-π", -M_PI);

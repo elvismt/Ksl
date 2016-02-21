@@ -28,6 +28,12 @@
 #define KSL_BEGIN_MATH_NAMESPACE namespace Ksl { namespace Math {
 #define KSL_END_MATH_NAMESPACE }} // namespace Ksl::Math
 
-#define KSL_EXPORT
+#if defined(KSL_LIB_BUILD)
+#  define KSL_EXPORT Q_DECL_EXPORT
+#elif defined(KSL_LIB)
+#  define KSL_EXPORT Q_DECL_IMPORT
+#else
+#  define KSL_EXPORT // nothing
+#endif
 
 #endif // KSL_GLOBAL_H

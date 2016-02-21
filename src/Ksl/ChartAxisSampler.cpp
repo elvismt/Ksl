@@ -50,7 +50,7 @@ void ChartAxisSampler::setMode(Mode mode) {
 }
 
 
-void ChartAxisSampler::setSamples(const QList<Sample> &samples) {
+void ChartAxisSampler::setSampleList(const QList<Sample> &samples) {
     KSL_PUBLIC(ChartAxisSampler);
     m->mode = CustomSamples;
     m->sampleList.clear();
@@ -58,7 +58,7 @@ void ChartAxisSampler::setSamples(const QList<Sample> &samples) {
 }
 
 
-#if !defined(_MSC_VER) || _MSC_VER > 1700
+#ifdef Q_COMPILER_INITIALIZER_LISTS
 void ChartAxisSampler::setSamples(std::initializer_list<Sample> initList) {
     KSL_PUBLIC(ChartAxisSampler);
     m->mode = CustomSamples;

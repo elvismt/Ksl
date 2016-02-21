@@ -65,9 +65,9 @@ public:
 
     void setMode(Mode mode);
 
-    void setSamples(const QList<Sample> &samples);
+    void setSampleList(const QList<Sample> &samples);
 
-#if !defined(_MSC_VER) || _MSC_VER > 1700
+#ifdef Q_COMPILER_INITIALIZER_LISTS
     void setSamples(std::initializer_list<Sample> initList);
 #endif
 

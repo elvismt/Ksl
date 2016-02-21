@@ -60,7 +60,7 @@ public:
     Array(size_type n, const data_type &value);
     Array(const Array &that);
     Array(Array &&that);
-#if !defined(_MSC_VER) || _MSC_VER > 1700
+#ifdef Q_COMPILER_INITIALIZER_LISTS
     Array(std::initializer_list<data_type> initlist);
 #endif
 
@@ -169,7 +169,7 @@ Array<1,T>::Array(Array &&that)
 }
 
 
-#if !defined(_MSC_VER) || _MSC_VER > 1700
+#ifdef Q_COMPILER_INITIALIZER_LISTS
 template <typename T>
 Array<1,T>::Array(std::initializer_list<data_type> initlist)
 {
@@ -353,7 +353,7 @@ public:
     Array(size_type m, size_type n, const data_type &value);
     Array(const Array &that);
     Array(Array &&that);
-#if !defined(_MSC_VER) || _MSC_VER > 1700
+#ifdef Q_COMPILER_INITIALIZER_LISTS
     Array(std::initializer_list<
              std::initializer_list<data_type> >  initlist);
 #endif
@@ -470,7 +470,7 @@ Array<2,T>::Array(Array &&that)
 }
 
 
-#if !defined(_MSC_VER) || _MSC_VER > 1700
+#ifdef Q_COMPILER_INITIALIZER_LISTS
 template <typename T>
 Array<2,T>::Array(std::initializer_list<
                      std::initializer_list<data_type> > initlist)
