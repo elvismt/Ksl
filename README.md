@@ -1,30 +1,32 @@
 KSL
 ===
 
-KSL is a free (LGPL3) C++/Qt library with utilities for science. Our
-goal is to mimic the set of tools NumPy, SciPy and matplotlib from
-Python down here in the world of C++ performance.
+KSL is a free (LGPL3) C++/Qt library with utilities for science. Our goal
+is to provide tools to facilitade and make fast the development of programs
+for data analisys and information retrieval. We start with simple array
+handling and linear regression as well as a fast and featureful chart
+widget for visualization.
 
-KSL provides already provides facilities for array manipulation and data
-visualization and more tools specially for data science related tasks are
-being developed. KSL actually provides:
+KSL's (growing) list of current features is:
 
    * Data Visualization Widget
    * Linear Regression
-   * Maximization and Minimization
 
-The numerical routines in KSL are adapted from the Mighty GNU Scientific Library
-[GSL](http://www.gnu.org/software/gsl)
-We thank and congratulate it's developers for the great work.
-Ksl follows some of KDE's software design goals and all of it's philosophy but it
-is not an official KDE component.
+The numerical routines in KSL are primarily adapted from the Mighty GNU
+Scientific Library [GSL](http://www.gnu.org/software/gsl)
+We thank and congratulate it's developers for the great work. Ksl follows
+some of KDE's software design goals and all of it's philosophy but it is
+not an official KDE component.
 
 The figures below ware created with KSL's chart widget:
 
-   * Particles in a box of edge length L.
+   * Cossine function (on Debian8/KDE)
+
+![](https://github.com/elvismt/Ksl/blob/master/demos/cossine.png)
+
+   * Particles in a box of edge length L (on Windows 10)
 
 ![](https://github.com/elvismt/Ksl/blob/master/demos/scatter.png)
 
-   * Cossine function.
-
-![](https://github.com/elvismt/Ksl/blob/master/demos/cossine.png)
+If you are looking for a C/Gtk solution for 2D visualization. Take a look
+at [slope](https://github.com/elvismt/slope)
