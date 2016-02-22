@@ -35,12 +35,14 @@ public:
         , min(1.0)
         , max(-1.0)
         , hint(0.0)
+        , minorSamples(false)
         , mode(ChartAxisSampler::AutoDecimal)
     { }
 
 
     double min, max;
     double hint;
+    bool minorSamples;
     ChartAxisSampler::Mode mode;
     QList<ChartAxisSampler::Sample> sampleList;
 };

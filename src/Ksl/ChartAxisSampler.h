@@ -59,7 +59,12 @@ public:
     ChartAxisSampler();
 
     QList<Sample>& sampleList();
+
     const QList<Sample>& sampleList() const;
+
+    bool minorSamples() const;
+
+    void addMinorSamples(bool on);
 
     Mode mode() const;
 

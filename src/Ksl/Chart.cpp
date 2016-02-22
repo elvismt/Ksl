@@ -28,7 +28,7 @@ Chart::Chart(const QString &name, QObject *parent)
     : QObject(parent)
     , Ksl::Object(new ChartPrivate(this,name))
 {
-    setColorTheme(DarkTheme);
+    setColorTheme(LightTheme);
 }
 
 
@@ -61,8 +61,14 @@ void Chart::add(ChartScale *scale) {
 void Chart::setColorTheme(ColorTheme theme) {
     KSL_PUBLIC(Chart);
     m->colorTheme = theme;
-    m->backBrush.setColor(Qt::black);
-    m->nameColor = Qt::white;
+    if (theme == ColorTheme::DarkTheme) {
+        m->backBrush.setColor(Qt::black);
+        m->nameColor = Qt::white;
+    }
+    else {
+        m->backBrush.setColor(Qt::white);
+        m->nameColor = Qt::black;
+    }
     for (auto scale : m->scaleList)
         scale->setColorTheme(theme);
     emit changed(this);

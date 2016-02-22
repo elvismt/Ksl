@@ -39,6 +39,18 @@ const QList<ChartAxisSampler::Sample>& ChartAxisSampler::sampleList() const {
 }
 
 
+bool ChartAxisSampler::minorSamples() const {
+    KSL_PUBLIC(const ChartAxisSampler);
+    return m->minorSamples;
+}
+
+
+void ChartAxisSampler::addMinorSamples(bool on) {
+    KSL_PUBLIC(ChartAxisSampler);
+    m->minorSamples = on;
+}
+
+
 ChartAxisSampler::Mode ChartAxisSampler::mode() const {
     KSL_PUBLIC(const ChartAxisSampler);
     return m->mode;
@@ -109,19 +121,27 @@ void ChartAxisSampler::autoSampleDecimal(double min, double max, double hint) {
     }
 
     m->sampleList.clear();
-    sampSpac /= 4.0;
+    if (m->minorSamples)
+        sampSpac /= 4.0;
     double coord = firstTick;
     int k = 0;
     while (coord <= max) {
-        if (k%4 == 0) {
-            // Sometimes the zero coord falls not exactly on zero
-            // and you get something like -124345e-301. Weird ya?
+        if (m->minorSamples) {
+            if (k%4 == 0) {
+                // Sometimes the zero coord falls not exactly on zero
+                // and you get something like -124345e-301. Weird ya?
+                if (fabs(coord) / valDiff < 1.0e-10 && valDiff > 1.0e-10)
+                    coord = 0.0;
+                m->sampleList.append(Sample(QString::number(coord,'g'), coord));
+            }
+            else
+                m->sampleList.append(Sample(QString(), coord, false));
+        }
+        else { // No minor samples
             if (fabs(coord) / valDiff < 1.0e-10 && valDiff > 1.0e-10)
                 coord = 0.0;
             m->sampleList.append(Sample(QString::number(coord,'g'), coord));
         }
-        else
-            m->sampleList.append(Sample(QString(), coord, false));
         coord += sampSpac;
         k += 1;
     }

@@ -8,8 +8,9 @@ using namespace Ksl;
 int main(int argc, char *argv[])
 {
     QApplication app(argc,argv);
-
+    ChartView view("BOXED PARTICLES");
     ChartLinscale scale;
+
     scale.add(new SeriesPlot(
                   randspace(2000, 1000.0),
                   randspace(2000, 1000.0),
@@ -25,10 +26,12 @@ int main(int argc, char *argv[])
     sampler->addSample("0", 0.0);
     sampler->addSample("L/2", 500.0);
     sampler->addSample("L", 1000.0);
-    // we can visually select an axis
-    scale.axis(BottomAxis)->setSelected(true);
 
-    ChartView view("BOXED PARTICLES");
+    // we can visually select an axis
+    // and set a dark theme
+    scale.axis(BottomAxis)->setSelected(true);
+    view.chart()->setColorTheme(Chart::DarkTheme);
+
     view.chart()->add(scale);
     view.show();
 
