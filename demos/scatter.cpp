@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
                   "Scatter", Qt::blue,
                   SeriesPlot::Circles));
 
-    scale.showAxis(BottomAxis|LeftAxis);
+    scale.showAxis(BottomAxis|LeftAxis|TopAxis|RightAxis);
     auto sampler = scale.axis(BottomAxis)->sampler();
     sampler->addSample("0", 0.0);
     sampler->addSample("L/2", 500.0);
@@ -27,11 +27,7 @@ int main(int argc, char *argv[])
     sampler->addSample("L/2", 500.0);
     sampler->addSample("L", 1000.0);
 
-    // we can visually select an axis
-    // and set a dark theme
-    scale.axis(BottomAxis)->setSelected(true);
     view.chart()->setColorTheme(Chart::DarkTheme);
-
     view.chart()->add(scale);
     view.show();
 

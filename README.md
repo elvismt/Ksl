@@ -24,9 +24,10 @@ The figures below ware created with KSL's chart widget:
 
 ![](https://github.com/elvismt/Ksl/blob/master/demos/sine.png)
 
-   * Particles in a box of edge length L (on Windows 10)
+   * Particles in a box of edge length L (on Windows 7)
 
 ![](https://github.com/elvismt/Ksl/blob/master/demos/scatter.png)
 
 If you are looking for a C/Gtk solution for 2D visualization. Take a look
 at [slope](https://github.com/elvismt/slope)
+

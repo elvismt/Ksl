@@ -26,6 +26,8 @@ HEADERS += \
     src/Ksl/SeriesPlot_p.h \
     src/Ksl/ChartAxis.h \
     src/Ksl/ChartAxis_p.h \
+    src/Ksl/ChartLabel.h \
+    src/Ksl/ChartLabel_p.h \
     src/Ksl/Math.h \
     src/Ksl/ChartAxisSampler.h \
     src/Ksl/ChartAxisSampler_p.h
@@ -40,5 +42,6 @@ SOURCES += \
     src/Ksl/ChartView.cpp \
     src/Ksl/SeriesPlot.cpp \
     src/Ksl/ChartAxis.cpp \
+    src/Ksl/ChartLabel.cpp \
     src/Ksl/Math.cpp \
     src/Ksl/ChartAxisSampler.cpp
