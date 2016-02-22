@@ -20,9 +20,9 @@ not an official KDE component.
 
 The figures below ware created with KSL's chart widget:
 
-   * Cossine function (on Debian8/KDE)
+   * Sine function (on Debian8/KDE)
 
-![](https://github.com/elvismt/Ksl/blob/master/demos/cossine.png)
+![](https://github.com/elvismt/Ksl/blob/master/demos/sine.png)
 
    * Particles in a box of edge length L (on Windows 10)
 
