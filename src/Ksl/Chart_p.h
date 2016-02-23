@@ -34,7 +34,7 @@ public:
     ChartPrivate(Chart *publ, const QString &iname)
         : Ksl::ObjectPrivate(publ)
 #if defined(Q_OS_WIN32)
-        , font("Times New Roman", 12)
+        , font("Times New Roman", 11)
 #elif defined(Q_OS_LINUX)
         // let system decide
         //, font("FreeMono", 10)

@@ -36,7 +36,7 @@ HEADERS += \
 
 
 SOURCES += \
-    demos/sinusoidal.cpp \
+    demos/devtest.cpp \
     src/Ksl/Chart.cpp \
     src/Ksl/ChartItem.cpp \
     src/Ksl/ChartLinscale.cpp \

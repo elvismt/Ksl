@@ -22,6 +22,7 @@
 #define KSL_MEMORYPOOL_H
 
 #include <Ksl/Object.h>
+#include <cstdint>
 
 KSL_BEGIN_NAMESPACE
 
