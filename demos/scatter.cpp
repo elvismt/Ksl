@@ -5,6 +5,7 @@
 #include <Ksl/ChartAxis.h>
 using namespace Ksl;
 
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc,argv);

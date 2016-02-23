@@ -18,52 +18,47 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHARTVIEW_H
-#define KSL_CHARTVIEW_H
+#ifndef KSL_MEMORYPOOL_H
+#define KSL_MEMORYPOOL_H
 
-#include <QWidget>
-#include <Ksl/Chart.h>
-#include <Ksl/ChartLinscale.h>
-#include <Ksl/SeriesPlot.h>
-#include <Ksl/ChartLabel.h>
+#include <Ksl/Object.h>
 
 KSL_BEGIN_NAMESPACE
 
-class KSL_EXPORT ChartView
-    : public QWidget
-    , public Ksl::Object
+class KSL_EXPORT MemoryPool
+    : public Ksl::Object
 {
-    Q_OBJECT
-
 public:
 
-    ChartView(QWidget *parent);
-
-    ChartView(Chart *chart, QWidget *parent=0);
-
-    ChartView(const QString &title="Ksl", int width=500,
-              int height=400, QWidget *parent=0);
-
-    Chart* chart() const;
+    MemoryPool(uint64_t unitSize=1024, uint32_t numUnits=32);
 
 
-public slots:
+    void* allocBytes(uint64_t amount);
 
-    virtual void onChartChange(Chart *chart);
-
-    virtual void updateBackPixmap();
+    void freeBytes(void *location, uint64_t size);
 
 
-protected:
+    template <typename T, typename... Args>
+    inline T* alloc(Args... args) {
+        return new (allocBytes(sizeof(T))) T(args...);
+    }
 
-    virtual void paintEvent(QPaintEvent *event);
-    
-    ChartView(Ksl::ObjectPrivate *priv, QWidget *parent)
-        : QWidget(parent)
-        , Ksl::Object(priv)
-    { }
+    template <typename T>
+    inline T* allocArray(uint64_t size) {
+        return (T*) allocBytes(size*sizeof(T));
+    }
+
+    template <typename T>
+    inline void free(T *ptr) {
+        freeBytes(ptr, sizeof(T));
+    }
+
+    template <typename T>
+    inline void freeArray(T *ptr, uint64_t size) {
+        freeBytes(ptr, size*sizeof(T));
+    }
 };
 
 KSL_END_NAMESPACE
 
-#endif // KSL_CHARTVIEW_H
+#endif // KSL_MEMORYPOOL_H

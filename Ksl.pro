@@ -30,11 +30,13 @@ HEADERS += \
     src/Ksl/ChartLabel_p.h \
     src/Ksl/Math.h \
     src/Ksl/ChartAxisSampler.h \
-    src/Ksl/ChartAxisSampler_p.h
+    src/Ksl/ChartAxisSampler_p.h \
+    src/Ksl/MemoryPool.h \
+    src/Ksl/MemoryPool_p.h
 
 
 SOURCES += \
-    demos/scatter.cpp \
+    demos/sinusoidal.cpp \
     src/Ksl/Chart.cpp \
     src/Ksl/ChartItem.cpp \
     src/Ksl/ChartLinscale.cpp \
@@ -44,4 +46,5 @@ SOURCES += \
     src/Ksl/ChartAxis.cpp \
     src/Ksl/ChartLabel.cpp \
     src/Ksl/Math.cpp \
-    src/Ksl/ChartAxisSampler.cpp
+    src/Ksl/ChartAxisSampler.cpp \
+    src/Ksl/MemoryPool.cpp

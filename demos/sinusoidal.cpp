@@ -1,8 +1,6 @@
+
 #include <QApplication>
 #include <Ksl/ChartView.h>
-#include <Ksl/ChartLinscale.h>
-#include <Ksl/SeriesPlot.h>
-#include <Ksl/ChartLabel.h>
 using namespace Ksl;
 
 int main(int argc, char *argv[])
@@ -38,4 +36,3 @@ int main(int argc, char *argv[])
     }
     return app.exec();
 }
-
