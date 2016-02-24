@@ -274,7 +274,7 @@ Array<1,T> maxsize(const Array<1,T> &a1, const Array<1,T> &a2)
 
 
 template <typename T, typename Iterator> inline
-Array<1,T> makeArray(const Iterator &begin, size_t size)
+Array<1,T> array1D(const Iterator &begin, size_t size)
 {
     Array<1,T> ret(size);
     Iterator iter = begin;
@@ -284,20 +284,20 @@ Array<1,T> makeArray(const Iterator &begin, size_t size)
 }
 
 template <typename T> inline
-Array<1,T> makeArray(const std::vector<T> &vec)
-{ return std::move(makeArray<T>(vec.begin(), vec.size())); }
+Array<1,T> array1D(const std::vector<T> &vec)
+{ return std::move(array1D<T>(vec.begin(), vec.size())); }
 
 template <typename T> inline
-Array<1,T> makeArray(const std::list<T> &lst)
-{ return std::move(makeArray<T>(lst.begin(), lst.size())); }
+Array<1,T> array1D(const std::list<T> &lst)
+{ return std::move(array1D<T>(lst.begin(), lst.size())); }
 
 template <typename T> inline
-Array<1,T> makeArray(const QVector<T> &qvec)
-{ return std::move(makeArray<T>(qvec.begin(), qvec.size())); }
+Array<1,T> array1D(const QVector<T> &qvec)
+{ return std::move(array1D<T>(qvec.begin(), qvec.size())); }
 
 template <typename T> inline
-Array<1,T> makeArray(const QList<T> &qlst)
-{ return std::move(makeArray<T>(qlst.begin(), qlst.size())); }
+Array<1,T> array1D(const QList<T> &qlst)
+{ return std::move(array1D<T>(qlst.begin(), qlst.size())); }
 
 
 /*******************************************************
@@ -609,7 +609,7 @@ Array<2,T> maxsize(const Array<2,T> &a1, const Array<2,T> &a2)
  *************************************/
 
 template <typename T, typename Iterator>
-Array<2,T> make2D(size_t m, size_t n, const Iterator &begin)
+Array<2,T> array2D(size_t m, size_t n, const Iterator &begin)
 {
     Array<2,T> ret(m, n);
     Iterator iter = begin;
@@ -619,24 +619,24 @@ Array<2,T> make2D(size_t m, size_t n, const Iterator &begin)
 }
 
 template <typename T>
-Array<2,T> make2D(size_t m, size_t n, const Array<1,T> &array)
-{ return std::move(make2D<T>(m, n, array.begin())); }
+Array<2,T> array2D(size_t m, size_t n, const Array<1,T> &array)
+{ return std::move(array2D<T>(m, n, array.begin())); }
 
 template <typename T>
-Array<2,T> make2D(size_t m, size_t n, const std::vector<T> &vec)
-{ return std::move(make2D<T>(m, n, vec.begin())); }
+Array<2,T> array2D(size_t m, size_t n, const std::vector<T> &vec)
+{ return std::move(array2D<T>(m, n, vec.begin())); }
 
 template <typename T>
-Array<2,T> make2D(size_t m, size_t n, const std::list<T> &lst)
-{ return std::move(make2D<T>(m, n, lst.begin())); }
+Array<2,T> array2D(size_t m, size_t n, const std::list<T> &lst)
+{ return std::move(array2D<T>(m, n, lst.begin())); }
 
 template <typename T>
-Array<2,T> make2D(size_t m, size_t n, const QVector<T> &qvec)
-{ return std::move(make2D<T>(m, n, qvec.begin())); }
+Array<2,T> array2D(size_t m, size_t n, const QVector<T> &qvec)
+{ return std::move(array2D<T>(m, n, qvec.begin())); }
 
 template <typename T>
-Array<2,T> make2D(size_t m, size_t n, const QList<T> &qlst)
-{ return std::move(make2D<T>(m, n, qlst.begin())); }
+Array<2,T> array2D(size_t m, size_t n, const QList<T> &qlst)
+{ return std::move(array2D<T>(m, n, qlst.begin())); }
 
 
 /*******************************************************

@@ -32,7 +32,8 @@ HEADERS += \
     src/Ksl/ChartAxisSampler.h \
     src/Ksl/ChartAxisSampler_p.h \
     src/Ksl/MemoryPool.h \
-    src/Ksl/MemoryPool_p.h
+    src/Ksl/MemoryPool_p.h \
+    src/Ksl/Graph.h
 
 
 SOURCES += \
