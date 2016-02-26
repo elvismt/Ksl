@@ -1,32 +1,36 @@
+#include <QApplication>
+#include <QtGui>
 #include <QDebug>
-#include <QString>
 
 #include <Ksl/Array.h>
 #include <Ksl/Graph.h>
+#include <Ksl/Canvas.h>
 using namespace Ksl;
 
 #include <iostream>
 using namespace std;
 
-int main()
+
+class MyCanvas: public Canvas
 {
-    MemoryPool memPool;
-    Graph<QString> graph(&memPool, &memPool, "Lara");
+    void paint(QPainter *painter, const QRect &rect) {
+        painter->drawText(30, 30, "Hello Canvas");
+    }
 
-    auto lara = graph.entry();
-    graph.addNeighbor(lara, "son", "Bob");
-    graph.addNeighbor(lara, "father", "Bruce");
+    void leftClick(const QPoint &pos) {
+        qDebug() << "clicked at" << pos;
+    }
 
-    // Who?
-    qDebug() << "Graph entry is" << lara->data();
+    void rightClick(const QPoint &pos) {
+        qDebug() << "right clicked at" << pos;
+    }
+};
 
-    // Who is her son?
-    auto queryResult = lara->findByEdge("son");
-    qDebug() << "her son is" << queryResult->data();
 
-    // Who is her father?
-    queryResult = lara->findByEdge("father");
-    qDebug() << "her father is" << queryResult->data();
-
-    return 0;
+int main(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+    MyCanvas canvas;
+    canvas.show();
+    return app.exec();
 }

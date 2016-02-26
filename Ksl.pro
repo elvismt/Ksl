@@ -33,7 +33,9 @@ HEADERS += \
     src/Ksl/ChartAxisSampler_p.h \
     src/Ksl/MemoryPool.h \
     src/Ksl/MemoryPool_p.h \
-    src/Ksl/Graph.h
+    src/Ksl/Graph.h \
+    src/Ksl/Canvas.h \
+    src/Ksl/Canvas_p.h
 
 
 SOURCES += \
@@ -48,4 +50,5 @@ SOURCES += \
     src/Ksl/ChartLabel.cpp \
     src/Ksl/Math.cpp \
     src/Ksl/ChartAxisSampler.cpp \
-    src/Ksl/MemoryPool.cpp
+    src/Ksl/MemoryPool.cpp \
+    src/Ksl/Canvas.cpp
