@@ -18,36 +18,57 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHART_H
-#define KSL_CHART_H
+#ifndef KSL_CANVASWINDOW_H
+#define KSL_CANVASWINDOW_H
 
-#include <Ksl/ChartEngine.h>
-#include <Ksl/ChartLinscale.h>
-#include <Ksl/SeriesPlot.h>
-#include <Ksl/ChartLabel.h>
-#include <Ksl/Canvas.h>
+#include <Ksl/Object.h>
+#include <QMainWindow>
+#include <QtGui>
+#include <QDebug>
 
 KSL_BEGIN_NAMESPACE
 
-class KSL_EXPORT Chart
-    : public Canvas
+class KSL_EXPORT CanvasWindow
+    : public QMainWindow
+    , public Ksl::Object
 {
     Q_OBJECT
 
 public:
 
-    Chart(const QString &title="Ksl", int width=500,
-          int height=400, QWidget *parent=0);
+    CanvasWindow(const QString &title="Ksl",
+                 int width=500, int height=500,
+                 QWidget *parent=0);
 
-    ChartEngine* chartEngine() const;
 
-    ChartLinscale* addScale(const QString &name="scale");
+    virtual void paint(const QRect &rect, QPainter *painter);
 
-    virtual void paint(QPainter *painter, const QRect &rect);
+    virtual void leftClick(const QPoint &pos);
+
+    virtual void rightClick(const QPoint &pos);
+
+    virtual void mouseRelease(const QPoint &pos);
 
     virtual void mouseMove(const QPoint &pos);
+
+
+public slots:
+
+    virtual void start();
+
+    virtual void animate();
+
+    virtual void stop();
+
+    virtual void reset();
+
+    void repaintCanvas();
+
+    void save();
+
+    void setTimeStep(int milisecs);
 };
 
 KSL_END_NAMESPACE
 
-#endif // KSL_CHART_H
+#endif // KSL_CANVASWINDOW_H

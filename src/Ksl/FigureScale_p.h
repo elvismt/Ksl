@@ -18,10 +18,31 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Ksl/Math.h>
+#ifndef KSL_FIGURESCALE_P_H
+#define KSL_FIGURESCALE_P_H
 
-KSL_BEGIN_MATH_NAMESPACE
+#include <Ksl/FigureScale.h>
 
-// nothing here, yet
+KSL_BEGIN_NAMESPACE
 
-KSL_END_MATH_NAMESPACE
+class FigureScalePrivate
+    : public Ksl::ObjectPrivate
+{
+public:
+
+    FigureScalePrivate(FigureScale *publ)
+        : Ksl::ObjectPrivate(publ)
+        , figure(nullptr)
+        , visible(true)
+        , name("scale")
+    { }
+
+    Figure *figure;
+    bool visible;
+    QString name;
+    QList<FigureItem*> itemList;
+};
+
+KSL_END_NAMESPACE
+
+#endif // KSL_FIGURESCALE_P_H

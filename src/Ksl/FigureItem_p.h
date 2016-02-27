@@ -18,31 +18,31 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_MEMORYPOOL_P_H
-#define KSL_MEMORYPOOL_P_H
+#ifndef KSL_FIGUREITEM_P_H
+#define KSL_FIGUREITEM_P_H
 
-#include <Ksl/MemoryPool.h>
+#include <Ksl/FigureItem.h>
 
 KSL_BEGIN_NAMESPACE
 
-class MemoryPoolPrivate
+class FigureItemPrivate
     : public Ksl::ObjectPrivate
 {
 public:
 
-    MemoryPoolPrivate(MemoryPool *publ)
+    FigureItemPrivate(FigureItem *publ)
         : Ksl::ObjectPrivate(publ)
+        , visible(true)
+        , figure(nullptr)
+        , scale(nullptr)
     { }
 
-
-    uint64_t unitSize;
-    uint32_t numUnits;
-    uint32_t unitsUsed;
-    char **units;
-    char *currUnit;
-    char *pos;
+    bool visible;
+    Figure *figure;
+    FigureScale *scale;
+    QString name;
 };
 
 KSL_END_NAMESPACE
 
-#endif // KSL_MEMORYPOOL_P_H
+#endif // KSL_FIGUREITEM_P_H

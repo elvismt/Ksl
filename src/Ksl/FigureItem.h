@@ -18,8 +18,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHARTITEM_H
-#define KSL_CHARTITEM_H
+#ifndef KSL_FIGUREITEM_H
+#define KSL_FIGUREITEM_H
 
 #include <Ksl/Object.h>
 #include <QObject>
@@ -27,12 +27,12 @@
 
 KSL_BEGIN_NAMESPACE
 
-// forward declarations
-class ChartEngine;
-class ChartScale;
+// forward
+class Figure;
+class FigureScale;
 
 
-class KSL_EXPORT ChartItem
+class KSL_EXPORT FigureItem
     : public QObject
     , public Ksl::Object
 {
@@ -40,25 +40,18 @@ class KSL_EXPORT ChartItem
 
 public:
 
-    ChartEngine* chartEngine() const;
+    Figure* figure() const;
 
-    ChartScale* scale() const;
+    FigureScale* scale() const;
 
     QString name() const;
 
     bool visible() const;
 
-    bool rescalable() const;
+    virtual QRectF dataRect() const;
 
-    virtual QRect chartRect() const = 0;
+    virtual QRect figureRect() const;
 
-    virtual QRectF dataRect() const = 0;
-
-signals:
-
-    void dataChanged(ChartItem *self);
-
-    void appearenceChanged(ChartItem *self);
 
 public slots:
 
@@ -66,20 +59,26 @@ public slots:
 
     void setVisible(bool visible);
 
+
+signals:
+
+    void appearenceChanged(FigureItem *self);
+
+    void dataChanged(FigureItem *self);
+
+
 protected:
 
-    friend class ChartScale;
+    friend class FigureScale;
+
+    virtual void setScale(FigureScale *scale);
 
     virtual void paint(QPainter *painter) = 0;
 
-    virtual void setScale(ChartScale *scale);
-
-    ChartItem(Ksl::ObjectPrivate *priv, QObject *parent)
-        : QObject(parent)
-        , Ksl::Object(priv)
-    { }
+    FigureItem(Ksl::ObjectPrivate *priv,
+               const QString &name, QObject *parent);
 };
 
 KSL_END_NAMESPACE
 
-#endif // KSL_CHARTITEM_H
+#endif // FIGUREITEM_H

@@ -18,63 +18,64 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHARTSCALE_H
-#define KSL_CHARTSCALE_H
+#ifndef KSL_FIGURESCALE_H
+#define KSL_FIGURESCALE_H
 
-#include <Ksl/ChartEngine.h>
+#include <Ksl/Object.h>
 #include <QPainter>
 
 KSL_BEGIN_NAMESPACE
 
-// forward declarations
-class ChartItem;
+// forward
+class Figure;
+class FigureItem;
 
 
-class KSL_EXPORT ChartScale
+class KSL_EXPORT FigureScale
     : public Ksl::Object
 {
 public:
 
-    ChartEngine* chartEngine() const;
+    Figure* figure() const;
+
+    virtual void add(FigureItem *item);
+
+    QList<FigureItem*>& itemList();
+
+    const QList<FigureItem*>& itemList() const;
+
+    FigureItem* item(const QString &name) const;
 
     QString name() const;
 
+    void setName(const QString &name);
+
     bool visible() const;
 
-    QList<ChartItem*>& itemList();
+    void setVisible(bool visible);
 
-    const QList<ChartItem*>& itemList() const;
+    virtual QPoint map(const QPointF &point) const = 0;
 
-    virtual void add(ChartItem *item);
+    virtual QPointF unmap(const QPoint &point) const = 0;
 
-    inline void add(ChartItem &item) { add(&item); }
+    virtual void rescale();
 
-    virtual QPoint map(const QPointF &p) const = 0;
+    virtual QRectF dataRect() const;
 
-    virtual QPointF unmap(const QPoint &p) const = 0;
-
-    virtual QRect chartRect() const = 0;
-
-    virtual QRectF dataRect() const = 0;
-
-    virtual void rescale() = 0;
-
-    virtual void setColorTheme(ChartEngine::ColorTheme theme);
+    virtual QRect figureRect() const;
 
 
 protected:
 
-    friend class ChartEngine;
+    friend class Figure;
 
-    virtual void setChartEngine(ChartEngine *chartEngine);
+    virtual void setFigure(Figure *figure);
 
     virtual void paint(const QRect &rect, QPainter *painter);
 
-    ChartScale(Ksl::ObjectPrivate *priv)
-        : Ksl::Object(priv)
-    { }
+    FigureScale(Ksl::ObjectPrivate *priv, const QString &name);
 };
 
 KSL_END_NAMESPACE
 
-#endif // KSL_CHARTSCALE_H
+#endif // KSL_FIGURESCALE_H

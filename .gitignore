@@ -1,5 +1,4 @@
-build
-build/*
+build*
 *.o
 *.out
 *.obj

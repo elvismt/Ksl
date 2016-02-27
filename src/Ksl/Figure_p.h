@@ -18,41 +18,30 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHARTLABEL_H
-#define KSL_CHARTLABEL_H
+#ifndef KSL_FIGURE_P_H
+#define KSL_FIGURE_P_H
 
-#include <Ksl/ChartItem.h>
+#include <Ksl/Figure.h>
 
 KSL_BEGIN_NAMESPACE
 
-class KSL_EXPORT ChartLabel
-    : public ChartItem
+class FigurePrivate
+    : public Ksl::ObjectPrivate
 {
-    Q_OBJECT
-
 public:
 
-   ChartLabel(const QString &text, double x, double y,
-              const QPen &pen=QPen(Qt::blue), const QBrush &brush=QBrush(Qt::white),
-              QObject *parent=0);
+    FigurePrivate(Figure *publ)
+        : Ksl::ObjectPrivate(publ)
+        , fillBack(true)
+        , backBrush(Qt::white)
+    {}
 
-   QString text() const;
-
-   virtual QRect chartRect() const;
-   
-   virtual QRectF dataRect() const;
-
-public slots:
-
-   void setText(const QString &text);
-
-   void setPos(double x, double y);
-
-protected:
-
-   virtual void paint(QPainter *painter);
+    bool fillBack;
+    QBrush backBrush;
+    QList<FigureScale*> scaleList;
+    QString name;
 };
 
 KSL_END_NAMESPACE
 
-#endif // KSL_CHARTLABEL_H
+#endif // KSL_FIGURE_P_H

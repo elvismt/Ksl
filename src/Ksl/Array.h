@@ -21,6 +21,7 @@
 #ifndef KSL_ARRAY_H
 #define KSL_ARRAY_H
 
+#include <Ksl/Global.h>
 #include <Ksl/Math.h>
 #include <vector>
 #include <list>
@@ -28,6 +29,7 @@
 #include <QVector>
 #include <QList>
 #include <QTextStream>
+#include <QDebug>
 
 KSL_BEGIN_NAMESPACE
 
@@ -319,6 +321,18 @@ std::ostream& operator << (std::ostream &out, const Array<1,T> &array)
 
 template <typename T> inline
 QTextStream& operator << (QTextStream &out, const Array<1,T> &array)
+{
+    out << "[ ";
+    for (size_t k=0; k<array.size()-1; ++k) {
+        out << array[k] << ", ";
+    }
+    out << array[array.size()-1] << " ]";
+    return out;
+}
+
+
+template <typename T> inline
+QDebug operator << (QDebug out, const Array<1,T> &array)
 {
     out << "[ ";
     for (size_t k=0; k<array.size()-1; ++k) {

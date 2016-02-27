@@ -11,5 +11,6 @@ include_directories(src)
 
 subdirs(
     src
-    demos
+    tests
 )
+

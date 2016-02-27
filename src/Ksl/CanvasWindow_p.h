@@ -18,76 +18,60 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CANVAS_P_H
-#define KSL_CANVAS_P_H
+#ifndef KSL_CANVASWINDOW_P_H
+#define KSL_CANVASWINDOW_P_H
 
-#include <Ksl/Canvas.h>
+#include <Ksl/CanvasWindow.h>
 #include <QtWidgets>
 
 KSL_BEGIN_NAMESPACE
 
-class CanvasPrivate;
 
-
-class CanvasDrawingArea
+class CanvasWindowDrawingArea
     : public QWidget
 {
     Q_OBJECT
 
 public:
 
-    CanvasDrawingArea(int width, int height,
-                      Canvas *canvas, CanvasPrivate *canvPriv);
+    CanvasWindowDrawingArea(QWidget *parent);
 
-    QSize sizeHint() const;
+    virtual void paintEvent(QPaintEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
 
-    QSize minimumSizeHint() const;
-
-    void paintEvent(QPaintEvent *event);
-
-    void mousePressEvent(QMouseEvent *event);
-
-    void mouseMoveEvent(QMouseEvent *event);
-
-    void mouseReleaseEvent(QMouseEvent *event);
-
-
-    Canvas *canvas;
-    CanvasPrivate *canvPriv;
-    QSize defaultSize;
-    QPainter *painter;
+    bool fillBack;
+    QBrush backBrush;
+    QPainter painter;
+    CanvasWindow *canvasWindow;
+    QTimer *timer;
+    int timeStep;
 
 
 public slots:
 
-    void _animate();
-
-    void _stopAnimation();
+    void startAnimation();
+    void stopAnimation();
 };
 
 
-class CanvasPrivate
+
+class CanvasWindowPrivate
     : public Ksl::ObjectPrivate
 {
 public:
 
-    CanvasPrivate(Canvas *publ, int width, int height)
+    CanvasWindowPrivate(CanvasWindow *publ)
         : Ksl::ObjectPrivate(publ)
-        , drawingArea(new CanvasDrawingArea(width, height, publ, this))
     { }
 
-
-    void init(const QString &title);
-
-
-    CanvasDrawingArea *drawingArea;
+    CanvasWindowDrawingArea *drawingArea;
     QWidget *centralWidget;
-    QVBoxLayout *mainLayout;
+    QVBoxLayout *mainVLayout;
     QToolBar *toolBar;
-    QTimer *timer;
-    int timeStep;
 };
 
 KSL_END_NAMESPACE
 
-#endif // KSL_CANVAS_P_H
+#endif // KSL_CANVASWINDOW_P_H
