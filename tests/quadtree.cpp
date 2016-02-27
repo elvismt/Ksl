@@ -1,6 +1,8 @@
 #include <QApplication>
 #include <Ksl/CanvasWindow.h>
 
+// Nodes with this value are considered
+// empty nodes
 #define NULLDATA QPointF(-1.0,-1.0)
 
 
@@ -69,7 +71,8 @@ public:
 
     
     QuadTreeWindow(QuadTree *treeRoot=nullptr) {
-        setWindowTitle("QuadTreeView. Copyright (C) 2016 Elvis Teixeira");
+        setWindowTitle(
+            "QuadTreeView. Copyright (C) 2016 Elvis Teixeira");
         this->treeRoot = treeRoot;
         setTimeStep(500);
     }
@@ -86,10 +89,12 @@ public:
             painter->setBrush(Qt::black);
             painter->drawEllipse(node->data, 3, 3);
             painter->setPen(Qt::red);
+            /*
             painter->drawText(
                 node->data.x()+5, node->data.y()+5,
                 QString("(%1,%2)").arg(int(node->data.x())).
                     arg(int(node->data.y())));
+            */
         }
         // if the node has children, paint them
         if (node->children[0])
@@ -107,7 +112,7 @@ public:
     void insertPoint(const QPointF &pos) {
         if (!treeRoot)
             treeRoot = new QuadTree(
-                QRectF(0.0, 0.0, 499.0, 499.0));
+                QRectF(0.0, 0.0, 499.0, 499.0), pos);
         else
             treeRoot->insert(pos);
     }
@@ -137,4 +142,3 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
-
