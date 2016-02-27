@@ -23,9 +23,9 @@
 
 KSL_BEGIN_NAMESPACE
 
-Chart* ChartScale::chart() const {
+ChartEngine* ChartScale::chartEngine() const {
     KSL_PUBLIC(const ChartScale);
-    return m->chart;
+    return m->chartEngine;
 }
 
 QString ChartScale::name() const {
@@ -48,7 +48,7 @@ const QList<ChartItem*>& ChartScale::itemList() const {
     return m->itemList;
 }
 
-void ChartScale::setColorTheme(Chart::ColorTheme theme) {
+void ChartScale::setColorTheme(ChartEngine::ColorTheme theme) {
     Q_UNUSED(theme)
 }
 
@@ -64,10 +64,10 @@ void ChartScale::add(ChartItem *item) {
     }
 }
 
-void ChartScale::setChart(Chart *chart) {
+void ChartScale::setChartEngine(ChartEngine *chart) {
     KSL_PUBLIC(ChartScale);
-    if (m->chart != chart) {
-        m->chart = chart;
+    if (m->chartEngine != chart) {
+        m->chartEngine = chart;
         for (auto item : m->itemList) {
             item->setScale(this);
         }

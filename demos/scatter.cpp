@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
     sampler->addSample("L/2", 500.0);
     sampler->addSample("L", 1000.0);
 
-    view.chart()->setColorTheme(Chart::DarkTheme);
-    view.chart()->add(scale);
+    view.chartEngine()->setColorTheme(ChartEngine::DarkTheme);
+    view.chartEngine()->add(scale);
     view.show();
 
     return app.exec();

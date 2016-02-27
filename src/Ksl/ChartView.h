@@ -22,7 +22,7 @@
 #define KSL_CHARTVIEW_H
 
 #include <QWidget>
-#include <Ksl/Chart.h>
+#include <Ksl/ChartEngine.h>
 #include <Ksl/ChartLinscale.h>
 #include <Ksl/SeriesPlot.h>
 #include <Ksl/ChartLabel.h>
@@ -39,17 +39,17 @@ public:
 
     ChartView(QWidget *parent);
 
-    ChartView(Chart *chart, QWidget *parent=0);
+    ChartView(ChartEngine *chart, QWidget *parent=0);
 
     ChartView(const QString &title="Ksl", int width=500,
               int height=400, QWidget *parent=0);
 
-    Chart* chart() const;
+    ChartEngine* chartEngine() const;
 
 
 public slots:
 
-    virtual void onChartChange(Chart *chart);
+    virtual void onChartChange(ChartEngine *chart);
 
     virtual void updateBackPixmap();
 

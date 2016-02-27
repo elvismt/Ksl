@@ -1,7 +1,7 @@
 
 set(Ksl_HDRS
     Ksl/Array.h
-    Ksl/Chart.h
+    Ksl/ChartEngine.h
     Ksl/ChartItem.h
     Ksl/ChartLinscale.h
     Ksl/ChartScale.h
@@ -13,11 +13,13 @@ set(Ksl_HDRS
     Ksl/ChartAxis.h
     Ksl/ChartAxisSampler.h
     Ksl/ChartLabel.h
+    Ksl/Canvas.h
+    Ksl/Chart.h
 )
 
 set(Ksl_SRCS
     Ksl/Math.cpp
-    Ksl/Chart.cpp
+    Ksl/ChartEngine.cpp
     Ksl/ChartItem.cpp
     Ksl/ChartLinscale.cpp
     Ksl/ChartScale.cpp
@@ -26,11 +28,13 @@ set(Ksl_SRCS
     Ksl/ChartAxis.cpp
     Ksl/ChartAxisSampler.cpp
     Ksl/ChartLabel.cpp
+    Ksl/Canvas.cpp
+    Ksl/Chart.cpp
 )
+
 
 add_library(Ksl SHARED ${Ksl_SRCS})
 target_link_libraries(Ksl Qt5::Widgets)
 
 install(FILES ${Ksl_HDRS} DESTINATION /usr/include/Ksl)
 install(TARGETS Ksl DESTINATION /usr/lib)
-

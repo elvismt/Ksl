@@ -20,13 +20,13 @@
 
 #include <Ksl/ChartItem_p.h>
 #include <Ksl/ChartScale.h>
-#include <Ksl/Chart.h>
+#include <Ksl/ChartEngine.h>
 
 KSL_BEGIN_NAMESPACE
 
-Chart* ChartItem::chart() const {
+ChartEngine* ChartItem::chartEngine() const {
     KSL_PUBLIC(const ChartItem);
-    return m->chart;
+    return m->chartEngine;
 }
 
 ChartScale* ChartItem::scale() const {
@@ -51,23 +51,23 @@ bool ChartItem::rescalable() const {
 
 void ChartItem::setScale(ChartScale *scale) {
     KSL_PUBLIC(ChartItem);
-    Chart *newChart = scale ? scale->chart() : nullptr;
-    Chart *oldChart = m->chart;
+    ChartEngine *newChart = scale ? scale->chartEngine() : nullptr;
+    ChartEngine *oldChart = m->chartEngine;
 
-    m->chart = newChart;
+    m->chartEngine = newChart;
     m->scale = scale;
 
     if (oldChart) {
         disconnect(this, &ChartItem::appearenceChanged,
-                   oldChart, &Chart::onAppearenceChange);
+                   oldChart, &ChartEngine::onAppearenceChange);
         disconnect(this, &ChartItem::dataChanged,
-                   oldChart, &Chart::onDataChange);
+                   oldChart, &ChartEngine::onDataChange);
     }
     if (newChart) {
         connect(this, &ChartItem::appearenceChanged,
-                newChart, &Chart::onAppearenceChange);
+                newChart, &ChartEngine::onAppearenceChange);
         connect(this, &ChartItem::dataChanged,
-                newChart, &Chart::onDataChange);
+                newChart, &ChartEngine::onDataChange);
     }
 }
 

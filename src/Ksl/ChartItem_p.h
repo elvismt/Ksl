@@ -34,14 +34,14 @@ public:
         : Ksl::ObjectPrivate(publ)
         , name(iname)
         , visible(true)
-        , chart(nullptr)
+        , chartEngine(nullptr)
         , scale(nullptr)
         , rescalable(true)
     { }
 
     QString name;
     bool visible;
-    Chart *chart;
+    ChartEngine *chartEngine;
     ChartScale *scale;
     bool rescalable;
 };

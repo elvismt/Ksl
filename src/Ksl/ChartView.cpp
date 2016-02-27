@@ -30,7 +30,7 @@ ChartView::ChartView(QWidget *parent)
     setAutoFillBackground(false);
 }
 
-ChartView::ChartView(Chart *chart, QWidget *parent)
+ChartView::ChartView(ChartEngine *chart, QWidget *parent)
     : QWidget(parent)
     , Ksl::Object(new ChartViewPrivate(this, chart))
 {
@@ -44,7 +44,7 @@ ChartView::ChartView(const QString &title, int width,
     , Ksl::Object(new ChartViewPrivate(this, nullptr))
 {
     setWindowTitle(title);
-    chart()->setName(title);
+    chartEngine()->setName(title);
     resize(width,height);
     setMinimumSize(200,200);
     setAutoFillBackground(false);
@@ -52,14 +52,14 @@ ChartView::ChartView(const QString &title, int width,
 
 ChartViewPrivate::~ChartViewPrivate() {
     if (ownChart)
-        delete chart;
+        delete chartEngine;
     if (backPixmap)
         delete backPixmap;
 }
 
-Chart* ChartView::chart() const {
+ChartEngine* ChartView::chartEngine() const {
     KSL_PUBLIC(ChartView);
-    return m->chart;
+    return m->chartEngine;
 }
 
 void ChartView::updateBackPixmap() {
@@ -69,11 +69,11 @@ void ChartView::updateBackPixmap() {
         delete m->backPixmap;
     m->backPixmap = new QPixmap(rec.size());
     m->painter.begin(m->backPixmap);
-    m->chart->paint(rec, &m->painter);
+    m->chartEngine->paint(rec, &m->painter);
     m->painter.end();
 }
 
-void ChartView::onChartChange(Chart *chart) {
+void ChartView::onChartChange(ChartEngine *chart) {
     Q_UNUSED(chart)
     repaint();
 }
@@ -84,7 +84,7 @@ void ChartView::paintEvent(QPaintEvent *event) {
     QRect rec = rect();
 
     m->painter.begin(this);
-    m->chart->paint(rec, &m->painter);
+    m->chartEngine->paint(rec, &m->painter);
     m->painter.end();
 }
 

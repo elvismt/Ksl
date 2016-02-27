@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icons/media-seek-forward.png</file>
+        <file>icons/dialog-close.png</file>
+        <file>icons/media-playback-start.png</file>
+        <file>icons/preferences-kcalc-constants.png</file>
+        <file>icons/media-playback-stop.png</file>
+        <file>icons/edit-undo.png</file>
+        <file>icons/document-save.png</file>
+    </qresource>
+</RCC>

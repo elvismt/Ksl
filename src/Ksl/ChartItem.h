@@ -28,7 +28,7 @@
 KSL_BEGIN_NAMESPACE
 
 // forward declarations
-class Chart;
+class ChartEngine;
 class ChartScale;
 
 
@@ -40,7 +40,7 @@ class KSL_EXPORT ChartItem
 
 public:
 
-    Chart* chart() const;
+    ChartEngine* chartEngine() const;
 
     ChartScale* scale() const;
 

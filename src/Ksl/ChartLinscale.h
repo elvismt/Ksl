@@ -66,7 +66,7 @@ public:
 
     void rescale();
 
-    virtual void setColorTheme(Chart::ColorTheme theme);
+    virtual void setColorTheme(ChartEngine::ColorTheme theme);
 
 protected:
 

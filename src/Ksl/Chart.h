@@ -21,82 +21,31 @@
 #ifndef KSL_CHART_H
 #define KSL_CHART_H
 
-#include <Ksl/Object.h>
-#include <QObject>
-#include <QPainter>
+#include <Ksl/ChartEngine.h>
+#include <Ksl/ChartLinscale.h>
+#include <Ksl/SeriesPlot.h>
+#include <Ksl/ChartLabel.h>
+#include <Ksl/Canvas.h>
 
 KSL_BEGIN_NAMESPACE
 
-// forward declaration
-class ChartScale;
-class ChartItem;
-
 class KSL_EXPORT Chart
-    : public QObject
-    , public Ksl::Object
+    : public Canvas
 {
     Q_OBJECT
 
 public:
 
+    Chart(const QString &title="Ksl", int width=500,
+          int height=400, QWidget *parent=0);
 
-    enum ColorTheme {
-        LightTheme,
-        DarkTheme
-    };
+    ChartEngine* chartEngine() const;
 
+    ChartLinscale* addScale(const QString &name="scale");
 
-    Chart(const QString &name="Ksl", QObject *parent=0);
+    virtual void paint(QPainter *painter, const QRect &rect);
 
-    QString name() const;
-
-    bool showName() const;
-
-    QColor nameColor() const;
-
-    QList<ChartScale*>& scaleList();
-
-    const QList<ChartScale*>& scaleList() const;
-
-    virtual void add(ChartScale *scale);
-
-    inline void add(ChartScale &scale) { add(&scale); }
-
-    virtual void paint(const QRect &rect, QPainter *painter);
-
-    virtual void save(const QString &fileName, const QSize
-                      &size=QSize(500,350), const char *format="png");
-
-
-signals:
-
-    void errorOccurred(Chart *self);
-
-    void changed(Chart *self);
-
-
-public slots:
-
-    virtual void setColorTheme(ColorTheme theme);
-
-    virtual void informError();
-
-    void setName(const QString &name);
-
-    void setShowName(bool showName);
-
-    void setNameColor(const QColor &color);
-
-    void onAppearenceChange(ChartItem *item);
-
-    void onDataChange(ChartItem *item);
-
-protected:
-
-    Chart(Ksl::ObjectPrivate *priv, QObject *parent)
-        : QObject(parent)
-        , Ksl::Object(priv)
-    { }
+    virtual void mouseMove(const QPoint &pos);
 };
 
 KSL_END_NAMESPACE

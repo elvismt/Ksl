@@ -22,41 +22,21 @@
 #define KSL_CHART_P_H
 
 #include <Ksl/Chart.h>
-#include <QBrush>
+#include <Ksl/Canvas_p.h>
 
 KSL_BEGIN_NAMESPACE
 
 class ChartPrivate
-    : public Ksl::ObjectPrivate
+    : public CanvasPrivate
 {
 public:
 
-    ChartPrivate(Chart *publ, const QString &iname)
-        : Ksl::ObjectPrivate(publ)
-#if defined(Q_OS_WIN32)
-        , font("Times New Roman", 11)
-#elif defined(Q_OS_LINUX)
-        // let system decide
-        //, font("FreeMono", 10)
-#endif
-        , name(iname)
-        , showName(true)
-        , nameColor(Qt::black)
-        , backBrush(Qt::white)
-        , colorTheme(Chart::LightTheme)
-        , paintBack(true)
-        , onError(false)
+    ChartPrivate(Chart *publ, int width, int height)
+        : CanvasPrivate(publ, width, height)
     { }
 
-    QFont font;
-    QString name;
-    bool showName;
-    QColor nameColor;
-    QBrush backBrush;
-    Chart::ColorTheme colorTheme;
-    bool paintBack;
-    bool onError;
-    QList<ChartScale*> scaleList;
+    ChartEngine *chartEngine;
+    QHash<QString, ChartLinscale*> linearScales;
 };
 
 KSL_END_NAMESPACE

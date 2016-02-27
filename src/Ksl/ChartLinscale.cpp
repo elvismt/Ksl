@@ -20,7 +20,7 @@
 
 #include <Ksl/ChartLinscale_p.h>
 #include <Ksl/ChartItem.h>
-#include <Ksl/Chart.h>
+#include <Ksl/ChartEngine.h>
 
 KSL_BEGIN_NAMESPACE
 
@@ -199,8 +199,8 @@ void ChartLinscale::paint(const QRect &rect, QPainter *painter) {
     if (!qIsFinite(m->width) || ! qIsFinite(m->height) ||
         m->width==0 || m->height==0)
     {
-        if (m->chart) {
-            m->chart->informError();
+        if (m->chartEngine) {
+            m->chartEngine->informError();
         }
         return;
     }
@@ -324,24 +324,24 @@ void ChartLinscale::showAxis(AxisKey keys) {
     m->axisList[3]->setVisible(keys & Y_Axis);
     m->axisList[4]->setVisible(keys & LeftAxis);
     m->axisList[5]->setVisible(keys & RightAxis);
-    if (m->chart)
-        emit m->chart->changed(m->chart);
+    if (m->chartEngine)
+        emit m->chartEngine->changed(m->chartEngine);
 }
 
 
 void ChartLinscale::autoChooseAxis() {
     KSL_PUBLIC(ChartLinscale);
     m->autoChooseAxis = true;
-    if (m->chart)
-        emit m->chart->changed(m->chart);
+    if (m->chartEngine)
+        emit m->chartEngine->changed(m->chartEngine);
 }
 
 
-void ChartLinscale::setColorTheme(Chart::ColorTheme theme) {
+void ChartLinscale::setColorTheme(ChartEngine::ColorTheme theme) {
     KSL_PUBLIC(ChartLinscale);
-    Qt::GlobalColor color = (theme == Chart::LightTheme) ?
+    Qt::GlobalColor color = (theme == ChartEngine::LightTheme) ?
                 Qt::black : Qt::white;
-    QColor selectColor = (theme == Chart::LightTheme) ?
+    QColor selectColor = (theme == ChartEngine::LightTheme) ?
                 QColor(0, 0, 255, 127) : QColor(0, 255, 0, 127);
 
     for (auto axis : m->axisList) {

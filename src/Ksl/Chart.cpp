@@ -19,164 +19,48 @@
  */
 
 #include <Ksl/Chart_p.h>
-#include <Ksl/ChartScale.h>
-#include <Ksl/ChartItem.h>
 
 KSL_BEGIN_NAMESPACE
 
-Chart::Chart(const QString &name, QObject *parent)
-    : QObject(parent)
-    , Ksl::Object(new ChartPrivate(this,name))
+Chart::Chart(const QString &title, int width,
+             int height, QWidget *parent)
+    : Canvas(new ChartPrivate(this, width, height),
+             title, width, height, parent)
 {
-    setColorTheme(LightTheme);
-}
-
-
-QList<ChartScale*>& Chart::scaleList() {
     KSL_PUBLIC(Chart);
-    return m->scaleList;
+    m->chartEngine = new ChartEngine(title);
 }
 
 
-const QList<ChartScale*>& Chart::scaleList() const {
+ChartEngine* Chart::chartEngine() const {
     KSL_PUBLIC(const Chart);
-    return m->scaleList;
+    return m->chartEngine;
 }
 
 
-void Chart::add(ChartScale *scale) {
+ChartLinscale* Chart::addScale(const QString &name) {
     KSL_PUBLIC(Chart);
-    if (!scale) {
-        return;
-    }
-    if (!m->scaleList.contains(scale)) {
-        m->scaleList.append(scale);
-        scale->setChart(this);
-        scale->setColorTheme(m->colorTheme);
-        emit changed(this);
-    }
+    if (m->linearScales.contains(name))
+        return m->linearScales[name];
+    auto scale = new ChartLinscale(name);
+    m->linearScales[name] = scale;
+    m->chartEngine->add(scale);
+    return scale;
 }
 
 
-void Chart::setColorTheme(ColorTheme theme) {
+void Chart::paint(QPainter *painter, const QRect &rect) {
     KSL_PUBLIC(Chart);
-    m->colorTheme = theme;
-    if (theme == ColorTheme::DarkTheme) {
-        m->backBrush.setColor(Qt::black);
-        m->nameColor = Qt::white;
-    }
-    else {
-        m->backBrush.setColor(Qt::white);
-        m->nameColor = Qt::black;
-    }
-    for (auto scale : m->scaleList)
-        scale->setColorTheme(theme);
-    emit changed(this);
+    m->chartEngine->paint(rect, painter);
 }
 
-
-void Chart::informError() {
+void Chart::mouseMove(const QPoint &pos) {
     KSL_PUBLIC(Chart);
-    m->onError = true;
-    emit errorOccurred(this);
-}
-
-
-void Chart::paint(const QRect &rect, QPainter *painter) {
-    KSL_PUBLIC(Chart);
-    m->onError = false;
-    painter->save();
-    painter->setFont(m->font);
-    painter->setClipRect(rect);
-    if (m->paintBack) {
-        painter->fillRect(rect, m->backBrush);
-    }
-    for (auto scale : m->scaleList) {
-        if (scale->visible()) {
-            scale->paint(rect, painter);
-        }
-    }
-    if (m->showName) {
-        painter->setPen(QPen(m->nameColor));
-        QFontMetrics fm = painter->fontMetrics();
-        painter->drawText(
-            rect.center().x() - fm.width(m->name)/2,
-            fm.height(),
-            m->name
-        );
-    }
-
-    if (m->onError) {
-        painter->setPen(QPen(Qt::red));
-        painter->drawText(20, 40, "Ksl::Chart ERROR: NON NUMERIC VALUES");
-    }
-    painter->restore();
-}
-
-
-void Chart::save(const QString &fileName,
-                 const QSize &size, const char *format)
-{
-    QImage image(size, QImage::Format_ARGB32);
-    QPainter painter(&image);
-    paint(QRect(QPoint(0,0),size), &painter);
-    image.save(fileName, format);
-}
-
-
-void Chart::onAppearenceChange(ChartItem *item) {
-    Q_UNUSED(item)
-    emit changed(this);
-}
-
-
-void Chart::onDataChange(ChartItem *item) {
-    item->scale()->rescale();
-    emit changed(this);
-}
-
-
-QString Chart::name() const {
-    KSL_PUBLIC(const Chart);
-    return m->name;
-}
-
-
-bool Chart::showName() const {
-    KSL_PUBLIC(const Chart);
-    return m->showName;
-}
-
-
-QColor Chart::nameColor() const {
-    KSL_PUBLIC(const Chart);
-    return m->nameColor;
-}
-
-
-void Chart::setName(const QString &name) {
-    KSL_PUBLIC(Chart);
-    if (m->name != name) {
-        m->name = name;
-        emit changed(this);
-    }
-}
-
-
-void Chart::setShowName(bool showName) {
-    KSL_PUBLIC(Chart);
-    if (m->showName != showName) {
-        m->showName = showName;
-        emit changed(this);
-    }
-}
-
-
-void Chart::setNameColor(const QColor &color) {
-    KSL_PUBLIC(Chart);
-    if (m->nameColor != color) {
-        m->nameColor = color;
-        emit changed(this);
+    if (m->linearScales.size() == 1) {
+        QPointF pointF = (*m->linearScales.begin())->unmap(pos);
+        statusBar()->showMessage(QString("( %1, %2 )")
+            .arg(pointF.x(), 3, 'f', 2).arg(pointF.y(), 3, 'f', 2), 2000);
+        updateCanvas();
     }
 }
 

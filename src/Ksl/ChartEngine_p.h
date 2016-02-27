@@ -18,31 +18,47 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHARTSCALE_P_H
-#define KSL_CHARTSCALE_P_H
+#ifndef KSL_CHARTENGINE_P_H
+#define KSL_CHARTENGINE_P_H
 
-#include <Ksl/ChartScale.h>
+#include <Ksl/ChartEngine.h>
+#include <QBrush>
 
 KSL_BEGIN_NAMESPACE
 
-class ChartScalePrivate
+class ChartEnginePrivate
     : public Ksl::ObjectPrivate
 {
 public:
 
-    ChartScalePrivate(ChartScale *publ, const QString &iname)
+    ChartEnginePrivate(ChartEngine *publ, const QString &iname)
         : Ksl::ObjectPrivate(publ)
+#if defined(Q_OS_WIN32)
+        , font("Times New Roman", 11)
+#elif defined(Q_OS_LINUX)
+        // let system decide
+        //, font("FreeMono", 10)
+#endif
         , name(iname)
-        , visible(true)
-        , chartEngine(nullptr)
+        , showName(true)
+        , nameColor(Qt::black)
+        , backBrush(Qt::white)
+        , colorTheme(ChartEngine::LightTheme)
+        , paintBack(true)
+        , onError(false)
     { }
 
+    QFont font;
     QString name;
-    bool visible;
-    ChartEngine *chartEngine;
-    QList<ChartItem*> itemList;
+    bool showName;
+    QColor nameColor;
+    QBrush backBrush;
+    ChartEngine::ColorTheme colorTheme;
+    bool paintBack;
+    bool onError;
+    QList<ChartScale*> scaleList;
 };
 
 KSL_END_NAMESPACE
 
-#endif // KSL_CHARTSCALE_P_H
+#endif // KSL_CHARTENGINE_P_H

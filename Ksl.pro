@@ -9,8 +9,6 @@ QT += widgets
 # Input
 HEADERS += \
     src/Ksl/Array.h \
-    src/Ksl/Chart.h \
-    src/Ksl/Chart_p.h \
     src/Ksl/ChartItem.h \
     src/Ksl/ChartItem_p.h \
     src/Ksl/ChartLinscale.h \
@@ -35,12 +33,15 @@ HEADERS += \
     src/Ksl/MemoryPool_p.h \
     src/Ksl/Graph.h \
     src/Ksl/Canvas.h \
-    src/Ksl/Canvas_p.h
+    src/Ksl/Canvas_p.h \
+    src/Ksl/ChartEngine.h \
+    src/Ksl/ChartEngine_p.h \
+    src/Ksl/Chart.h \
+    src/Ksl/Chart_p.h
 
 
 SOURCES += \
-    demos/devtest.cpp \
-    src/Ksl/Chart.cpp \
+    demos/sinusoidal.cpp \
     src/Ksl/ChartItem.cpp \
     src/Ksl/ChartLinscale.cpp \
     src/Ksl/ChartScale.cpp \
@@ -51,4 +52,9 @@ SOURCES += \
     src/Ksl/Math.cpp \
     src/Ksl/ChartAxisSampler.cpp \
     src/Ksl/MemoryPool.cpp \
-    src/Ksl/Canvas.cpp
+    src/Ksl/Canvas.cpp \
+    src/Ksl/ChartEngine.cpp \
+    src/Ksl/Chart.cpp
+
+RESOURCES += \
+    resources/Icons.qrc

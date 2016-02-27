@@ -21,13 +21,12 @@
 #ifndef KSL_CHARTSCALE_H
 #define KSL_CHARTSCALE_H
 
-#include <Ksl/Chart.h>
+#include <Ksl/ChartEngine.h>
 #include <QPainter>
 
 KSL_BEGIN_NAMESPACE
 
 // forward declarations
-class Chart;
 class ChartItem;
 
 
@@ -36,7 +35,7 @@ class KSL_EXPORT ChartScale
 {
 public:
 
-    Chart* chart() const;
+    ChartEngine* chartEngine() const;
 
     QString name() const;
 
@@ -60,14 +59,14 @@ public:
 
     virtual void rescale() = 0;
 
-    virtual void setColorTheme(Chart::ColorTheme theme);
+    virtual void setColorTheme(ChartEngine::ColorTheme theme);
 
 
 protected:
 
-    friend class Chart;
+    friend class ChartEngine;
 
-    virtual void setChart(Chart *chart);
+    virtual void setChartEngine(ChartEngine *chartEngine);
 
     virtual void paint(const QRect &rect, QPainter *painter);
 

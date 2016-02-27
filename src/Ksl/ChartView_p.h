@@ -31,26 +31,26 @@ class ChartViewPrivate
 {
 public:
 
-    ChartViewPrivate(ChartView *publ, Chart *ichart)
+    ChartViewPrivate(ChartView *publ, ChartEngine *ichart)
         : Ksl::ObjectPrivate(publ)
         , backPixmap(nullptr)
     {
         if (ichart) {
-            chart = ichart;
+            chartEngine = ichart;
             ownChart = false;
         }
         else {
-            chart = new Chart();
+            chartEngine = new ChartEngine();
             ownChart = true;
         }
-        QObject::connect(chart, &Chart::changed,
+        QObject::connect(chartEngine, &ChartEngine::changed,
                          publ, &ChartView::onChartChange);
     }
 
     ~ChartViewPrivate();
 
     QPixmap *backPixmap;
-    Chart *chart;
+    ChartEngine *chartEngine;
     bool ownChart;
     QPainter painter;
 };
