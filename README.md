@@ -31,10 +31,10 @@ The figures below were created with KSL's widgets:
 
 The code for this chart is as simple as
 
-#include <QApplication>
-#include <Ksl/ChartWindow.h>
+    #include <QApplication>
+    #include <Ksl/ChartWindow.h>
 
-using namespace Ksl;
+    using namespace Ksl;
 
     int main(int argc, char *argv[]) {
         QApplication app(argc, argv);
