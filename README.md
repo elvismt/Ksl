@@ -25,9 +25,28 @@ The figures below were created with KSL's widgets:
 
 ![](https://github.com/elvismt/Ksl/blob/devel/tests/quadtree.png)
 
-    * We are working in a chart engine (soon it will have axis)
+   * We are working in a chart engine (soon it will have axis)
 
 ![](https://github.com/elvismt/Ksl/blob/devel/tests/chart.png)
+
+The code for this chart is as simple as
+
+#include <QApplication>
+#include <Ksl/ChartWindow.h>
+
+using namespace Ksl;
+
+    int main(int argc, char *argv[]) {
+        QApplication app(argc, argv);
+        ChartWindow chart;
+        
+        auto x = linspace(-M_PI, M_PI, 0.01);
+        
+        chart.xyPlot(x, cos(x), "Cos(X)", Qt::blue);
+        
+        chart.show();
+        return app.exec();
+    }
 
 If you are looking for a C/Gtk solution for 2D visualization. Take a look
 at [slope](https://github.com/elvismt/slope)
