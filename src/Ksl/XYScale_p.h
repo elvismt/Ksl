@@ -23,6 +23,7 @@
 
 #include <Ksl/XYScale.h>
 #include <Ksl/FigureScale_p.h>
+#include <QHash>
 
 namespace Ksl {
 
@@ -37,6 +38,12 @@ public:
         , yLowBound(20), yUpBound(20)
     { }
 
+    ~XYScalePrivate();
+
+
+    void positionAxis();
+
+
     int xLowBound, xUpBound;
     int yLowBound, yUpBound;
 
@@ -47,6 +54,8 @@ public:
     double xMin, xMax;
     double yMin, yMax;
     double width, height;
+
+    QHash<XYScale::Axis,XYAxis*> axisHash;
 };
 
 } // namespace Ksl

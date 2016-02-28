@@ -30,14 +30,14 @@ XYPlot::XYPlot(Ksl::ObjectPrivate *priv, const QString &name,
 {
     KSL_PUBLIC(XYPlot);
     m->symbol = symbol;
-    m->pen.setWidth(2);
+    m->pen.setWidthF(1.5);
 }
 
 XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
                const QString &name,
                const QColor &stroke, const QColor &fill,
                QObject *parent)
-    : XYPlot(new XYPlotPrivate(this), name, Line, parent)
+    : XYPlot(new XYPlotPrivate(this), name, Circles, parent)
 {
     KSL_PUBLIC(XYPlot);
     m->pen.setColor(stroke);
@@ -113,12 +113,8 @@ void XYPlotPrivate::paintLine(QPainter *painter) {
     QPoint p1 = scale->map(QPointF(x[0],y[0]));
     for (size_t k=1; k<pointCount; ++k) {
         QPoint p2 = scale->map(QPointF(x[k],y[k]));
-
-        // Only draw line segments whose ends are at least 3 pixels away
-        if ((Math::pow2(p1.x()-p2.x()) + Math::pow2(p1.y()-p2.y())) >= 9) {
-            painter->drawLine(p1, p2);
-            p1 = p2;
-        }
+        painter->drawLine(p1, p2);
+        p1 = p2;
     }
 }
 

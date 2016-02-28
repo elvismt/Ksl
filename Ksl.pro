@@ -30,7 +30,11 @@ HEADERS += \
     src/Ksl/XYScale.h \
     src/Ksl/XYScale_p.h \
     src/Ksl/XYPlot.h \
-    src/Ksl/XYPlot_p.h
+    src/Ksl/XYPlot_p.h \
+    src/Ksl/XYAxis.h \
+    src/Ksl/XYAxis_p.h \
+    src/Ksl/XYAxisSampler_p.h \
+    src/Ksl/XYAxisSampler.h
 
 SOURCES += \
     tests/chart.cpp \
@@ -40,7 +44,9 @@ SOURCES += \
     src/Ksl/FigureScale.cpp \
     src/Ksl/ChartWindow.cpp \
     src/Ksl/XYScale.cpp \
-    src/Ksl/XYPlot.cpp
+    src/Ksl/XYPlot.cpp \
+    src/Ksl/XYAxis.cpp \
+    src/Ksl/XYAxisSampler.cpp
 
 RESOURCES += \
     src/qrc/Icons.qrc

@@ -48,6 +48,8 @@ public:
 
     bool visible() const;
 
+    bool rescalable() const;
+
     virtual QRectF dataRect() const;
 
     virtual QRect figureRect() const;

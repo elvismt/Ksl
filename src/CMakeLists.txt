@@ -8,6 +8,8 @@ set(Ksl_HDRS
     Ksl/FigureItem.h
     Ksl/XYScale.h
     Ksl/XYPlot.h
+    Ksl/XYAxis.h
+    Ksl/XYAxisSampler.h
     Ksl/CanvasWindow.h
     Ksl/ChartWindow.h
 )
@@ -18,6 +20,8 @@ set(Ksl_SRCS
     Ksl/FigureItem.cpp
     Ksl/XYScale.cpp
     Ksl/XYPlot.cpp
+    Ksl/XYAxis.cpp
+    Ksl/XYAxisSampler.cpp
     Ksl/CanvasWindow.cpp
     Ksl/ChartWindow.cpp
 )

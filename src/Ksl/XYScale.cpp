@@ -25,7 +25,42 @@ namespace Ksl {
 
 XYScale::XYScale(const QString &name)
     : FigureScale(new XYScalePrivate(this), name)
-{ }
+{
+    KSL_PUBLIC(XYScale);
+
+    // Create default axis
+    m->axisHash[BottomAxis] = new XYAxis(Qt::Horizontal, "BottomAxis");
+    m->axisHash[BottomAxis]->showComponents(XYAxis::Line|XYAxis::TicksDown);
+
+    m->axisHash[TopAxis] = new XYAxis(Qt::Horizontal, "TopAxis");
+    m->axisHash[TopAxis]->showComponents(XYAxis::Line|XYAxis::TicksUp);
+
+    m->axisHash[LeftAxis] = new XYAxis(Qt::Vertical, "LeftAxis");
+    m->axisHash[LeftAxis]->showComponents(XYAxis::Line|XYAxis::TicksDown);
+
+    m->axisHash[RightAxis] = new XYAxis(Qt::Vertical, "RightAxis");
+    m->axisHash[RightAxis]->showComponents(XYAxis::Line|XYAxis::TicksUp);
+
+    //Tell the axis I am their manager
+    for (auto axis : m->axisHash)
+        axis->setScale(this);
+
+    // Allocate space for axis on chart bounds
+    setXbound(60, 60);
+    setYbound(40, 40);
+}
+
+XYScalePrivate::~XYScalePrivate() {
+    for (auto axis : axisHash)
+        delete axis;
+}
+
+XYAxis* XYScale::axis(Axis axis) {
+    KSL_PUBLIC(XYScale);
+    if (m->axisHash.contains(axis))
+        return m->axisHash[axis];
+    return nullptr;
+}
 
 QPoint XYScale::map(const QPointF &point) const {
     KSL_PUBLIC(const XYScale);
@@ -67,21 +102,31 @@ void XYScale::rescale() {
     auto iter = m->itemList.begin();
     auto end = m->itemList.end();
     FigureItem *item = *iter++;
-    auto itemRect = item->dataRect();
 
+    bool firstRescalable = true;
+    while (!item->rescalable() && iter != end) {
+        firstRescalable = false;
+        item = *iter++;
+        if (item->rescalable())
+            firstRescalable = true;
+    }
+    if (!firstRescalable)
+        return;
+
+    auto itemRect = item->dataRect();
     setXrange(itemRect.left(), itemRect.right());
     setYrange(itemRect.top(), itemRect.bottom());
 
     while (iter != end) {
         item = *iter++;
-        itemRect = item->dataRect();
-
-        if (itemRect.left() < m->xMin) m->xMin = itemRect.left();
-        if (itemRect.right() > m->xMax) m->xMax = itemRect.right();
-        if (itemRect.top() < m->yMin) m->yMin = itemRect.top();
-        if (itemRect.bottom() > m->yMax) m->yMax = itemRect.bottom();
+        if (item->rescalable()) {
+            itemRect = item->dataRect();
+            if (itemRect.left() < m->xMin) m->xMin = itemRect.left();
+            if (itemRect.right() > m->xMax) m->xMax = itemRect.right();
+            if (itemRect.top() < m->yMin) m->yMin = itemRect.top();
+            if (itemRect.bottom() > m->yMax) m->yMax = itemRect.bottom();
+        }
     }
-
     m->width = m->xMax - m->xMin;
     double bound = m->width / 20.0;
     m->xMin -= bound;
@@ -110,6 +155,7 @@ QRect XYScale::figureRect() const {
 void XYScale::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(XYScale);
 
+    // Update figure bounds
     m->figXmin = rect.left() + m->xLowBound;
     m->figXmax = rect.right() - m->xUpBound;
     m->figWidth = m->figXmax - m->figXmin;
@@ -117,12 +163,19 @@ void XYScale::paint(const QRect &rect, QPainter *painter) {
     m->figYmax = rect.bottom() - m->yUpBound;
     m->figHeight = m->figYmax - m->figYmin;
 
+    // Use base class meyhod to paint item
     painter->save();
     painter->setClipRect(
         m->figXmin, m->figYmin,
         m->figWidth+1, m->figHeight+1);
     FigureScale::paint(rect, painter);
     painter->restore();
+
+    // Inform data bounds to axis and paint them
+    m->positionAxis();
+    for (auto axis : m->axisHash)
+        if (axis->visible())
+            axis->paint(painter);
 }
 
 void XYScale::setXrange(double xMin, double xMax) {
@@ -137,6 +190,40 @@ void XYScale::setYrange(double yMin, double yMax) {
     m->yMin = yMin;
     m->yMax = yMax;
     m->height = yMax - yMin;
+}
+
+void XYScale::setXbound(int xLowBound, int xUpBound) {
+    KSL_PUBLIC(XYScale);
+    m->xLowBound = xLowBound;
+    m->xUpBound = xUpBound;
+}
+
+void XYScale::setYbound(int yLowBund, int yUpBound) {
+    KSL_PUBLIC(XYScale);
+    m->yLowBound = yLowBund;
+    m->yUpBound = yUpBound;
+}
+
+void XYScalePrivate::positionAxis() {
+    XYAxis *axis = axisHash[XYScale::BottomAxis];
+    axis->setPosition(xMin, xMax, yMin);
+    if (axis->sampler()->mode() == XYAxisSampler::AutoDecimal)
+        axis->sampler()->autoSampleDecimal(xMin, xMax, figWidth/70);
+
+    axis = axisHash[XYScale::LeftAxis];
+    axis->setPosition(yMin, yMax, xMin);
+    if (axis->sampler()->mode() == XYAxisSampler::AutoDecimal)
+        axis->sampler()->autoSampleDecimal(yMin, yMax, figHeight/70);
+
+    axis = axisHash[XYScale::TopAxis];
+    axis->setPosition(xMin, xMax, yMax);
+    if (axis->sampler()->mode() == XYAxisSampler::AutoDecimal)
+        axis->sampler()->autoSampleDecimal(xMin, xMax, figWidth/70);
+
+    axis = axisHash[XYScale::RightAxis];
+    axis->setPosition(yMin, yMax, xMax);
+    if (axis->sampler()->mode() == XYAxisSampler::AutoDecimal)
+        axis->sampler()->autoSampleDecimal(yMin, yMax, figHeight/70);
 }
 
 } // namespace Ksl

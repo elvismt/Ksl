@@ -18,33 +18,35 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_FIGUREITEM_P_H
-#define KSL_FIGUREITEM_P_H
+#ifndef KSL_XYAXISSAMPLER_P_H
+#define KSL_XYAXISSAMPLER_P_H
 
-#include <Ksl/FigureItem.h>
+#include <Ksl/XYAxisSampler.h>
 
 namespace Ksl {
 
-class FigureItemPrivate
+class XYAxisSamplerPrivate
     : public Ksl::ObjectPrivate
 {
 public:
 
-    FigureItemPrivate(FigureItem *publ)
-        : Ksl::ObjectPrivate(publ)
-        , visible(true)
-        , rescalable(true)
-        , figure(nullptr)
-        , scale(nullptr)
+    XYAxisSamplerPrivate(XYAxisSampler *publ)
+        : ObjectPrivate(publ)
+        , min(1.0)
+        , max(-1.0)
+        , hint(0.0)
+        , minorSamples(false)
+        , mode(XYAxisSampler::AutoDecimal)
     { }
 
-    bool visible;
-    bool rescalable;
-    Figure *figure;
-    FigureScale *scale;
-    QString name;
+
+    double min, max;
+    double hint;
+    bool minorSamples;
+    XYAxisSampler::Mode mode;
+    QList<XYAxisSampler::Sample> sampleList;
 };
 
-} // namespace Ksl 
+} // namespace Ksl
 
-#endif // KSL_FIGUREITEM_P_H
+#endif // KSL_XYAXISSAMPLER_P_H

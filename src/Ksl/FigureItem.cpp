@@ -53,6 +53,11 @@ bool FigureItem::visible() const {
     return m->visible;
 }
 
+bool FigureItem::rescalable() const {
+    KSL_PUBLIC(const FigureItem);
+    return m->rescalable;
+}
+
 QRectF FigureItem::dataRect() const {
     // pass
     return QRectF();

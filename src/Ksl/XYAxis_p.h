@@ -18,54 +18,42 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_XYSCALE_H
-#define KSL_XYSCALE_H
+#ifndef KSL_XYAXIS_P_H
+#define KSL_XYAXIS_P_H
 
-#include <Ksl/FigureScale.h>
 #include <Ksl/XYAxis.h>
+#include <Ksl/FigureItem_p.h>
 
 namespace Ksl {
 
-class KSL_EXPORT XYScale
-    : public FigureScale
+class XYAxisPrivate
+    : public FigureItemPrivate
 {
 public:
 
+    XYAxisPrivate(XYAxis *publ)
+        : FigureItemPrivate(publ)
+        , pen(Qt::black)
+        , brush(Qt::blue)
+        , components(XYAxis::AllComponents)
+    { }
 
-    enum Axis {
-        BottomAxis,
-        LeftAxis,
-        TopAxis,
-        RightAxis
-    };
+    ~XYAxisPrivate();
 
-    XYScale(const QString &name="scale");
 
-    XYAxis* axis(Axis axis);
+    void paintHorizontal(QPainter *painter);
+    void paintVertical(QPainter *painter);
 
-    virtual QPoint map(const QPointF &point) const;
 
-    virtual QPointF unmap(const QPoint &point) const;
-
-    virtual void rescale();
-
-    virtual QRectF dataRect() const;
-
-    virtual QRect figureRect() const;
-
-    void setXrange(double xMin, double xMax);
-
-    void setYrange(double yMin, double yMax);
-
-    void setXbound(int xLowBund, int xUpBound);
-
-    void setYbound(int yLowBund, int yUpBound);
-
-protected:
-
-    virtual void paint(const QRect &rect, QPainter *painter);
+    QPen pen;
+    QBrush brush;
+    XYAxis::Component components;
+    Qt::Orientation orientation;
+    double min, max;
+    double anchor;
+    XYAxisSampler *sampler;
 };
 
 } // namespace Ksl
 
-#endif // KSL_XYSCALE_H
+#endif // KSL_XYAXIS_P_H
