@@ -18,44 +18,45 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CHARTWINDOW_H
-#define KSL_CHARTWINDOW_H
+#ifndef KSL_XYPLOT_P_H
+#define KSL_XYPLOT_P_H
 
-#include <QWidget>
-#include <Ksl/Figure.h>
-#include <Ksl/XYScale.h>
 #include <Ksl/XYPlot.h>
+#include <Ksl/FigureItem_p.h>
 
 namespace Ksl {
 
-class KSL_EXPORT ChartWindow
-    : public QWidget
-    , public Ksl::Object
+class XYPlotPrivate
+    : public FigureItemPrivate
 {
-    Q_OBJECT
-
 public:
 
-    ChartWindow(const QString &title="Ksl Chart", int width=450,
-                int height=450, QWidget *parent=0);
+    XYPlotPrivate(XYPlot *publ)
+        : FigureItemPrivate(publ)
+        , symbol(XYPlot::Line)
+        , antialias(true)
+        , symbolRadius(3)
+    { }
 
 
-    Figure* figure() const;
-
-    XYScale* xyScale(const QString &name="xy-scale");
-
-
-public slots:
-
-    void save();
+    void checkRanges();
+    void paintLine(QPainter *painter);
+    void paintCircles(QPainter *painter);
+    void paintSquares(QPainter *painter);
 
 
-protected:
+    XYPlot::Symbol symbol;
+    bool antialias;
+    int symbolRadius;
+    QPen pen;
+    QBrush brush;
 
-    ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
-                int width, int height, QWidget *parent);
+    Array<1> x, y;
+    size_t pointCount;
+    double xMin, xMax;
+    double yMin, yMax;
 };
 
 } // namespace Ksl
 
-#endif // KSL_CHARTWINDOW_H
+#endif // KSL_XYPLOT_P_H

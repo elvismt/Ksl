@@ -7,6 +7,7 @@ set(Ksl_HDRS
     Ksl/FigureScale.h
     Ksl/FigureItem.h
     Ksl/XYScale.h
+    Ksl/XYPlot.h
     Ksl/CanvasWindow.h
     Ksl/ChartWindow.h
 )
@@ -16,6 +17,7 @@ set(Ksl_SRCS
     Ksl/FigureScale.cpp
     Ksl/FigureItem.cpp
     Ksl/XYScale.cpp
+    Ksl/XYPlot.cpp
     Ksl/CanvasWindow.cpp
     Ksl/ChartWindow.cpp
 )

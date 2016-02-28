@@ -28,7 +28,9 @@ HEADERS += \
     src/Ksl/ChartWindow.h \
     src/Ksl/ChartWindow_p.h \
     src/Ksl/XYScale.h \
-    src/Ksl/XYScale_p.h
+    src/Ksl/XYScale_p.h \
+    src/Ksl/XYPlot.h \
+    src/Ksl/XYPlot_p.h
 
 SOURCES += \
     tests/chart.cpp \
@@ -37,7 +39,8 @@ SOURCES += \
     src/Ksl/FigureItem.cpp \
     src/Ksl/FigureScale.cpp \
     src/Ksl/ChartWindow.cpp \
-    src/Ksl/XYScale.cpp
+    src/Ksl/XYScale.cpp \
+    src/Ksl/XYPlot.cpp
 
 RESOURCES += \
     src/qrc/Icons.qrc
