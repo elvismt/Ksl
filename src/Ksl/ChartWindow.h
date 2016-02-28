@@ -36,18 +36,31 @@ class KSL_EXPORT ChartWindow
 
 public:
 
-    ChartWindow(const QString &title="Ksl Chart", int width=450,
-                int height=450, QWidget *parent=0);
+    ChartWindow(const QString &title="Ksl Chart", int width=500,
+                int height=400, QWidget *parent=0);
 
 
     Figure* figure() const;
 
+    XYScale* xyScale(XYScale *scale);
+
     XYScale* xyScale(const QString &name="xy-scale");
+
+    XYPlot* xyPlot(XYPlot *plot);
+
+    XYPlot* xyPlot(const QString &name="xy-plot");
+
+    template <typename... Args>
+    inline XYPlot* xyPlot(Args... args);
+
+    QHash<QString,XYScale*> xyScalesHash() const;
 
 
 public slots:
 
     void save();
+
+    void showStatusMessage(const QString &message, int milisecs);
 
 
 protected:
@@ -55,6 +68,11 @@ protected:
     ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
                 int width, int height, QWidget *parent);
 };
+
+template <typename... Args>
+inline XYPlot* ChartWindow::xyPlot(Args... args) {
+    return xyPlot(new XYPlot(args...));
+}
 
 } // namespace Ksl
 

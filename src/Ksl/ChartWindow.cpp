@@ -21,6 +21,7 @@
 #include <Ksl/ChartWindow_p.h>
 #include <QIcon>
 #include <QFileDialog>
+#include <QMouseEvent>
 
 namespace Ksl {
 
@@ -57,6 +58,11 @@ ChartWindow::ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
 
     // Set up figure
     m->chartArea->figure = new Figure(title, this);
+
+    // Set up status bar
+    m->statusBar = new QStatusBar(this);
+    m->layout->addWidget(m->statusBar);
+    m->statusBar->showMessage("Ready!", 4000);
 }
 
 ChartWindow::ChartWindow(const QString &title,
@@ -81,6 +87,15 @@ void ChartWindow::save() {
         filePath, m->chartArea->size());
 }
 
+XYScale* ChartWindow::xyScale(XYScale *scale) {
+    KSL_PUBLIC(ChartWindow);
+
+    if (!m->xyScales.contains(scale->name()))
+        m->xyScales[scale->name()] = scale;
+
+    return scale;
+}
+
 XYScale* ChartWindow::xyScale(const QString &name) {
     KSL_PUBLIC(ChartWindow);
 
@@ -93,13 +108,39 @@ XYScale* ChartWindow::xyScale(const QString &name) {
     return newScale;
 }
 
+XYPlot* ChartWindow::xyPlot(XYPlot *plot) {
+    XYScale *scale = xyScale();
+
+    if (!scale->contains(plot)) {
+        scale->add(plot);
+        plot->setParent(this);
+    }
+    return plot;
+}
+
+XYPlot* ChartWindow::xyPlot(const QString &name) {
+    return static_cast<XYPlot*>(xyScale()->item(name));
+}
+
+void ChartWindow::showStatusMessage(const QString &message, int milisecs) {
+    KSL_PUBLIC(ChartWindow);
+    m->statusBar->showMessage(message, milisecs);
+}
+
+QHash<QString,XYScale*> ChartWindow::xyScalesHash() const {
+    KSL_PUBLIC(ChartWindow);
+    return m->xyScales;
+}
+
 _ChartArea::_ChartArea(const QSize defaultSize, QWidget *parent)
     : QWidget(parent)
 {
     this->defaultSize = defaultSize;
+    this->window = static_cast<ChartWindow*>(parent);
     resize(defaultSize);
     setMinimumSize(200, 200);
     setAutoFillBackground(false);
+    setMouseTracking(true);
 }
 
 QSize _ChartArea::sizeHint() const {
@@ -111,6 +152,19 @@ void _ChartArea::paintEvent(QPaintEvent *event) {
     painter.begin(this);
     figure->paint(rect(), &painter);
     painter.end();
+}
+
+void _ChartArea::mouseMoveEvent(QMouseEvent *event) {
+    Q_UNUSED(event)
+    auto scale = window->xyScale();
+
+    // Show position only if there is only one scale
+    // to avoid ambiguity
+    if (scale && window->xyScalesHash().size() == 1) {
+        QPointF p = scale->unmap(event->pos());
+        window->showStatusMessage(QString("X = %1, Y = %2")
+            .arg(p.x(), 0, 'f', 1).arg(p.y(), 0, 'f', 1), 3000);
+    }
 }
 
 } // namespace Ksl

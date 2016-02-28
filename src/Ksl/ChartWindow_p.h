@@ -24,6 +24,7 @@
 #include <Ksl/ChartWindow.h>
 #include <QVBoxLayout>
 #include <QToolBar>
+#include <QStatusBar>
 #include <QHash>
 
 namespace Ksl {
@@ -39,11 +40,13 @@ public:
 
     virtual QSize sizeHint() const;
     virtual void paintEvent(QPaintEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
 
 
     QSize defaultSize;
     QPainter painter;
     Figure *figure;
+    ChartWindow *window;
 };
 
 class ChartWindowPrivate
@@ -59,6 +62,7 @@ public:
     QVBoxLayout *layout;
     _ChartArea *chartArea;
     QToolBar *toolBar;
+    QStatusBar *statusBar;
 
     QHash<QString,XYScale*> xyScales;
 };

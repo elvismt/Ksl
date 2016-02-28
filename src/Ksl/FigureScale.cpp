@@ -67,6 +67,11 @@ FigureItem* FigureScale::item(const QString &name) const {
     return nullptr;
 }
 
+bool FigureScale::contains(FigureItem *item) const {
+    KSL_PUBLIC(FigureScale);
+    return m->itemList.contains(item);
+}
+
 QString FigureScale::name() const {
     KSL_PUBLIC(const FigureScale);
     return m->name;

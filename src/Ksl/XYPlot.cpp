@@ -30,8 +30,7 @@ XYPlot::XYPlot(Ksl::ObjectPrivate *priv, const QString &name,
 {
     KSL_PUBLIC(XYPlot);
     m->symbol = symbol;
-    if (symbol == Line)
-        m->pen.setWidth(2);
+    m->pen.setWidth(2);
 }
 
 XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
@@ -49,12 +48,13 @@ XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
 XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
                XYPlot::Symbol symbol,
                const QString &name,
+               const QColor &stroke, const QColor &fill,
                QObject *parent)
     : XYPlot(new XYPlotPrivate(this), name, symbol, parent)
 {
     KSL_PUBLIC(XYPlot);
-    m->pen.setColor(Qt::black);
-    m->brush = QBrush(Qt::red);
+    m->pen.setColor(stroke);
+    m->brush = QBrush(fill);
     setData(x, y);
 }
 
@@ -80,17 +80,17 @@ void XYPlot::paint(QPainter *painter) {
 
     painter->setRenderHint(
         QPainter::Antialiasing, m->antialias);
-    switch (m->symbol) {
-    case Line:
+
+    if (m->symbol == Line)
         m->paintLine(painter);
-        break;
-    case Circles:
+    else if (m->symbol == Circles)
         m->paintCircles(painter);
-        break;
-    case Squares:
+    else if (m->symbol == (Line|Circles))
+        m->paintLineCircles(painter);
+    else if (m->symbol == Squares)
         m->paintSquares(painter);
-        break;
-    }
+    else if (m->symbol == (Line|Squares))
+        m->paintLineSquares(painter);
 }
 
 void XYPlotPrivate::checkRanges() {
@@ -129,8 +129,23 @@ void XYPlotPrivate::paintCircles(QPainter *painter) {
     }
 }
 
+void XYPlotPrivate::paintLineCircles(QPainter *painter) {
+    QPoint p1, p2;
+    int rad = symbolRadius;
+    int twoRad = 2*rad - 1;
+    painter->setPen(pen);
+    painter->setBrush(brush);
+    p1 = scale->map(QPointF(x[0],y[0]));
+    for (size_t k=1; k<pointCount; ++k) {
+        p2 = scale->map(QPointF(x[k],y[k]));
+        painter->drawLine(p1, p2);
+        painter->drawEllipse(p1.x()-rad, p1.y()-rad, twoRad, twoRad);
+        p1 = p2;
+    }
+    painter->drawEllipse(p2.x()-rad, p2.y()-rad, twoRad, twoRad);
+}
+
 void XYPlotPrivate::paintSquares(QPainter *painter) {
-    // Squares appear bigger
     int rad = symbolRadius;
     int twoRad = 2*rad - 1;
     painter->setPen(pen);
@@ -138,6 +153,74 @@ void XYPlotPrivate::paintSquares(QPainter *painter) {
     for (size_t k=0; k<pointCount; ++k) {
         QPoint p = scale->map(QPointF(x[k],y[k]));
         painter->drawRect(p.x()-rad, p.y()-rad, twoRad, twoRad);
+    }
+}
+
+void XYPlotPrivate::paintLineSquares(QPainter *painter) {
+    QPoint p1, p2;
+    int rad = symbolRadius;
+    int twoRad = 2*rad - 1;
+    painter->setPen(pen);
+    painter->setBrush(brush);
+    p1 = scale->map(QPointF(x[0],y[0]));
+    for (size_t k=1; k<pointCount; ++k) {
+        p2 = scale->map(QPointF(x[k],y[k]));
+        painter->drawLine(p1, p2);
+        painter->drawRect(p1.x()-rad, p1.y()-rad, twoRad, twoRad);
+        p1 = p2;
+    }
+    painter->drawRect(p2.x()-rad, p2.y()-rad, twoRad, twoRad);
+}
+
+QPen XYPlot::pen() const {
+    KSL_PUBLIC(const XYPlot);
+    return m->pen;
+}
+
+QBrush XYPlot::brush() const {
+    KSL_PUBLIC(const XYPlot);
+    return m->brush;
+}
+
+XYPlot::Symbol XYPlot::symbol() const {
+    KSL_PUBLIC(const XYPlot);
+    return m->symbol;
+}
+
+bool XYPlot::antialias() const {
+    KSL_PUBLIC(const XYPlot);
+    return m->antialias;
+}
+
+void XYPlot::setPen(const QPen &pen) {
+    KSL_PUBLIC(XYPlot);
+    if (m->pen != pen) {
+        m->pen = pen;
+        emit appearenceChanged(this);
+    }
+}
+
+void XYPlot::setBrush(const QBrush &brush) {
+    KSL_PUBLIC(XYPlot);
+    if (m->brush != brush) {
+        m->brush = brush;
+        emit appearenceChanged(this);
+    }
+}
+
+void XYPlot::setSymbol(Symbol symbol) {
+    KSL_PUBLIC(XYPlot);
+    if (m->symbol != symbol) {
+        m->symbol = symbol;
+        emit appearenceChanged(this);
+    }
+}
+
+void XYPlot::setAntialias(bool antialias) {
+    KSL_PUBLIC(XYPlot);
+    if (m->antialias != antialias) {
+        m->antialias = antialias;
+        emit appearenceChanged(this);
     }
 }
 

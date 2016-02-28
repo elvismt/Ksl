@@ -35,22 +35,29 @@ class KSL_EXPORT XYPlot
 
 public:
 
-    enum Symbol {
-        Line,
-        Circles,
-        Squares
+    enum SymbolEnum {
+        Line         = 0x00000001,
+        Circles      = 0x00000002,
+        Squares      = 0x00000004
     };
+    Q_DECLARE_FLAGS(
+        Symbol,
+        SymbolEnum
+    )
+
 
 
     XYPlot(const Array<1> &x, const Array<1> &y,
            const QString &name="plot",
-           const QColor &stroke=Qt::black,
-           const QColor &fill=Qt::red,
+           const QColor &stroke=Qt::blue,
+           const QColor &fill=Qt::white,
            QObject *parent=0);
 
     XYPlot(const Array<1> &x, const Array<1> &y,
            Symbol symbol,
            const QString &name="plot",
+           const QColor &stroke=Qt::blue,
+           const QColor &fill=Qt::white,
            QObject *parent=0);
 
 
@@ -58,6 +65,24 @@ public:
 
     virtual QRectF dataRect() const;
 
+    QPen pen() const;
+
+    QBrush brush() const;
+
+    Symbol symbol() const;
+
+    bool antialias() const;
+
+
+public slots:
+
+    void setPen(const QPen &pen);
+
+    void setBrush(const QBrush &brush);
+
+    void setSymbol(Symbol symbol);
+
+    void setAntialias(bool antialias);
 
 protected:
 
@@ -66,6 +91,8 @@ protected:
     XYPlot(Ksl::ObjectPrivate *priv, const QString &name,
            Symbol symbol, QObject *parent);
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(XYPlot::Symbol)
 
 } // namespace Ksl
 

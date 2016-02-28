@@ -42,7 +42,9 @@ public:
     void checkRanges();
     void paintLine(QPainter *painter);
     void paintCircles(QPainter *painter);
+    void paintLineCircles(QPainter *painter);
     void paintSquares(QPainter *painter);
+    void paintLineSquares(QPainter *painter);
 
 
     XYPlot::Symbol symbol;

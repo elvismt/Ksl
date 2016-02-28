@@ -121,13 +121,7 @@ void XYScale::paint(const QRect &rect, QPainter *painter) {
     painter->setClipRect(
         m->figXmin, m->figYmin,
         m->figWidth+1, m->figHeight+1);
-
-    // TODO: remove!
-    painter->setPen(Qt::black);
-    painter->drawRect(figureRect());
-
     FigureScale::paint(rect, painter);
-
     painter->restore();
 }
 

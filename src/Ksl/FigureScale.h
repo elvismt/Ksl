@@ -46,6 +46,8 @@ public:
 
     FigureItem* item(const QString &name) const;
 
+    bool contains(FigureItem *item) const;
+
     QString name() const;
 
     void setName(const QString &name);
