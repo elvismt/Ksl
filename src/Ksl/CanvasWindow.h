@@ -21,24 +21,22 @@
 #ifndef KSL_CANVASWINDOW_H
 #define KSL_CANVASWINDOW_H
 
+#include <QWidget>
+#include <QPainter>
 #include <Ksl/Object.h>
-#include <QMainWindow>
-#include <QtGui>
-#include <QDebug>
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
 class KSL_EXPORT CanvasWindow
-    : public QMainWindow
+    : public QWidget
     , public Ksl::Object
 {
     Q_OBJECT
 
 public:
 
-    CanvasWindow(const QString &title="Ksl",
-                 int width=500, int height=500,
-                 QWidget *parent=0);
+    CanvasWindow(const QString &title="Ksl Canvas", int width=450,
+                int height=450, QWidget *parent=0);
 
 
     virtual void paint(const QRect &rect, QPainter *painter);
@@ -47,12 +45,22 @@ public:
 
     virtual void rightClick(const QPoint &pos);
 
-    virtual void mouseRelease(const QPoint &pos);
+    virtual void clickRelease(const QPoint &pos);
 
-    virtual void mouseMove(const QPoint &pos);
+    virtual void pointerMove(const QPoint &pos);
 
 
 public slots:
+
+    void save();
+
+    void repaintCanvas();
+
+    QRect canvasRect();
+
+    void setTimeStep(int milisecs);
+
+    virtual void reset();
 
     virtual void start();
 
@@ -60,15 +68,13 @@ public slots:
 
     virtual void stop();
 
-    virtual void reset();
 
-    void repaintCanvas();
+protected:
 
-    void save();
-
-    void setTimeStep(int milisecs);
+    CanvasWindow(Ksl::ObjectPrivate *priv, const QString &title,
+                 int width, int height, QWidget *parent);
 };
 
-KSL_END_NAMESPACE
+} // namespace Ksl
 
 #endif // KSL_CANVASWINDOW_H

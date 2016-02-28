@@ -22,7 +22,7 @@
 #include <Ksl/Figure.h>
 #include <Ksl/FigureScale.h>
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
 FigureItem::FigureItem(Ksl::ObjectPrivate *priv,
                        const QString &name, QObject *parent)
@@ -91,18 +91,18 @@ void FigureItem::setScale(FigureScale *scale) {
         return;
 
     if (oldFigure) {
-        disconnect(this, &FigureItem::appearenceChanged,
-                   oldFigure, &Figure::onAppearenceChange);
-        disconnect(this, &FigureItem::dataChanged,
-                   oldFigure, &Figure::onDataChange);
+        disconnect(this, SIGNAL(appearenceChanged(FigureItem*)),
+                   oldFigure, SLOT(onAppearenceChange(FigureItem*)));
+        disconnect(this, SIGNAL(dataChanged(FigureItem*)),
+                   oldFigure, SLOT(onDataChange(FigureItem*)));
     }
 
     if (newFigure) {
-        connect(this, &FigureItem::appearenceChanged,
-                   newFigure, &Figure::onAppearenceChange);
-        connect(this, &FigureItem::dataChanged,
-                   newFigure, &Figure::onDataChange);
+        connect(this, SIGNAL(appearenceChanged(FigureItem*)),
+                newFigure, SLOT(onAppearenceChange(FigureItem*)));
+        connect(this, SIGNAL(dataChanged(FigureItem*)),
+                newFigure, SLOT(onDataChange(FigureItem*)));
     }
 }
 
-KSL_END_NAMESPACE
+} // namespace Ksl 

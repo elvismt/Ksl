@@ -13,4 +13,3 @@ subdirs(
     src
     tests
 )
-

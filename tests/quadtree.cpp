@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QDebug>
 #include <Ksl/CanvasWindow.h>
 
 // Nodes with this value are considered
@@ -89,12 +90,10 @@ public:
             painter->setBrush(Qt::black);
             painter->drawEllipse(node->data, 3, 3);
             painter->setPen(Qt::red);
-            /*
             painter->drawText(
                 node->data.x()+5, node->data.y()+5,
                 QString("(%1,%2)").arg(int(node->data.x())).
                     arg(int(node->data.y())));
-            */
         }
         // if the node has children, paint them
         if (node->children[0])
@@ -104,6 +103,7 @@ public:
 
 
     void paint(const QRect &rect, QPainter *painter) {
+        Q_UNUSED(rect)
         if (treeRoot)
             paintNode(treeRoot, painter);
     }
@@ -111,8 +111,7 @@ public:
 
     void insertPoint(const QPointF &pos) {
         if (!treeRoot)
-            treeRoot = new QuadTree(
-                QRectF(0.0, 0.0, 499.0, 499.0), pos);
+            treeRoot = new QuadTree(canvasRect(), pos);
         else
             treeRoot->insert(pos);
     }

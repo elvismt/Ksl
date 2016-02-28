@@ -23,7 +23,7 @@
 
 #include <Ksl/FigureScale.h>
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
 class FigureScalePrivate
     : public Ksl::ObjectPrivate
@@ -43,6 +43,6 @@ public:
     QList<FigureItem*> itemList;
 };
 
-KSL_END_NAMESPACE
+} // namespace Ksl 
 
 #endif // KSL_FIGURESCALE_P_H

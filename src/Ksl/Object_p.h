@@ -29,7 +29,7 @@
 #define KSL_PRIVATE(Class) \
     auto m = KSL_GET_PUBLIC(Class,this)
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
 // forward declaration
 class Object;
@@ -54,6 +54,6 @@ protected:
     Object *const m_publ;
 };
 
-KSL_END_NAMESPACE
+} // namespace Ksl 
 
 #endif // KSL_OBJECT_P_H

@@ -25,7 +25,7 @@
 #include <QObject>
 #include <QPainter>
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
 // forward
 class Figure;
@@ -79,6 +79,6 @@ protected:
                const QString &name, QObject *parent);
 };
 
-KSL_END_NAMESPACE
+} // namespace Ksl 
 
 #endif // FIGUREITEM_H

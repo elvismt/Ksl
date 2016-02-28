@@ -18,31 +18,43 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_FIGUREITEM_P_H
-#define KSL_FIGUREITEM_P_H
+#ifndef KSL_CHARTWINDOW_H
+#define KSL_CHARTWINDOW_H
 
-#include <Ksl/FigureItem.h>
+#include <QWidget>
+#include <Ksl/Figure.h>
+#include <Ksl/XYScale.h>
 
 namespace Ksl {
 
-class FigureItemPrivate
-    : public Ksl::ObjectPrivate
+class KSL_EXPORT ChartWindow
+    : public QWidget
+    , public Ksl::Object
 {
+    Q_OBJECT
+
 public:
 
-    FigureItemPrivate(FigureItem *publ)
-        : Ksl::ObjectPrivate(publ)
-        , visible(true)
-        , figure(nullptr)
-        , scale(nullptr)
-    { }
+    ChartWindow(const QString &title="Ksl Chart", int width=450,
+                int height=450, QWidget *parent=0);
 
-    bool visible;
-    Figure *figure;
-    FigureScale *scale;
-    QString name;
+
+    Figure* figure() const;
+
+    XYScale* xyScale(const QString &name="xy-scale");
+
+
+public slots:
+
+    void save();
+
+
+protected:
+
+    ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
+                int width, int height, QWidget *parent);
 };
 
-} // namespace Ksl 
+} // namespace Ksl
 
-#endif // KSL_FIGUREITEM_P_H
+#endif // KSL_CHARTWINDOW_H

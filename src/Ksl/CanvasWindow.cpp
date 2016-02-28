@@ -19,36 +19,35 @@
  */
 
 #include <Ksl/CanvasWindow_p.h>
+#include <QIcon>
+#include <QFileDialog>
+#include <QMouseEvent>
+#include <QTimer>
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
-CanvasWindow::CanvasWindow(const QString &title,
+CanvasWindow::CanvasWindow(Ksl::ObjectPrivate *priv, const QString &title,
                            int width, int height, QWidget *parent)
-    : QMainWindow(parent)
-    , Ksl::Object(new CanvasWindowPrivate(this))
+    : QWidget(parent)
+    , Ksl::Object(priv)
 {
     KSL_PUBLIC(CanvasWindow);
 
-    // Set up central widget
+    // Set out layout
     setWindowTitle(title);
-    m->centralWidget = new QWidget();
-    m->mainVLayout = new QVBoxLayout();
-    m->centralWidget->setLayout(m->mainVLayout);
-    setCentralWidget(m->centralWidget);
-
-    // Set up drawing area
-    m->drawingArea = new CanvasWindowDrawingArea(this);
-    m->drawingArea->canvasWindow = this;
-    m->mainVLayout->addWidget(m->drawingArea);
-    m->drawingArea->setMinimumSize(width, height);
-    m->drawingArea->timer = new QTimer(this);
-    m->drawingArea->timeStep = 40;
-    connect(m->drawingArea->timer, &QTimer::timeout,
-            this, &CanvasWindow::animate);
+    m->layout = new QVBoxLayout();
+    setLayout(m->layout);
 
     // Set up tool bar
-    m->toolBar = addToolBar("mainToolBar");
+    m->toolBar = new QToolBar("toolBar", this);
     m->toolBar->setMovable(false);
+    m->layout->addWidget(m->toolBar);
+
+    // Set up canvas area
+    m->canvasArea = new _CanvasArea(QSize(width, height), this);
+    m->layout->addWidget(m->canvasArea);
+
+    // Populate tool bar
     m->toolBar->addAction(
         QIcon(":/icons/icons/dialog-close.png"),
         tr("Close"), this, SLOT(close()));
@@ -65,15 +64,16 @@ CanvasWindow::CanvasWindow(const QString &title,
         tr("Start"), this, SLOT(start()));
     m->toolBar->addAction(
         QIcon(":/icons/icons/media-playback-start.png"),
-        tr("Animate"), m->drawingArea, SLOT(startAnimation()));
+        tr("Start"), m->canvasArea, SLOT(startAnimation()));
     m->toolBar->addAction(
         QIcon(":/icons/icons/media-playback-stop.png"),
-        tr("Stop"), m->drawingArea, SLOT(stopAnimation()));
-
-    // Set up status bar
-    statusBar()->showMessage(tr("Ready!"), 5000);
+        tr("Stop"), m->canvasArea, SLOT(stopAnimation()));
 }
 
+CanvasWindow::CanvasWindow(const QString &title,
+                         int width, int height, QWidget *parent)
+    : CanvasWindow(new CanvasWindowPrivate(this), title, width, height, parent)
+{ }
 
 void CanvasWindow::paint(const QRect &rect, QPainter *painter) {
     Q_UNUSED(rect)
@@ -91,13 +91,17 @@ void CanvasWindow::rightClick(const QPoint &pos) {
     // pass
 }
 
-void CanvasWindow::mouseRelease(const QPoint &pos) {
+void CanvasWindow::clickRelease(const QPoint &pos) {
     Q_UNUSED(pos)
     // pass
 }
 
-void CanvasWindow::mouseMove(const QPoint &pos) {
+void CanvasWindow::pointerMove(const QPoint &pos) {
     Q_UNUSED(pos)
+    // pass
+}
+
+void CanvasWindow::reset() {
     // pass
 }
 
@@ -113,20 +117,6 @@ void CanvasWindow::stop() {
     // pass
 }
 
-void CanvasWindow::reset() {
-    // pass
-}
-
-void CanvasWindow::repaintCanvas() {
-    KSL_PUBLIC(CanvasWindow);
-    m->drawingArea->repaint();
-}
-
-void CanvasWindow::setTimeStep(int milisecs) {
-    KSL_PUBLIC(CanvasWindow);
-    m->drawingArea->timeStep = milisecs;
-}
-
 void CanvasWindow::save() {
     KSL_PUBLIC(CanvasWindow);
     QString filePath = QFileDialog::getSaveFileName(
@@ -135,54 +125,80 @@ void CanvasWindow::save() {
         return;
     if (!filePath.endsWith(".png", Qt::CaseInsensitive))
         filePath.append(".png");
-    QPixmap pixmap = m->drawingArea->grab();
-    pixmap.save(filePath, "png");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    QPixmap pixmap = m->canvasArea->grab();
+#else
+    QPixmap pixmap = QPixmap::grabWidget(m->canvasArea);
+#endif
+    pixmap.save(filePath);
 }
 
+void CanvasWindow::repaintCanvas() {
+    KSL_PUBLIC(CanvasWindow);
+    m->canvasArea->repaint();
+}
 
-/******************/
+QRect CanvasWindow::canvasRect() {
+    KSL_PUBLIC(CanvasWindow);
+    return m->canvasArea->rect();
+}
 
+void CanvasWindow::setTimeStep(int milisecs) {
+    KSL_PUBLIC(CanvasWindow);
+    m->canvasArea->timeStep = milisecs;
+}
 
-CanvasWindowDrawingArea::CanvasWindowDrawingArea(QWidget *parent)
+_CanvasArea::_CanvasArea(const QSize defaultSize, QWidget *parent)
     : QWidget(parent)
-    , fillBack(true)
-    , backBrush(Qt::white)
 {
-    setAutoFillBackground(false);
-    setMouseTracking(true);
+    // Init menbers and size
+    this->defaultSize = defaultSize;
+    this->canvasWindow = static_cast<CanvasWindow*>(parent);
+    this->timeStep = 50;
+    this->timer = new QTimer(parent);
+    connect(timer, SIGNAL(timeout()), canvasWindow, SLOT(animate()));
+    resize(defaultSize);
+    setMinimumSize(200, 200);
+
+    // White background
+    QPalette palette = this->palette();
+    palette.setColor(QPalette::Background, Qt::white);
+    setPalette(palette);
+    setAutoFillBackground(true);
 }
 
-void CanvasWindowDrawingArea::paintEvent(QPaintEvent *event) {
+QSize _CanvasArea::sizeHint() const {
+    return defaultSize;
+}
+
+void _CanvasArea::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event)
-    QRect rect = this->rect();
     painter.begin(this);
-    if (fillBack)
-        painter.fillRect(rect, backBrush);
-    canvasWindow->paint(rect, &painter);
+    canvasWindow->paint(rect(), &painter);
     painter.end();
 }
 
-void CanvasWindowDrawingArea::mousePressEvent(QMouseEvent *event) {
+void _CanvasArea::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton)
         canvasWindow->leftClick(event->pos());
     else if (event->button() == Qt::RightButton)
         canvasWindow->rightClick(event->pos());
 }
 
-void CanvasWindowDrawingArea::mouseReleaseEvent(QMouseEvent *event) {
-    canvasWindow->mouseRelease(event->pos());
+void _CanvasArea::mouseMoveEvent(QMouseEvent *event) {
+    canvasWindow->pointerMove(event->pos());
 }
 
-void CanvasWindowDrawingArea::mouseMoveEvent(QMouseEvent *event) {
-    canvasWindow->mouseMove(event->pos());
+void _CanvasArea::mouseReleaseEvent(QMouseEvent *event) {
+    canvasWindow->clickRelease(event->pos());
 }
 
-void CanvasWindowDrawingArea::startAnimation() {
+void _CanvasArea::startAnimation() {
     timer->start(timeStep);
 }
 
-void CanvasWindowDrawingArea::stopAnimation() {
+void _CanvasArea::stopAnimation() {
     timer->stop();
 }
 
-KSL_END_NAMESPACE
+} // namespace Ksl

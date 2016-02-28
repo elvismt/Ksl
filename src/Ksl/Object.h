@@ -29,7 +29,7 @@
 #define KSL_PUBLIC(Class) \
     auto m = KSL_GET_PRIVATE(Class,this)
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
 class KSL_EXPORT Object
 {
@@ -54,6 +54,6 @@ protected:
     ObjectPrivate *const m_priv;
 };
 
-KSL_END_NAMESPACE
+} // namespace Ksl 
 
 #endif // KSL_OBJECT_H

@@ -18,60 +18,51 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_CANVASWINDOW_P_H
-#define KSL_CANVASWINDOW_P_H
+#ifndef KSL_CHARTWINDOW_P_H
+#define KSL_CHARTWINDOW_P_H
 
-#include <Ksl/CanvasWindow.h>
+#include <Ksl/ChartWindow.h>
 #include <QVBoxLayout>
 #include <QToolBar>
-#include <QPainter>
+#include <QHash>
 
 namespace Ksl {
 
-class _CanvasArea
+class _ChartArea
     : public QWidget
 {
     Q_OBJECT
 
 public:
 
-    _CanvasArea(const QSize defaultSize, QWidget *parent);
+    _ChartArea(const QSize defaultSize, QWidget *parent);
 
     virtual QSize sizeHint() const;
     virtual void paintEvent(QPaintEvent *event);
-    virtual void mousePressEvent(QMouseEvent *event);
-    virtual void mouseMoveEvent(QMouseEvent *event);
-    virtual void mouseReleaseEvent(QMouseEvent *event);
 
 
     QSize defaultSize;
     QPainter painter;
-    CanvasWindow *canvasWindow;
-    QTimer *timer;
-    int timeStep;
-
-
-public slots:
-
-    void startAnimation();
-    void stopAnimation();
+    Figure *figure;
 };
 
-class CanvasWindowPrivate
+class ChartWindowPrivate
     : public Ksl::ObjectPrivate
 {
 public:
 
-    CanvasWindowPrivate(CanvasWindow *publ)
+    ChartWindowPrivate(ChartWindow *publ)
         : Ksl::ObjectPrivate(publ)
     { }
 
 
     QVBoxLayout *layout;
-    _CanvasArea *canvasArea;
+    _ChartArea *chartArea;
     QToolBar *toolBar;
+
+    QHash<QString,XYScale*> xyScales;
 };
 
 } // namespace Ksl
 
-#endif // KSL_CANVASWINDOW_P_H
+#endif // KSL_CHARTWINDOW_P_H

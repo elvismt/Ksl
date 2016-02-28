@@ -9,25 +9,21 @@ widget for visualization.
 
 KSL's (growing) list of current features is:
 
-   * Data Visualization Widget
-   * Linear Regression
+   * Data Visualization Widgets
+   * Advanced Data Structures
+   * Regression Engines
 
-The numerical routines in KSL are primarily adapted from the Mighty GNU
+The numerical routines in Ksl are primarily adapted from the Mighty GNU
 Scientific Library [GSL](http://www.gnu.org/software/gsl)
 We thank and congratulate it's developers for the great work. Ksl follows
 some of KDE's software design goals and all of it's philosophy but it is
 not an official KDE component.
 
-The figures below ware created with KSL's chart widget:
+The figures below were created with KSL's widgets:
 
-   * Sine function (on Debian8/KDE)
+   * A representation of data indexed in a quad-tree
 
-![](https://github.com/elvismt/Ksl/blob/master/demos/sine.png)
-
-   * Particles in a box of edge length L (on Windows 7)
-
-![](https://github.com/elvismt/Ksl/blob/master/demos/scatter.png)
+![](https://github.com/elvismt/Ksl/blob/devel/tests/quadtree.png)
 
 If you are looking for a C/Gtk solution for 2D visualization. Take a look
 at [slope](https://github.com/elvismt/slope)
-

@@ -22,7 +22,7 @@
 #include <Ksl/FigureScale.h>
 #include <Ksl/FigureItem.h>
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
 Figure::Figure(Ksl::ObjectPrivate *priv,
                const QString &name, QObject *parent)
@@ -135,4 +135,4 @@ void Figure::setName(const QString &name) {
     }
 }
 
-KSL_END_NAMESPACE
+} // namespace Ksl 

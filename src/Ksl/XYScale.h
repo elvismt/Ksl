@@ -18,45 +18,23 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_FIGURESCALE_H
-#define KSL_FIGURESCALE_H
+#ifndef KSL_XYSCALE_H
+#define KSL_XYSCALE_H
 
-#include <Ksl/Object.h>
-#include <QPainter>
+#include <Ksl/FigureScale.h>
 
 namespace Ksl {
 
-// forward
-class Figure;
-class FigureItem;
-
-
-class KSL_EXPORT FigureScale
-    : public Ksl::Object
+class KSL_EXPORT XYScale
+    : public FigureScale
 {
 public:
 
-    Figure* figure() const;
+    XYScale(const QString &name="scale");
 
-    virtual void add(FigureItem *item);
+    virtual QPoint map(const QPointF &point) const;
 
-    QList<FigureItem*>& itemList();
-
-    const QList<FigureItem*>& itemList() const;
-
-    FigureItem* item(const QString &name) const;
-
-    QString name() const;
-
-    void setName(const QString &name);
-
-    bool visible() const;
-
-    void setVisible(bool visible);
-
-    virtual QPoint map(const QPointF &point) const = 0;
-
-    virtual QPointF unmap(const QPoint &point) const = 0;
+    virtual QPointF unmap(const QPoint &point) const;
 
     virtual void rescale();
 
@@ -64,18 +42,15 @@ public:
 
     virtual QRect figureRect() const;
 
+    void setXrange(double xMin, double xMax);
+
+    void setYrange(double yMin, double yMax);
 
 protected:
 
-    friend class Figure;
-
-    virtual void setFigure(Figure *figure);
-
     virtual void paint(const QRect &rect, QPainter *painter);
-
-    FigureScale(Ksl::ObjectPrivate *priv, const QString &name);
 };
 
-} // namespace Ksl 
+} // namespace Ksl
 
-#endif // KSL_FIGURESCALE_H
+#endif // KSL_XYSCALE_H

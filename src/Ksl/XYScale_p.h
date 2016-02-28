@@ -18,31 +18,37 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_FIGUREITEM_P_H
-#define KSL_FIGUREITEM_P_H
+#ifndef KSL_XYSCALE_P_H
+#define KSL_XYSCALE_P_H
 
-#include <Ksl/FigureItem.h>
+#include <Ksl/XYScale.h>
+#include <Ksl/FigureScale_p.h>
 
 namespace Ksl {
 
-class FigureItemPrivate
-    : public Ksl::ObjectPrivate
+class XYScalePrivate
+    : public FigureScalePrivate
 {
 public:
 
-    FigureItemPrivate(FigureItem *publ)
-        : Ksl::ObjectPrivate(publ)
-        , visible(true)
-        , figure(nullptr)
-        , scale(nullptr)
+    XYScalePrivate(XYScale *publ)
+        : FigureScalePrivate(publ)
+        , xLowBound(20), xUpBound(20)
+        , yLowBound(20), yUpBound(20)
     { }
 
-    bool visible;
-    Figure *figure;
-    FigureScale *scale;
-    QString name;
+    int xLowBound, xUpBound;
+    int yLowBound, yUpBound;
+
+    int figXmin, figXmax;
+    int figYmin, figYmax;
+    int figWidth, figHeight;
+
+    double xMin, xMax;
+    double yMin, yMax;
+    double width, height;
 };
 
-} // namespace Ksl 
+} // namespace Ksl
 
-#endif // KSL_FIGUREITEM_P_H
+#endif // KSL_XYSCALE_P_H

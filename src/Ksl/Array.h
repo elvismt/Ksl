@@ -31,7 +31,7 @@
 #include <QTextStream>
 #include <QDebug>
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
 /*****************************************************
  * All array types in Ksl are specializations
@@ -915,6 +915,6 @@ template <size_t D, typename T>
 inline Array<D,T> exp(const Array<D,T> &array)
 { return std::move(applied(Math::exp, array)); }
 
-KSL_END_NAMESPACE
+} // namespace Ksl 
 
 #endif // KSL_ARRAY_H

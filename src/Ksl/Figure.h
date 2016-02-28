@@ -24,7 +24,7 @@
 #include <Ksl/Object.h>
 #include <QPainter>
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
 // forward
 class FigureScale;
@@ -83,6 +83,6 @@ protected:
            const QString &name, QObject *parent);
 };
 
-KSL_END_NAMESPACE
+} // namespace Ksl 
 
 #endif // KSL_FIGURE_H

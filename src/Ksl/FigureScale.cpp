@@ -21,7 +21,7 @@
 #include <Ksl/FigureScale_p.h>
 #include <Ksl/FigureItem.h>
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
 FigureScale::FigureScale(Ksl::ObjectPrivate *priv,
                          const QString &name)
@@ -116,4 +116,4 @@ void FigureScale::setFigure(Figure *figure) {
         item->setScale(this);
 }
 
-KSL_END_NAMESPACE
+} // namespace Ksl 

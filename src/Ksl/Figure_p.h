@@ -23,7 +23,7 @@
 
 #include <Ksl/Figure.h>
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
 class FigurePrivate
     : public Ksl::ObjectPrivate
@@ -42,6 +42,6 @@ public:
     QString name;
 };
 
-KSL_END_NAMESPACE
+} // namespace Ksl 
 
 #endif // KSL_FIGURE_P_H
