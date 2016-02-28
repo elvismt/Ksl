@@ -19,6 +19,8 @@ We thank and congratulate it's developers for the great work. Ksl follows
 some of KDE's software design goals and all of it's philosophy but it is
 not an official KDE component.
 
+# DEMOS
+
 The figures below were created with KSL's widgets:
 
    * A representation of data indexed in a quad-tree
@@ -28,6 +30,8 @@ The figures below were created with KSL's widgets:
    * We are working in a chart engine (soon it will have axis)
 
 ![](https://github.com/elvismt/Ksl/blob/devel/tests/chart.png)
+
+# CODE SAMPLE
 
 The code for this chart is as simple as
 
