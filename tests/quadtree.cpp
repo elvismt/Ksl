@@ -110,8 +110,12 @@ public:
 
 
     void insertPoint(const QPointF &pos) {
-        if (!treeRoot)
-            treeRoot = new QuadTree(canvasRect(), pos);
+        if (!treeRoot) {
+            QRectF rec = canvasRect();
+            rec.setWidth(rec.width()-1);
+            rec.setHeight(rec.height()-1);
+            treeRoot = new QuadTree(rec, pos);
+        }
         else
             treeRoot->insert(pos);
     }

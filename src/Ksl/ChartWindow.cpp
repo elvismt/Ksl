@@ -54,7 +54,7 @@ ChartWindow::ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
 
     // chartArea
     m->chartArea = new _ChartArea(QSize(width, height), this);
-    m->layout->addWidget(m->chartArea);
+    m->layout->addWidget(m->chartArea, 1);
 
     // Set up figure
     m->chartArea->figure = new Figure(title, this);

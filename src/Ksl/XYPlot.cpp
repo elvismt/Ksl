@@ -113,8 +113,12 @@ void XYPlotPrivate::paintLine(QPainter *painter) {
     QPoint p1 = scale->map(QPointF(x[0],y[0]));
     for (size_t k=1; k<pointCount; ++k) {
         QPoint p2 = scale->map(QPointF(x[k],y[k]));
-        painter->drawLine(p1, p2);
-        p1 = p2;
+
+        // Only draw line segments whose ends are at least 3 pixels away
+        if ((Math::pow2(p1.x()-p2.x()) + Math::pow2(p1.y()-p2.y())) >= 9) {
+            painter->drawLine(p1, p2);
+            p1 = p2;
+        }
     }
 }
 

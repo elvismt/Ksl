@@ -22,10 +22,10 @@ set(Ksl_SRCS
     Ksl/ChartWindow.cpp
 )
 
-QT5_ADD_RESOURCES(
+QT4_ADD_RESOURCES(
     ICONS_QRC
     qrc/Icons.qrc
 )
 
 add_library(Ksl SHARED ${Ksl_SRCS} ${ICONS_QRC})
-target_link_libraries(Ksl Qt5::Widgets)
+target_link_libraries(Ksl ${QT_LIBRARIES})
