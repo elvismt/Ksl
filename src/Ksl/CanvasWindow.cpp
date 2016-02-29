@@ -35,6 +35,7 @@ CanvasWindow::CanvasWindow(Ksl::ObjectPrivate *priv, const QString &title,
 
     // Set out layout
     setWindowTitle(title);
+    setWindowIcon(QIcon(":/icons/icons/preferences-kcalc-constants.png"));
     m->layout = new QVBoxLayout();
     setLayout(m->layout);
 
@@ -99,6 +100,12 @@ void CanvasWindow::clickRelease(const QPoint &pos) {
 void CanvasWindow::pointerMove(const QPoint &pos) {
     Q_UNUSED(pos)
     // pass
+}
+
+void CanvasWindow::showToolBar(bool showBar) {
+    KSL_PUBLIC(CanvasWindow);
+    m->toolBar->setVisible(showBar);
+    update();
 }
 
 void CanvasWindow::reset() {

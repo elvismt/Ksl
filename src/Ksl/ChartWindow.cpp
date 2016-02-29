@@ -34,6 +34,7 @@ ChartWindow::ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
 
     // Set out layout
     setWindowTitle(title);
+    setWindowIcon(QIcon(":/icons/icons/preferences-kcalc-constants.png"));
     m->layout = new QVBoxLayout();
     setLayout(m->layout);
 

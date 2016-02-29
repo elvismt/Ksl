@@ -32,7 +32,11 @@ public:
 
     FigurePrivate(Figure *publ)
         : Ksl::ObjectPrivate(publ)
+#if defined(Q_OS_WIN)
+        , font("Times New Roman", 11)
+#elif defined(Q_OS_LINUX)
         , font("Sans Serif", 10)
+#endif
         , fillBack(true)
         , onError(false)
         , backBrush(Qt::white)

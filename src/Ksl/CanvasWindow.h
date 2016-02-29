@@ -54,6 +54,8 @@ public slots:
 
     void save();
 
+    void showToolBar(bool showBar=true);
+
     void repaintCanvas();
 
     QRect canvasRect();

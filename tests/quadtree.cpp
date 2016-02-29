@@ -63,24 +63,89 @@ public:
 };
 
 
-class QuadTreeWindow
+class TreeView
     : public Ksl::CanvasWindow
 {
 public:
 
     QuadTree *treeRoot;
 
+
+    TreeView() {
+        setWindowTitle("QuadTree");
+        showToolBar(false);
+        this->treeRoot = nullptr;
+    }
+
+
+    void updateTree(QuadTree *treeRoot) {
+        this->treeRoot = treeRoot;
+        repaintCanvas();
+    }
+
+
+    static void paintNode(QuadTree *node, QPainter *painter,
+                          int y, int xmin, int xmax)
+    {
+        if (!node)
+            return;
+
+        QPoint pos((xmax+xmin)/2, y);
+        painter->setPen(Qt::green);
+        int spac = (xmax-xmin) / 4;
+        if (node->children[0]) {
+            for (int k=0; k<4; ++k) {
+                int x = xmin + spac/2 + k*spac;
+                painter->drawLine(pos, QPoint(x, y+150));
+            }
+        }
+
+        if (node->data != NULLDATA) {
+            painter->setPen(Qt::blue);
+            painter->setBrush(Qt::blue);
+            painter->drawEllipse(pos.x()-5, pos.y()-5, 10, 10);
+            painter->setPen(Qt::red);
+            painter->drawText(pos.x()+15, pos.y()+5,
+                QString("(%1,%2)").arg(int(node->data.x())).
+                    arg(int(node->data.y())));
+        }
+
+        if (node->children[0]) {
+            for (int k=0; k<4; ++k) {
+                int x = xmin + spac/2 + k*spac;
+                paintNode(node->children[k], painter,
+                          y+150, x-spac/2, x+spac/2);
+            }
+        }
+    }
+
+
+    void paint(const QRect &rect, QPainter *painter) {
+        painter->setRenderHint(QPainter::Antialiasing, true);
+        paintNode(treeRoot, painter, 20, 20, rect.right()-20);
+    }
+};
+
+
+class TreeControllerView
+    : public Ksl::CanvasWindow
+{
+public:
+
+    QuadTree *treeRoot;
+    TreeView *treeView;
+
     
-    QuadTreeWindow(QuadTree *treeRoot=nullptr) {
-        setWindowTitle(
-            "QuadTreeView. Copyright (C) 2016 Elvis Teixeira");
+    TreeControllerView(TreeView *treeView, QuadTree *treeRoot=0) {
+        setWindowTitle("QuadTree Controller");
+        this->treeView = treeView;
         this->treeRoot = treeRoot;
         setTimeStep(500);
     }
 
     
     static void paintNode(QuadTree *node, QPainter *painter) {
-        // draw node boundary (rectangle
+        // draw node boundary (rectangle)
         painter->setPen(Qt::green);
         painter->setBrush(Qt::NoBrush);
         painter->drawRect(node->bound);
@@ -104,8 +169,10 @@ public:
 
     void paint(const QRect &rect, QPainter *painter) {
         Q_UNUSED(rect)
-        if (treeRoot)
+        if (treeRoot) {
             paintNode(treeRoot, painter);
+            treeView->updateTree(treeRoot);
+        }
     }
 
 
@@ -136,12 +203,16 @@ public:
 };
 
 
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QuadTreeWindow window;
-    window.show();
+    TreeView treeView;
+    treeView.show();
+
+    TreeControllerView controllerView(&treeView);
+    controllerView.show();
 
     return app.exec();
 }

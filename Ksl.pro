@@ -37,7 +37,7 @@ HEADERS += \
     src/Ksl/XYAxisSampler.h
 
 SOURCES += \
-    tests/chart.cpp \
+    tests/quadtree.cpp \
     src/Ksl/CanvasWindow.cpp \
     src/Ksl/Figure.cpp \
     src/Ksl/FigureItem.cpp \
