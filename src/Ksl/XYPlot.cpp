@@ -30,7 +30,6 @@ XYPlot::XYPlot(Ksl::ObjectPrivate *priv, const QString &name,
 {
     KSL_PUBLIC(XYPlot);
     m->symbol = symbol;
-    m->pen.setWidth(2);
 }
 
 XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,

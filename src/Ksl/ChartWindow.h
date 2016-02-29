@@ -48,7 +48,7 @@ public:
                    const Array<1> &x, const Array<1> &y,
                    XYPlot::Symbol symbol=XYPlot::Circles,
                    const QColor &stroke=Qt::blue,
-                   const QColor &fill=Qt::white,
+                   const QColor &fill=Qt::green,
                    const QString &scaleName="xy-scale");
 
     XYPlot* xyPlot(const QString &name) const;

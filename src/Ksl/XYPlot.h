@@ -50,14 +50,14 @@ public:
     XYPlot(const Array<1> &x, const Array<1> &y,
            const QString &name="plot",
            const QColor &stroke=Qt::blue,
-           const QColor &fill=Qt::white,
+           const QColor &fill=Qt::green,
            QObject *parent=0);
 
     XYPlot(const Array<1> &x, const Array<1> &y,
            Symbol symbol,
            const QString &name="plot",
            const QColor &stroke=Qt::blue,
-           const QColor &fill=Qt::white,
+           const QColor &fill=Qt::green,
            QObject *parent=0);
 
 
