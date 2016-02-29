@@ -19,6 +19,7 @@
  */
 
 #include <Ksl/XYScale_p.h>
+#include <Ksl/Figure.h>
 #include <Ksl/FigureItem.h>
 
 namespace Ksl {
@@ -41,6 +42,14 @@ XYScale::XYScale(const QString &name)
     m->axisHash[RightAxis] = new XYAxis(Qt::Vertical, "RightAxis");
     m->axisHash[RightAxis]->showComponents(XYAxis::Line|XYAxis::TicksUp);
 
+    m->axisHash[X_Axis] = new XYAxis(Qt::Horizontal, "X_Axis");
+    m->axisHash[X_Axis]->showComponents(XYAxis::Line|XYAxis::TicksDown);
+
+    m->axisHash[Y_Axis] = new XYAxis(Qt::Vertical, "Y_Axis");
+    m->axisHash[Y_Axis]->showComponents(XYAxis::Line|XYAxis::TicksDown);
+
+    showAxis(BottomAxis|LeftAxis|TopAxis|RightAxis);
+
     //Tell the axis I am their manager
     for (auto axis : m->axisHash)
         axis->setScale(this);
@@ -48,6 +57,7 @@ XYScale::XYScale(const QString &name)
     // Allocate space for axis on chart bounds
     setXbound(60, 60);
     setYbound(40, 40);
+    rescale();
 }
 
 XYScalePrivate::~XYScalePrivate() {
@@ -103,9 +113,8 @@ void XYScale::rescale() {
     auto end = m->itemList.end();
     FigureItem *item = *iter++;
 
-    bool firstRescalable = true;
+    bool firstRescalable = item->rescalable();
     while (!item->rescalable() && iter != end) {
-        firstRescalable = false;
         item = *iter++;
         if (item->rescalable())
             firstRescalable = true;
@@ -154,6 +163,12 @@ QRect XYScale::figureRect() const {
 
 void XYScale::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(XYScale);
+
+    // Check if any item has NaN or Infs
+    if (!std::isfinite(m->width) || !std::isfinite(m->height)) {
+        m->figure->informError();
+        return;
+    }
 
     // Update figure bounds
     m->figXmin = rect.left() + m->xLowBound;
@@ -205,25 +220,50 @@ void XYScale::setYbound(int yLowBund, int yUpBound) {
 }
 
 void XYScalePrivate::positionAxis() {
-    XYAxis *axis = axisHash[XYScale::BottomAxis];
-    axis->setPosition(xMin, xMax, yMin);
-    if (axis->sampler()->mode() == XYAxisSampler::AutoDecimal)
-        axis->sampler()->autoSampleDecimal(xMin, xMax, figWidth/70);
+    axisHash[XYScale::BottomAxis]->setPosition(xMin, xMax, yMin);
+    axisHash[XYScale::LeftAxis]->setPosition(yMin, yMax, xMin);
+    axisHash[XYScale::TopAxis]->setPosition(xMin, xMax, yMax);
+    axisHash[XYScale::RightAxis]->setPosition(yMin, yMax, xMax);
+    axisHash[XYScale::X_Axis]->setPosition(xMin, xMax, 0.0);
+    axisHash[XYScale::Y_Axis]->setPosition(yMin, yMax, 0.0);
 
-    axis = axisHash[XYScale::LeftAxis];
-    axis->setPosition(yMin, yMax, xMin);
-    if (axis->sampler()->mode() == XYAxisSampler::AutoDecimal)
-        axis->sampler()->autoSampleDecimal(yMin, yMax, figHeight/70);
+    if (choseAxis) {
+        bool xAxOut = xMin > 0.0 || xMax < 0.0;
+        bool yAxOut = yMin > 0.0 || yMax < 0.0;
 
-    axis = axisHash[XYScale::TopAxis];
-    axis->setPosition(xMin, xMax, yMax);
-    if (axis->sampler()->mode() == XYAxisSampler::AutoDecimal)
-        axis->sampler()->autoSampleDecimal(xMin, xMax, figWidth/70);
+        if (xAxOut || yAxOut) {
+            axisHash[XYScale::BottomAxis]->setVisible(true);
+            axisHash[XYScale::LeftAxis]->setVisible(true);
+            axisHash[XYScale::TopAxis]->setVisible(true);
+            axisHash[XYScale::RightAxis]->setVisible(true);
+            axisHash[XYScale::X_Axis]->setVisible(false);
+            axisHash[XYScale::Y_Axis]->setVisible(false);
+        }
+        else {
+            axisHash[XYScale::BottomAxis]->setVisible(false);
+            axisHash[XYScale::LeftAxis]->setVisible(false);
+            axisHash[XYScale::TopAxis]->setVisible(false);
+            axisHash[XYScale::RightAxis]->setVisible(false);
+            axisHash[XYScale::X_Axis]->setVisible(true);
+            axisHash[XYScale::Y_Axis]->setVisible(true);
+        }
+    }
+}
 
-    axis = axisHash[XYScale::RightAxis];
-    axis->setPosition(yMin, yMax, xMax);
-    if (axis->sampler()->mode() == XYAxisSampler::AutoDecimal)
-        axis->sampler()->autoSampleDecimal(yMin, yMax, figHeight/70);
+void XYScale::showAxis(Axis axis) {
+    KSL_PUBLIC(XYScale);
+    m->choseAxis = false;
+    m->axisHash[XYScale::BottomAxis]->setVisible(axis & XYScale::BottomAxis);
+    m->axisHash[XYScale::LeftAxis]->setVisible(axis & XYScale::LeftAxis);
+    m->axisHash[XYScale::TopAxis]->setVisible(axis & XYScale::TopAxis);
+    m->axisHash[XYScale::RightAxis]->setVisible(axis & XYScale::RightAxis);
+    m->axisHash[XYScale::X_Axis]->setVisible(axis & XYScale::X_Axis);
+    m->axisHash[XYScale::Y_Axis]->setVisible(axis & XYScale::Y_Axis);
+}
+
+void XYScale::autoChoseAxis() {
+    KSL_PUBLIC(XYScale);
+    m->choseAxis = true;
 }
 
 } // namespace Ksl

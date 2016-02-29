@@ -36,6 +36,7 @@ public:
         : FigureScalePrivate(publ)
         , xLowBound(20), xUpBound(20)
         , yLowBound(20), yUpBound(20)
+        , choseAxis(true)
     { }
 
     ~XYScalePrivate();
@@ -46,6 +47,8 @@ public:
 
     int xLowBound, xUpBound;
     int yLowBound, yUpBound;
+
+    bool choseAxis;
 
     int figXmin, figXmax;
     int figYmin, figYmax;

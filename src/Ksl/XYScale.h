@@ -32,16 +32,26 @@ class KSL_EXPORT XYScale
 public:
 
 
-    enum Axis {
-        BottomAxis,
-        LeftAxis,
-        TopAxis,
-        RightAxis
+    enum AxisEnum {
+        BottomAxis   = 0x00000001,
+        LeftAxis     = 0x00000002,
+        TopAxis      = 0x00000004,
+        RightAxis    = 0x00000008,
+        X_Axis       = 0x00000010,
+        Y_Axis       = 0x00000020
     };
+    Q_DECLARE_FLAGS(
+        Axis,
+        AxisEnum
+    )
 
     XYScale(const QString &name="scale");
 
     XYAxis* axis(Axis axis);
+
+    void showAxis(Axis axis);
+
+    void autoChoseAxis();
 
     virtual QPoint map(const QPointF &point) const;
 
@@ -65,6 +75,8 @@ protected:
 
     virtual void paint(const QRect &rect, QPainter *painter);
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(XYScale::Axis)
 
 } // namespace Ksl
 

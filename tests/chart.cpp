@@ -8,14 +8,14 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     ChartWindow chart;
 
-    auto Vx = linspace(-M_PI, M_PI, 0.2);
+    auto Vx = linspace(-2*M_PI, 2*M_PI, 0.2);
 
     auto Vy = applied([](double x) {
-        return cos(x) + 0.5*sin(6*x)*cos(2*x);
+        return cos(x) + 0.5*sin(7*x);
     }, Vx);
 
-    chart.xyPlot(Vx, cos(Vx), XYPlot::Squares, "Cos(X)", Qt::green);
-    chart.xyPlot(Vx, Vy, XYPlot::Circles, "Wave(X)", Qt::blue);
+    chart.xyPlot("Wave(X)", Vx, Vy, XYPlot::Circles, Qt::blue);
+    chart.xyPlot("Cos(X)", Vx, cos(Vx), XYPlot::Line, Qt::red);
 
     chart.show();
     return app.exec();

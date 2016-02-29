@@ -58,6 +58,8 @@ public:
         : Ksl::ObjectPrivate(publ)
     { }
 
+    ~ChartWindowPrivate();
+
 
     QVBoxLayout *layout;
     _ChartArea *chartArea;
@@ -65,6 +67,7 @@ public:
     QStatusBar *statusBar;
 
     QHash<QString,XYScale*> xyScales;
+    QHash<QString,XYPlot*> xyPlots;
 };
 
 } // namespace Ksl

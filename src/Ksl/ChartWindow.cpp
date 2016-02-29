@@ -70,6 +70,14 @@ ChartWindow::ChartWindow(const QString &title,
     : ChartWindow(new ChartWindowPrivate(this), title, width, height, parent)
 { }
 
+ChartWindowPrivate::~ChartWindowPrivate() {
+    // Clean all up
+    for (auto scale : xyScales)
+        delete scale;
+    for (auto plot : xyPlots)
+        delete plot;
+}
+
 Figure* ChartWindow::figure() const {
     KSL_PUBLIC(ChartWindow);
     return m->chartArea->figure;
@@ -87,15 +95,6 @@ void ChartWindow::save() {
         filePath, m->chartArea->size());
 }
 
-XYScale* ChartWindow::xyScale(XYScale *scale) {
-    KSL_PUBLIC(ChartWindow);
-
-    if (!m->xyScales.contains(scale->name()))
-        m->xyScales[scale->name()] = scale;
-
-    return scale;
-}
-
 XYScale* ChartWindow::xyScale(const QString &name) {
     KSL_PUBLIC(ChartWindow);
 
@@ -108,18 +107,28 @@ XYScale* ChartWindow::xyScale(const QString &name) {
     return newScale;
 }
 
-XYPlot* ChartWindow::xyPlot(XYPlot *plot) {
-    XYScale *scale = xyScale();
-
-    if (!scale->contains(plot)) {
-        scale->add(plot);
-        plot->setParent(this);
+Ksl::XYPlot* ChartWindow::xyPlot(const QString &name,
+                                 const Array<1> &x, const Array<1> &y,
+                                 XYPlot::Symbol symbol,
+                                 const QColor &stroke,
+                                 const QColor &fill,
+                                 const QString &scaleName)
+{
+    KSL_PUBLIC(ChartWindow);
+    if (!m->xyPlots.contains(name)) {
+        auto plot = new XYPlot(x, y, symbol, name, stroke, fill);
+        m->xyPlots[name] = plot;
+        xyScale(scaleName)->add(plot);
+        return plot;
     }
-    return plot;
+    return nullptr;
 }
 
-XYPlot* ChartWindow::xyPlot(const QString &name) {
-    return static_cast<XYPlot*>(xyScale()->item(name));
+XYPlot* ChartWindow::xyPlot(const QString &name) const {
+    KSL_PUBLIC(ChartWindow);
+    if (m->xyPlots.contains(name))
+        return m->xyPlots[name];
+    return nullptr;
 }
 
 void ChartWindow::showStatusMessage(const QString &message, int milisecs) {
@@ -130,6 +139,11 @@ void ChartWindow::showStatusMessage(const QString &message, int milisecs) {
 QHash<QString,XYScale*> ChartWindow::xyScalesHash() const {
     KSL_PUBLIC(ChartWindow);
     return m->xyScales;
+}
+
+QHash<QString,XYPlot*> ChartWindow::xyPlotsHash() const {
+    KSL_PUBLIC(ChartWindow);
+    return m->xyPlots;
 }
 
 _ChartArea::_ChartArea(const QSize defaultSize, QWidget *parent)
@@ -163,7 +177,7 @@ void _ChartArea::mouseMoveEvent(QMouseEvent *event) {
     if (scale && window->xyScalesHash().size() == 1) {
         QPointF p = scale->unmap(event->pos());
         window->showStatusMessage(QString("X = %1, Y = %2")
-            .arg(p.x(), 0, 'f', 1).arg(p.y(), 0, 'f', 1), 3000);
+            .arg(p.x(), 0, 'f', 2).arg(p.y(), 0, 'f', 2), 3000);
     }
 }
 

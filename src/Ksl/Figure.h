@@ -41,13 +41,15 @@ public:
 
     Figure(const QString &name="Ksl", QObject *parent=0);
 
+    QString name() const;
+
+    QFont font() const;
+
     virtual void add(FigureScale *scale);
 
     QList<FigureScale*>& scaleList();
 
     const QList<FigureScale*>& scaleList() const;
-
-    QString name() const;
 
     FigureScale* scale(const QString &name) const;
 
@@ -60,6 +62,8 @@ public slots:
 
     void setName(const QString &name);
 
+    void setFont(const QFont &font);
+
     void setBackBrush(const QBrush &brush);
 
     virtual void save(const QString &filePath,
@@ -69,6 +73,8 @@ public slots:
     virtual void onAppearenceChange(FigureItem *item);
 
     virtual void onDataChange(FigureItem *item);
+
+    virtual void informError();
 
 
 signals:

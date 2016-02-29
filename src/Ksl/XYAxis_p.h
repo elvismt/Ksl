@@ -35,12 +35,13 @@ public:
         : FigureItemPrivate(publ)
         , pen(Qt::black)
         , brush(Qt::blue)
-        , components(XYAxis::AllComponents)
+        , components(XYAxis::Line|XYAxis::TicksDown)
     { }
 
     ~XYAxisPrivate();
 
 
+    void setUpPaint();
     void paintHorizontal(QPainter *painter);
     void paintVertical(QPainter *painter);
 

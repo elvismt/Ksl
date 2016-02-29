@@ -71,14 +71,12 @@ QRect XYAxis::figureRect() const {
         if (m->orientation == Qt::Horizontal) {
             QPoint p1 = m->scale->map(QPointF(m->min, m->anchor));
             QPoint p2 = m->scale->map(QPointF(m->max, m->anchor));
-            return QRect(p1.x(), p1.y()-4,
-                         p2.x() - p1.x(), 8);
+            return QRect(p1.x(), p1.y()-4, p2.x() - p1.x(), 8);
         }
         else { // m->orientation == Qt::Vertical
             QPoint p1 = m->scale->map(QPointF(m->anchor, m->max));
             QPoint p2 = m->scale->map(QPointF(m->anchor, m->min));
-            return QRect(p1.x()-4, p1.y(),
-                         8, p2.y() - p1.y());
+            return QRect(p1.x()-4, p1.y(), 8, p2.y() - p1.y());
         }
     }
     return QRect();
@@ -99,6 +97,7 @@ void XYAxis::paint(QPainter *painter) {
     painter->setRenderHint(QPainter::Antialiasing, false);
     painter->setPen(m->pen);
 
+    m->setUpPaint();
     if (m->orientation == Qt::Horizontal)
         m->paintHorizontal(painter);
     else // m->orientation == Qt::Vertical
@@ -126,7 +125,6 @@ void XYAxisPrivate::paintHorizontal(QPainter *painter) {
             painter->drawText(p.x()-txtWid/2, p.y()+txtHei, sample.label);
         }
     }
-
     // Draw upward ticks
     if (components & XYAxis::TicksUp) {
         for (auto &sample : sampler->sampleList()) {
@@ -160,7 +158,6 @@ void XYAxisPrivate::paintVertical(QPainter *painter) {
                 p.y()+txtHei/3, sample.label);
         }
     }
-
     // Draw rightward ticks
     if (components & XYAxis::TicksUp) {
         for (auto &sample : sampler->sampleList()) {
@@ -169,6 +166,25 @@ void XYAxisPrivate::paintVertical(QPainter *painter) {
             painter->drawLine(p.x(), p.y(), p.x()-3, p.y());
             painter->drawText(p.x()+txtHei/3,
                 p.y()+txtHei/3, sample.label);
+        }
+    }
+}
+
+void XYAxisPrivate::setUpPaint() {
+    if (orientation == Qt::Horizontal) {
+        if (sampler->mode() == XYAxisSampler::AutoDecimal) {
+            QPoint p1 = scale->map(QPointF(min, anchor));
+            QPoint p2 = scale->map(QPointF(max, anchor));
+            sampler->autoSampleDecimal(
+                min, max, double(p2.x()-p1.x())/60.0);
+        }
+    }
+    else { // orientation == Qt::Vertical
+        if (sampler->mode() == XYAxisSampler::AutoDecimal) {
+            QPoint p1 = scale->map(QPointF(anchor, min));
+            QPoint p2 = scale->map(QPointF(anchor, max));
+            sampler->autoSampleDecimal(
+                min, max, double(p1.y()-p2.y())/60.0);
         }
     }
 }

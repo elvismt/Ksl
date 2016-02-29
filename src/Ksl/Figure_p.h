@@ -32,11 +32,15 @@ public:
 
     FigurePrivate(Figure *publ)
         : Ksl::ObjectPrivate(publ)
+        , font("Sans Serif", 10)
         , fillBack(true)
+        , onError(false)
         , backBrush(Qt::white)
     {}
 
+    QFont font;
     bool fillBack;
+    bool onError;
     QBrush backBrush;
     QList<FigureScale*> scaleList;
     QString name;

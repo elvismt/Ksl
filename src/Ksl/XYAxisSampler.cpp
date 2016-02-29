@@ -90,13 +90,16 @@ void XYAxisSampler::addSample(const QString &label, double coord, bool isMajor) 
 
 void XYAxisSampler::autoSampleDecimal(double min, double max, double hint) {
     KSL_PUBLIC(XYAxisSampler);
-    double firstTick;
+    double firstTick, sampSpac;
     double valDiff, powDiff;
-    double sampSpac;
 
-    if (m->min == min && m->max == max && m->hint == hint) {
+    if (m->min == min &&
+        m->max == max &&
+        m->hint == hint)
+    {
         return;
     }
+
     m->min = min;
     m->max = max;
     m->hint = hint;

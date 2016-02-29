@@ -42,18 +42,20 @@ public:
 
     Figure* figure() const;
 
-    XYScale* xyScale(XYScale *scale);
-
     XYScale* xyScale(const QString &name="xy-scale");
 
-    XYPlot* xyPlot(XYPlot *plot);
+    XYPlot* xyPlot(const QString &name,
+                   const Array<1> &x, const Array<1> &y,
+                   XYPlot::Symbol symbol=XYPlot::Circles,
+                   const QColor &stroke=Qt::blue,
+                   const QColor &fill=Qt::white,
+                   const QString &scaleName="xy-scale");
 
-    XYPlot* xyPlot(const QString &name="xy-plot");
-
-    template <typename... Args>
-    inline XYPlot* xyPlot(Args... args);
+    XYPlot* xyPlot(const QString &name) const;
 
     QHash<QString,XYScale*> xyScalesHash() const;
+
+    QHash<QString,XYPlot*> xyPlotsHash() const;
 
 
 public slots:
@@ -68,11 +70,6 @@ protected:
     ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
                 int width, int height, QWidget *parent);
 };
-
-template <typename... Args>
-inline XYPlot* ChartWindow::xyPlot(Args... args) {
-    return xyPlot(new XYPlot(args...));
-}
 
 } // namespace Ksl
 

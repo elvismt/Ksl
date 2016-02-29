@@ -79,15 +79,31 @@ FigureItem* Figure::item(const QString &name) const {
 void Figure::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(Figure);
 
-    if (rect.isEmpty() || !painter)
+    // Nothing to paint on an empty QRect of with an
+    // inactive QPainter
+    if (rect.isEmpty() || !painter || !painter->isActive())
         return;
+    m->onError = false;
+
+    // Clip so that no item can paint outside figure
+    // bounds. Also use a uniform font
     painter->save();
     painter->setClipRect(rect);
+    painter->setFont(m->font);
+
     if (m->fillBack)
         painter->fillRect(rect, m->backBrush);
-    for (auto scale : m->scaleList)
+    for (auto scale : m->scaleList) {
         if (scale->visible())
             scale->paint(rect, painter);
+        if (m->onError)
+            break;
+    }
+    if (m->onError) {
+        painter->setPen(Qt::red);
+        painter->drawText(
+            30, 40, "Ksl.Figure ERROR: Non Numeric values");
+    }
     painter->restore();
 }
 
@@ -117,7 +133,7 @@ void Figure::setBackBrush(const QBrush &brush) {
     KSL_PUBLIC(Figure);
     if (m->backBrush != brush) {
         m->backBrush = brush;
-        m->fillBack = true;
+        m->fillBack = (brush == Qt::NoBrush) ? false : true;
         emit changed(this);
     }
 }
@@ -133,6 +149,25 @@ void Figure::setName(const QString &name) {
         m->name = name;
         emit changed(this);
     }
+}
+
+QFont Figure::font() const {
+    KSL_PUBLIC(const Figure);
+    return m->font;
+}
+
+void Figure::setFont(const QFont &font) {
+    KSL_PUBLIC(Figure);
+    if (m->font != font) {
+        m->font = font;
+        emit changed(this);
+    }
+}
+
+void Figure::informError() {
+    KSL_PUBLIC(Figure);
+    m->onError = true;
+    emit errorOccured(this);
 }
 
 } // namespace Ksl 
