@@ -32,22 +32,24 @@ public:
 
     FigurePrivate(Figure *publ)
         : Ksl::ObjectPrivate(publ)
-#if defined(Q_OS_WIN)
-        , font("Times New Roman", 11)
-#elif defined(Q_OS_LINUX)
-        , font("Sans Serif", 10)
-#endif
         , fillBack(true)
         , onError(false)
         , backBrush(Qt::white)
-    {}
+    {
+#if defined(Q_OS_LINUX)
+        font = QFont("Times", 11);
+        font.setHintingPreference(QFont::PreferNoHinting);
+#elif defined(Q_OS_WINDOWS)
+        font = QFont("Times New Roman", 11);
+#endif
+    }
 
-    QFont font;
     bool fillBack;
     bool onError;
     QBrush backBrush;
-    QList<FigureScale*> scaleList;
+    QFont font;
     QString name;
+    QList<FigureScale*> scaleList;
 };
 
 } // namespace Ksl 
