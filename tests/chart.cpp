@@ -17,15 +17,6 @@ int main(int argc, char *argv[]) {
     chart.xyPlot("Wave(X)", Vx, Vy, XYPlot::Circles, Qt::blue);
     chart.xyPlot("Cos(X)", Vx, cos(Vx), XYPlot::Line, Qt::red);
 
-    chart.xyScale()->axis(XYScale::BottomAxis)
-        ->sampler()->setSamples({
-               { "-2π", -2*M_PI},
-               { "-π", -M_PI},
-               { "0", 0.0},
-               { "π", M_PI},
-               { "2π", 2*M_PI}
-    });
-
     chart.show();
     return app.exec();
 }
