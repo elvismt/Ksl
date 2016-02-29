@@ -24,9 +24,8 @@ public:
     }
 
 
-    void split() {
-        QRectF rec(bound.x(), bound.y(),
-            bound.width()/2, bound.height()/2);
+    void fork() {
+        QRectF rec(bound.x(), bound.y(), bound.width()/2, bound.height()/2);
         children[0] = new QuadTree(rec);
         children[1] = new QuadTree(rec.translated(rec.width(), 0));
         children[2] = new QuadTree(rec.translated(0, rec.height()));
@@ -46,7 +45,7 @@ public:
         // this is a filled leaf,
         // split and pass down data
         if (!children[0]) {
-            split();
+            fork();
             for (auto &child : children)
                 if (child->insert(this->data))
                     break;

@@ -39,7 +39,7 @@ public:
 #if defined(Q_OS_LINUX)
         font = QFont("Times", 11);
         font.setHintingPreference(QFont::PreferNoHinting);
-#elif defined(Q_OS_WINDOWS)
+#elif defined(Q_OS_WIN)
         font = QFont("Times New Roman", 11);
 #endif
     }
