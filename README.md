@@ -19,21 +19,9 @@ We thank and congratulate it's developers for the great work. Ksl follows
 some of KDE's software design goals and all of it's philosophy but it is
 not an official KDE component.
 
-# DEMOS
-
-The figures below were created with KSL's widgets:
-
-   * A representation of data indexed in a quad-tree
-
-![](https://github.com/elvismt/Ksl/blob/devel/tests/quadtree.png)
-
-   * We are working in a chart engine (soon it will have axis)
-
-![](https://github.com/elvismt/Ksl/blob/devel/tests/chart.png)
-
 # CODE SAMPLE
 
-The code for the chart is as simple as
+The code below
 
     #include <QApplication>
     #include <Ksl/ChartWindow.h>
@@ -62,6 +50,10 @@ The code for the chart is as simple as
         chart.show();
         return app.exec();
     }
+
+Produces a chart similar to the following
+
+ ![](https://github.com/elvismt/Ksl/blob/master/tests/chart.png)
 
 If you are looking for a C/Gtk solution for 2D visualization. Take a look
 at [slope](https://github.com/elvismt/slope)
