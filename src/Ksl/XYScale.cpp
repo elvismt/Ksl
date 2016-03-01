@@ -32,29 +32,31 @@ XYScale::XYScale(const QString &name)
     // Create default axis
     m->axisHash[BottomAxis] = new XYAxis(Qt::Horizontal, "X");
     m->axisHash[BottomAxis]->showComponents(
-        XYAxis::Line|XYAxis::TicksDown|XYAxis::Title);
+        XYAxis::Line|XYAxis::TicksDown|XYAxis::MiddleTitle);
 
     m->axisHash[TopAxis] = new XYAxis(Qt::Horizontal, "Ksl");
     m->axisHash[TopAxis]->showComponents(
-        XYAxis::Line|XYAxis::TicksUp|XYAxis::Title);
+        XYAxis::Line|XYAxis::TicksUp|XYAxis::MiddleTitle);
 
     m->axisHash[LeftAxis] = new XYAxis(Qt::Vertical, "Y");
     m->axisHash[LeftAxis]->showComponents(
-        XYAxis::Line|XYAxis::TicksDown|XYAxis::Title);
+        XYAxis::Line|XYAxis::TicksDown|XYAxis::MiddleTitle);
 
     m->axisHash[RightAxis] = new XYAxis(Qt::Vertical, "");
     m->axisHash[RightAxis]->showComponents(
-        XYAxis::Line|XYAxis::TicksUp|XYAxis::Title);
+        XYAxis::Line|XYAxis::TicksUp|XYAxis::MiddleTitle);
 
     m->axisHash[X_Axis] = new XYAxis(Qt::Horizontal, "X");
     m->axisHash[X_Axis]->showComponents(
-        XYAxis::Line|XYAxis::TicksDown|XYAxis::Title);
+        XYAxis::Line|XYAxis::TicksDown|XYAxis::EndTitle);
+    m->axisHash[X_Axis]->hideZero(true);
 
     m->axisHash[Y_Axis] = new XYAxis(Qt::Vertical, "Y");
     m->axisHash[Y_Axis]->showComponents(
-        XYAxis::Line|XYAxis::TicksDown|XYAxis::Title);
+        XYAxis::Line|XYAxis::TicksDown|XYAxis::EndTitle);
+    m->axisHash[Y_Axis]->hideZero(true);
 
-    showAxis(BottomAxis|LeftAxis|TopAxis|RightAxis);
+    // showAxis(BottomAxis|LeftAxis|TopAxis|RightAxis);
 
     //Tell the axis I am their manager
     for (auto axis : m->axisHash)
@@ -237,7 +239,7 @@ void XYScalePrivate::positionAxis() {
         bool xAxOut = xMin > 0.0 || xMax < 0.0;
         bool yAxOut = yMin > 0.0 || yMax < 0.0;
 
-        if (xAxOut || yAxOut) {
+        if (xAxOut && yAxOut) {
             axisHash[XYScale::BottomAxis]->setVisible(true);
             axisHash[XYScale::LeftAxis]->setVisible(true);
             axisHash[XYScale::TopAxis]->setVisible(true);

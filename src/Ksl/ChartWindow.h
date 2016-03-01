@@ -36,8 +36,8 @@ class KSL_EXPORT ChartWindow
 
 public:
 
-    ChartWindow(const QString &title="Ksl Chart", int width=600,
-                int height=400, QWidget *parent=0);
+    ChartWindow(const QString &title="Ksl Chart", int width=500,
+                int height=350, QWidget *parent=0);
 
 
     Figure* figure() const;
@@ -46,7 +46,7 @@ public:
 
     XYPlot* xyPlot(const QString &name,
                    const Array<1> &x, const Array<1> &y,
-                   XYPlot::Symbol symbol=XYPlot::Circles,
+                   XYPlot::Symbol symbol=XYPlot::Line,
                    const QColor &stroke=Qt::blue,
                    const QColor &fill=Qt::green,
                    const QString &scaleName="xy-scale");

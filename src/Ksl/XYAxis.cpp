@@ -134,8 +134,8 @@ void XYAxisPrivate::paintHorizontal(QPainter *painter) {
             painter->drawText(p.x()-txtWid/2, p.y()-txtHei/3, sample.label);
         }
     }
-    // Draw title
-    if (components & XYAxis::Title) {
+    // Draw middle title
+    if (components & XYAxis::MiddleTitle) {
         txtWid = fontMetrics.width(name);
         int x = (p2.x() + p1.x() - txtWid) / 2;
         int y = p1.y();
@@ -143,6 +143,13 @@ void XYAxisPrivate::paintHorizontal(QPainter *painter) {
             painter->drawText(x, y-5*txtHei/3, name);
         else
             painter->drawText(x, y+2*txtHei, name);
+    }
+    // Draw end title
+    if (components & XYAxis::EndTitle) {
+        txtWid = fontMetrics.width(name);
+        int x = p2.x() + txtHei/3;
+        int y = p2.y();
+        painter->drawText(x, y, name);
     }
 }
 
@@ -180,8 +187,8 @@ void XYAxisPrivate::paintVertical(QPainter *painter) {
                 p.y()+txtHei/3, sample.label);
         }
     }
-    // Draw title
-    if (components & XYAxis::Title) {
+    // Draw middle title
+    if (components & XYAxis::MiddleTitle) {
         txtWid = fontMetrics.width(name);
         int y = p1.x();
         int x = -(p1.y() + p2.y() + txtWid) / 2;
@@ -192,6 +199,13 @@ void XYAxisPrivate::paintVertical(QPainter *painter) {
         else
             painter->drawText(x, y-2*txtHei/3-maxTxtWid, name);
         painter->restore();
+    }
+    // Draw end title
+    if (components & XYAxis::EndTitle) {
+        txtWid = fontMetrics.width(name);
+        int x = p2.x();
+        int y = p2.y() - txtHei/3;
+        painter->drawText(x, y, name);
     }
 }
 
@@ -212,6 +226,16 @@ void XYAxisPrivate::setUpPaint() {
                 min, max, double(p1.y()-p2.y())/60.0);
         }
     }
+    if (hideZero) {
+        for (auto &sample: sampler->sampleList())
+            if (sample.coord == 0.0)
+                sample.label = "";
+    }
+}
+
+void XYAxis::hideZero(bool hide) {
+    KSL_PUBLIC(XYAxis);
+    m->hideZero = hide;
 }
 
 } // namespace Ksl

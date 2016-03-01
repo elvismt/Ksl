@@ -36,6 +36,7 @@ public:
         , pen(Qt::black)
         , brush(Qt::blue)
         , components(XYAxis::Line|XYAxis::TicksDown)
+        , hideZero(false)
     { }
 
     ~XYAxisPrivate();
@@ -49,9 +50,10 @@ public:
     QPen pen;
     QBrush brush;
     XYAxis::Component components;
-    Qt::Orientation orientation;
+    bool hideZero;
     double min, max;
     double anchor;
+    Qt::Orientation orientation;
     XYAxisSampler *sampler;
 };
 

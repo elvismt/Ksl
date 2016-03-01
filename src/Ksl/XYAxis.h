@@ -42,7 +42,8 @@ public:
         Line          = 0x00000001,
         TicksUp       = 0x00000002,
         TicksDown     = 0x00000004,
-        Title         = 0x00000008,
+        MiddleTitle   = 0x00000008,
+        EndTitle      = 0x00000020,
         AllComponents = 0xFFFFFFFF
     };
     Q_DECLARE_FLAGS(
@@ -66,6 +67,11 @@ public:
     QRect figureRect() const;
 
     QRectF dataRect() const;
+
+
+public slots:
+
+    void hideZero(bool hide);
 
 
 protected:
