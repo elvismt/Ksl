@@ -77,7 +77,7 @@ And you can make more elaborate ones with code like
 
 It gives you
 
-    ![](https://github.com/elvismt/Ksl/blob/master/tests/chart2.png)
+ ![](https://github.com/elvismt/Ksl/blob/master/tests/chart2.png)
 
 If you are looking for a C/Gtk solution for 2D visualization. Take a look
 at [slope](https://github.com/elvismt/slope)
