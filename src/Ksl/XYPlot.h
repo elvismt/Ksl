@@ -38,7 +38,8 @@ public:
     enum SymbolEnum {
         Line         = 0x00000001,
         Circles      = 0x00000002,
-        Squares      = 0x00000004
+        Squares      = 0x00000004,
+        AreaUnder    = 0x00000008
     };
     Q_DECLARE_FLAGS(
         Symbol,

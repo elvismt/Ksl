@@ -45,6 +45,7 @@ public:
     void paintLineCircles(QPainter *painter);
     void paintSquares(QPainter *painter);
     void paintLineSquares(QPainter *painter);
+    void paintAreaUnder(QPainter *painter);
 
 
     XYPlot::Symbol symbol;

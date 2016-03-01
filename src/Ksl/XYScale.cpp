@@ -30,23 +30,29 @@ XYScale::XYScale(const QString &name)
     KSL_PUBLIC(XYScale);
 
     // Create default axis
-    m->axisHash[BottomAxis] = new XYAxis(Qt::Horizontal, "BottomAxis");
-    m->axisHash[BottomAxis]->showComponents(XYAxis::Line|XYAxis::TicksDown);
+    m->axisHash[BottomAxis] = new XYAxis(Qt::Horizontal, "X");
+    m->axisHash[BottomAxis]->showComponents(
+        XYAxis::Line|XYAxis::TicksDown|XYAxis::Title);
 
-    m->axisHash[TopAxis] = new XYAxis(Qt::Horizontal, "TopAxis");
-    m->axisHash[TopAxis]->showComponents(XYAxis::Line|XYAxis::TicksUp);
+    m->axisHash[TopAxis] = new XYAxis(Qt::Horizontal, "Ksl");
+    m->axisHash[TopAxis]->showComponents(
+        XYAxis::Line|XYAxis::TicksUp|XYAxis::Title);
 
-    m->axisHash[LeftAxis] = new XYAxis(Qt::Vertical, "LeftAxis");
-    m->axisHash[LeftAxis]->showComponents(XYAxis::Line|XYAxis::TicksDown);
+    m->axisHash[LeftAxis] = new XYAxis(Qt::Vertical, "Y");
+    m->axisHash[LeftAxis]->showComponents(
+        XYAxis::Line|XYAxis::TicksDown|XYAxis::Title);
 
-    m->axisHash[RightAxis] = new XYAxis(Qt::Vertical, "RightAxis");
-    m->axisHash[RightAxis]->showComponents(XYAxis::Line|XYAxis::TicksUp);
+    m->axisHash[RightAxis] = new XYAxis(Qt::Vertical, "");
+    m->axisHash[RightAxis]->showComponents(
+        XYAxis::Line|XYAxis::TicksUp|XYAxis::Title);
 
-    m->axisHash[X_Axis] = new XYAxis(Qt::Horizontal, "X_Axis");
-    m->axisHash[X_Axis]->showComponents(XYAxis::Line|XYAxis::TicksDown);
+    m->axisHash[X_Axis] = new XYAxis(Qt::Horizontal, "X");
+    m->axisHash[X_Axis]->showComponents(
+        XYAxis::Line|XYAxis::TicksDown|XYAxis::Title);
 
-    m->axisHash[Y_Axis] = new XYAxis(Qt::Vertical, "Y_Axis");
-    m->axisHash[Y_Axis]->showComponents(XYAxis::Line|XYAxis::TicksDown);
+    m->axisHash[Y_Axis] = new XYAxis(Qt::Vertical, "Y");
+    m->axisHash[Y_Axis]->showComponents(
+        XYAxis::Line|XYAxis::TicksDown|XYAxis::Title);
 
     showAxis(BottomAxis|LeftAxis|TopAxis|RightAxis);
 
@@ -55,7 +61,7 @@ XYScale::XYScale(const QString &name)
         axis->setScale(this);
 
     // Allocate space for axis on chart bounds
-    setXbound(60, 60);
+    setXbound(70, 50);
     setYbound(40, 40);
     rescale();
 }

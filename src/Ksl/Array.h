@@ -688,8 +688,41 @@ std::ostream& operator<< (std::ostream &out, const Array<2,T> &array)
  * Operations that can be generalized to arrays of any dimension
  ****************************************************************/
 
+/// @brief Returns true if the elements of the arrays are equal
+template <size_t D, typename T> inline
+bool operator== (const Array<D,T> &array1,
+                 const Array<D,T> &array2)
+{
+    if (array1.size() != array2.size())
+        return false;
+    if (same(array1,array2))
+        return true;
+
+    auto iter = array2.begin();
+    for (auto &elem : array1)
+        if (elem != (*iter++))
+            return false;
+    return true;
+}
+
+/// @brief Returns false if the elements of the arrays are equal
+template <size_t D, typename T> inline
+bool operator!= (const Array<D,T> &array1,
+                 const Array<D,T> &array2)
+{
+    return ! (array1 == array2);
+}
+
+/// @brief Returns true if the arrays are references to each other
+template <size_t D, typename T> inline
+bool same(const Array<D,T> &array1,
+          const Array<D,T> &array2)
+{
+    return array1.begin() == array2.begin();
+}
+
 /// @brief Creates a new hard copy of array
-template <size_t D, typename T>
+template <size_t D, typename T> inline
 Array<D,T> copy(const Array<D,T> &array)
 {
     Array<D,T> ret = samesize(array);
@@ -701,7 +734,7 @@ Array<D,T> copy(const Array<D,T> &array)
 
 
 /// @brief Apply func to each element of array
-template <typename Func, size_t D, typename T>
+template <typename Func, size_t D, typename T> inline
 void apply(Func func, Array<D,T> &array)
 {
     for (auto &elem : array)
@@ -710,7 +743,7 @@ void apply(Func func, Array<D,T> &array)
 
 
 /// @brief Produces a new array as a result of func applied to array
-template <typename Func, size_t D, typename T>
+template <typename Func, size_t D, typename T> inline
 Array<D,T> applied(Func func, const Array<D,T> &array)
 {
     Array<D,T> ret = samesize(array);

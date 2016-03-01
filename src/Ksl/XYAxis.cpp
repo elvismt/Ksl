@@ -134,6 +134,16 @@ void XYAxisPrivate::paintHorizontal(QPainter *painter) {
             painter->drawText(p.x()-txtWid/2, p.y()-txtHei/3, sample.label);
         }
     }
+    // Draw title
+    if (components & XYAxis::Title) {
+        txtWid = fontMetrics.width(name);
+        int x = (p2.x() + p1.x() - txtWid) / 2;
+        int y = p1.y();
+        if (components & XYAxis::TicksUp)
+            painter->drawText(x, y-5*txtHei/3, name);
+        else
+            painter->drawText(x, y+2*txtHei, name);
+    }
 }
 
 void XYAxisPrivate::paintVertical(QPainter *painter) {
@@ -142,7 +152,7 @@ void XYAxisPrivate::paintVertical(QPainter *painter) {
 
     QFontMetrics fontMetrics = painter->fontMetrics();
     int txtHei = fontMetrics.height();
-    int txtWid = 0;
+    int txtWid, maxTxtWid = 0;
 
     // Draw line
     if (components & XYAxis::Line)
@@ -153,6 +163,7 @@ void XYAxisPrivate::paintVertical(QPainter *painter) {
         for (auto &sample : sampler->sampleList()) {
             QPoint p = scale->map(QPointF(anchor, sample.coord));
             txtWid = fontMetrics.width(sample.label);
+            if (txtWid > maxTxtWid) maxTxtWid = txtWid;
             painter->drawLine(p.x(), p.y(), p.x()+3, p.y());
             painter->drawText(p.x()-txtWid-txtHei/3,
                 p.y()+txtHei/3, sample.label);
@@ -163,10 +174,24 @@ void XYAxisPrivate::paintVertical(QPainter *painter) {
         for (auto &sample : sampler->sampleList()) {
             QPoint p = scale->map(QPointF(anchor, sample.coord));
             txtWid = fontMetrics.width(sample.label);
+            if (txtWid > maxTxtWid) maxTxtWid = txtWid;
             painter->drawLine(p.x(), p.y(), p.x()-3, p.y());
             painter->drawText(p.x()+txtHei/3,
                 p.y()+txtHei/3, sample.label);
         }
+    }
+    // Draw title
+    if (components & XYAxis::Title) {
+        txtWid = fontMetrics.width(name);
+        int y = p1.x();
+        int x = -(p1.y() + p2.y() + txtWid) / 2;
+        painter->save();
+        painter->rotate(-90.0);
+        if (components & XYAxis::TicksUp)
+            painter->drawText(x, y+4*txtHei/3+maxTxtWid, name);
+        else
+            painter->drawText(x, y-2*txtHei/3-maxTxtWid, name);
+        painter->restore();
     }
 }
 

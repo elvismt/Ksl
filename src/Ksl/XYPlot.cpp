@@ -36,7 +36,7 @@ XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
                const QString &name,
                const QColor &stroke, const QColor &fill,
                QObject *parent)
-    : XYPlot(new XYPlotPrivate(this), name, Circles, parent)
+    : XYPlot(new XYPlotPrivate(this), name, Line, parent)
 {
     KSL_PUBLIC(XYPlot);
     m->pen.setColor(stroke);
@@ -90,6 +90,8 @@ void XYPlot::paint(QPainter *painter) {
         m->paintSquares(painter);
     else if (m->symbol == (Line|Squares))
         m->paintLineSquares(painter);
+    else if (m->symbol == (AreaUnder))
+        m->paintAreaUnder(painter);
 }
 
 void XYPlotPrivate::checkRanges() {
@@ -169,6 +171,32 @@ void XYPlotPrivate::paintLineSquares(QPainter *painter) {
         p1 = p2;
     }
     painter->drawRect(p2.x()-rad, p2.y()-rad, twoRad, twoRad);
+}
+
+void XYPlotPrivate::paintAreaUnder(QPainter *painter) {
+    QPainterPath dataPath;
+    QPainterPath boundPath;
+    QPoint p1, p2;
+    int firstX, y0;
+
+    p1 = scale->map(QPointF(x[0],y[0]));
+    firstX = p1.x();
+    y0 = scale->map(QPointF(x[0],0.0)).y();
+    dataPath.moveTo(p1);
+
+    for (size_t k=1; k<pointCount; ++k) {
+        p2 = scale->map(QPointF(x[k],y[k]));
+        dataPath.lineTo(p2);
+    }
+
+    boundPath.addPath(dataPath);
+    boundPath.lineTo(QPoint(p2.x(), y0));
+    boundPath.lineTo(QPoint(firstX, y0));
+    boundPath.closeSubpath();
+
+    painter->fillPath(boundPath, brush);
+    if (pen != Qt::NoPen)
+        painter->strokePath(dataPath, pen);
 }
 
 QPen XYPlot::pen() const {

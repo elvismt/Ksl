@@ -36,7 +36,7 @@ class KSL_EXPORT ChartWindow
 
 public:
 
-    ChartWindow(const QString &title="Ksl Chart", int width=500,
+    ChartWindow(const QString &title="Ksl Chart", int width=600,
                 int height=400, QWidget *parent=0);
 
 

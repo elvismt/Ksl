@@ -42,6 +42,7 @@ public:
         Line          = 0x00000001,
         TicksUp       = 0x00000002,
         TicksDown     = 0x00000004,
+        Title         = 0x00000008,
         AllComponents = 0xFFFFFFFF
     };
     Q_DECLARE_FLAGS(

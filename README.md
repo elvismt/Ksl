@@ -33,7 +33,7 @@ The figures below were created with KSL's widgets:
 
 # CODE SAMPLE
 
-The code for this chart is as simple as
+The code for the chart is as simple as
 
     #include <QApplication>
     #include <Ksl/ChartWindow.h>
@@ -44,9 +44,20 @@ The code for this chart is as simple as
         QApplication app(argc, argv);
         ChartWindow chart;
         
-        auto x = linspace(-M_PI, M_PI, 0.01);
+        auto Vx = linspace(-2*M_PI, 2*M_PI, 0.2);
         
-        chart.xyPlot(x, cos(x), "Cos(X)", Qt::blue);
+        auto Vy = applied([](double x) {
+            return cos(x) + 0.5*sin(7*x);
+        }, Vx);
+        
+        chart.xyPlot("Wave(X)", Vx, Vy, XYPlot::AreaUnder, Qt::red);
+        QBrush brush(QColor(255,0,0,100));
+        chart.xyPlot("Wave(X)")->setBrush(brush);
+        
+        chart.xyPlot("Cos(X)", Vx, cos(Vx), XYPlot::Line, Qt::blue);
+        QPen pen(Qt::blue);
+        pen.setWidth(2);
+        chart.xyPlot("Cos(X)")->setPen(pen);
         
         chart.show();
         return app.exec();
