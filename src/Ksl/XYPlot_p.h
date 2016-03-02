@@ -34,7 +34,7 @@ public:
     XYPlotPrivate(XYPlot *publ)
         : FigureItemPrivate(publ)
         , symbol(XYPlot::Line)
-        , antialias(false)
+        , antialias(true)
         , symbolRadius(3)
     { }
 

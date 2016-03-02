@@ -34,7 +34,7 @@ XYScale::XYScale(const QString &name)
     m->axisHash[BottomAxis]->showComponents(
         XYAxis::Line|XYAxis::TicksDown|XYAxis::MiddleTitle);
 
-    m->axisHash[TopAxis] = new XYAxis(Qt::Horizontal, "Ksl");
+    m->axisHash[TopAxis] = new XYAxis(Qt::Horizontal, "KSL");
     m->axisHash[TopAxis]->showComponents(
         XYAxis::Line|XYAxis::TicksUp|XYAxis::MiddleTitle);
 
@@ -56,7 +56,8 @@ XYScale::XYScale(const QString &name)
         XYAxis::Line|XYAxis::TicksDown|XYAxis::EndTitle);
     m->axisHash[Y_Axis]->hideZero(true);
 
-    // showAxis(BottomAxis|LeftAxis|TopAxis|RightAxis);
+    // Show bounding axis 
+    showAxis(BottomAxis|LeftAxis|TopAxis|RightAxis);
 
     //Tell the axis I am their manager
     for (auto axis : m->axisHash)
