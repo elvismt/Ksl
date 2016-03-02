@@ -22,7 +22,7 @@
 #define KSL_CHARTWINDOW_H
 
 #include <QWidget>
-#include <Ksl/Figure.h>
+#include <Ksl/FigureWidget.h>
 #include <Ksl/XYScale.h>
 #include <Ksl/XYPlot.h>
 

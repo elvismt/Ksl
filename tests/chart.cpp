@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
 
     auto x = linspace(-2*M_PI, 2*M_PI, 0.2);
 
-    chart.xyPlot("Sin(X)", x, sin(x), XYPlot::AreaUnder, Qt::blue);
+    chart.xyPlot("Sin(X)", x, sin(x), XYPlot::Circles, Qt::blue);
     QBrush sinBrush(QColor(0,0,255,100));
     chart.xyPlot("Sin(X)")->setBrush(sinBrush);
 
@@ -21,4 +21,3 @@ int main(int argc, char *argv[]) {
     chart.show();
     return app.exec();
 }
-

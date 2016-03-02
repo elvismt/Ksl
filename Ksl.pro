@@ -34,7 +34,9 @@ HEADERS += \
     src/Ksl/XYAxis.h \
     src/Ksl/XYAxis_p.h \
     src/Ksl/XYAxisSampler_p.h \
-    src/Ksl/XYAxisSampler.h
+    src/Ksl/XYAxisSampler.h \
+    src/Ksl/FigureWidget.h \
+    src/Ksl/FigureWidget_p.h
 
 SOURCES += \
     tests/chart.cpp \
@@ -46,7 +48,8 @@ SOURCES += \
     src/Ksl/XYScale.cpp \
     src/Ksl/XYPlot.cpp \
     src/Ksl/XYAxis.cpp \
-    src/Ksl/XYAxisSampler.cpp
+    src/Ksl/XYAxisSampler.cpp \
+    src/Ksl/FigureWidget.cpp
 
 RESOURCES += \
     src/qrc/Icons.qrc
