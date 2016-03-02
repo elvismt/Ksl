@@ -11,6 +11,7 @@ set(Ksl_HDRS
     Ksl/XYAxis.h
     Ksl/XYAxisSampler.h
     Ksl/CanvasWindow.h
+    Ksl/FigureWidget.h
     Ksl/ChartWindow.h
 )
 
@@ -23,6 +24,7 @@ set(Ksl_SRCS
     Ksl/XYAxis.cpp
     Ksl/XYAxisSampler.cpp
     Ksl/CanvasWindow.cpp
+    Ksl/FigureWidget.cpp
     Ksl/ChartWindow.cpp
 )
 
