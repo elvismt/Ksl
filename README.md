@@ -44,7 +44,6 @@ produces a chart similar to the following
  ![](https://github.com/elvismt/Ksl/blob/master/tests/chart1.png)
 
 And you can make more elaborate ones with code like
-
     
     #include <QApplication>
     #include <Ksl/ChartWindow.h>
@@ -55,21 +54,15 @@ And you can make more elaborate ones with code like
         QApplication app(argc, argv);
         ChartWindow chart;
         
-        auto Vx = linspace(-2*M_PI, 2*M_PI, 0.2);
+        auto x = linspace(-2*M_PI, 2*M_PI, 0.2);
         
-        chart.xyPlot("Cos(X)", Vx, cos(Vx), XYPlot::Line, Qt::blue);
-        QPen pen(Qt::blue);
-        pen.setWidth(2);
-        chart.xyPlot("Cos(X)")->setPen(pen);
+        chart.xyPlot("Sin(X)", x, sin(x), XYPlot::AreaUnder, Qt::blue);
+        QBrush sinBrush(QColor(0,0,255,100));
+        chart.xyPlot("Sin(X)")->setBrush(sinBrush);
         
-        // apply lambda to array
-        auto Vwave = applied([](double x) {
-            return cos(x) + 0.5*sin(3*x);
-        }, Vx);
-        
-        chart.xyPlot("Wave(X)", Vx, Vwave, XYPlot::AreaUnder, Qt::red);
-        QBrush brush(QColor(255,0,0,100));
-        chart.xyPlot("Wave(X)")->setBrush(brush);
+        chart.xyPlot("Cos(X)", x, cos(x), XYPlot::AreaUnder, Qt::red);
+        QBrush cosBrush(QColor(255,0,0,100));
+        chart.xyPlot("Cos(X)")->setBrush(cosBrush);
         
         chart.show();
         return app.exec();
