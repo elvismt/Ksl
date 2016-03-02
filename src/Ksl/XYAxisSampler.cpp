@@ -136,7 +136,7 @@ void XYAxisSampler::autoSampleDecimal(double min, double max, double hint) {
                 if (fabs(coord) / valDiff < 1.0e-10 && valDiff > 1.0e-10)
                     coord = 0.0;
                 m->sampleList.append(
-                    Sample(QString("%1").arg(coord, 0, 'f', 1), coord));
+                    Sample(QString("%1").arg(coord), coord));
             }
             else
                 m->sampleList.append(Sample(QString(), coord, false));
@@ -145,7 +145,7 @@ void XYAxisSampler::autoSampleDecimal(double min, double max, double hint) {
             if (fabs(coord) / valDiff < 1.0e-10 && valDiff > 1.0e-10)
                 coord = 0.0;
             m->sampleList.append(
-                Sample(QString("%1").arg(coord, 0, 'f', 1), coord));
+                Sample(QString("%1").arg(coord), coord));
         }
         coord += sampSpac;
         k += 1;

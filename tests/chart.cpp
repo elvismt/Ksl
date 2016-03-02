@@ -2,19 +2,22 @@
 #include <QApplication>
 #include <Ksl/ChartWindow.h>
 #include <Ksl/Regression/Linear.h>
+#include <iostream>
 
+using namespace std;
 using namespace Ksl;
 using namespace Ksl::Regression;
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    ChartWindow chart;
+    ChartWindow chart("Linear Regression");
 
     // emulate noisy data
-    auto vx = linspace(0.0, 200.0);
+    auto vx = linspace(0.0, 100.0);
     auto vy = vx * 2.3;
-    for (auto &x : vx)
-        x += -10.0 + 20.0*double(rand())/RAND_MAX;
+    vy += 20.0;
+    for (auto &y : vy)
+        y += -25.0 + 50.0*double(rand())/RAND_MAX;
 
     // create solver and perform regression
     LinRegr regr(vx, vy);
@@ -27,11 +30,11 @@ int main(int argc, char *argv[]) {
 
     // result[0] is the linear coefficient and
     // result[1] is the angular coefficient
-    qDebug() << "fitting line is x = a*x + b with a="
-             << result[1] << "and b=" << result[0];
+    cout << "fitting line is y = " << result[1]
+         << " x + " << result[0] << endl;
 
     // plot data and fitting line
-    chart.xyPlot("data", vx, vy, XYPlot::Circles, Qt::blue, Qt::yellow);
+    chart.xyPlot("data", vx, vy, XYPlot::Circles, Qt::blue, Qt::green);
     chart.xyPlot("regression", vx, vr, XYPlot::Line, Qt::red);
 
     chart.show();

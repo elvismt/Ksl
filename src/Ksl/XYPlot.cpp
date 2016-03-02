@@ -30,6 +30,7 @@ XYPlot::XYPlot(Ksl::ObjectPrivate *priv, const QString &name,
 {
     KSL_PUBLIC(XYPlot);
     m->symbol = symbol;
+    m->pen.setWidth(2);
 }
 
 XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
@@ -114,8 +115,12 @@ void XYPlotPrivate::paintLine(QPainter *painter) {
     QPoint p1 = scale->map(QPointF(x[0],y[0]));
     for (size_t k=1; k<pointCount; ++k) {
         QPoint p2 = scale->map(QPointF(x[k],y[k]));
-        painter->drawLine(p1, p2);
-        p1 = p2;
+
+        // Only draw segments that are at least 3 pixels away
+        if ((Math::pow2(p2.x()-p1.x()) + Math::pow2(p2.y()-p1.y())) > 8) {
+            painter->drawLine(p1, p2);
+            p1 = p2;
+        }
     }
 }
 
@@ -185,8 +190,13 @@ void XYPlotPrivate::paintAreaUnder(QPainter *painter) {
     dataPath.moveTo(p1);
 
     for (size_t k=1; k<pointCount; ++k) {
-        p2 = scale->map(QPointF(x[k],y[k]));
-        dataPath.lineTo(p2);
+
+        // Only draw segments that are at least 3 pixels away
+        if ((Math::pow2(p2.x()-p1.x()) + Math::pow2(p2.y()-p1.y())) > 8) {
+            p2 = scale->map(QPointF(x[k],y[k]));
+            dataPath.lineTo(p2);
+            p1 = p2;
+        }
     }
 
     boundPath.addPath(dataPath);

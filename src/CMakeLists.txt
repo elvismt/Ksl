@@ -13,6 +13,7 @@ set(Ksl_HDRS
     Ksl/CanvasWindow.h
     Ksl/FigureWidget.h
     Ksl/ChartWindow.h
+    Ksl/Regression/Linear.h
 )
 
 set(Ksl_SRCS
@@ -26,6 +27,7 @@ set(Ksl_SRCS
     Ksl/CanvasWindow.cpp
     Ksl/FigureWidget.cpp
     Ksl/ChartWindow.cpp
+    Ksl/Regression/Linear.cpp
 )
 
 QT4_ADD_RESOURCES(
