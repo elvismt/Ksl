@@ -48,6 +48,18 @@ void Figure::add(FigureScale *scale) {
     }
 }
 
+void Figure::remove(FigureScale *scale) {
+    KSL_PUBLIC(Figure);
+    m->scaleList.removeAll(scale);
+}
+
+void Figure::remove(const QString &scaleName) {
+    KSL_PUBLIC(Figure);
+    for (auto scale : m->scaleList)
+        if (scale->name() == scaleName)
+            remove(scale);
+}
+
 QList<FigureScale*>& Figure::scaleList() {
     KSL_PUBLIC(Figure);
     return m->scaleList;

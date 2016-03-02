@@ -49,6 +49,18 @@ void FigureScale::add(FigureItem *item) {
     }
 }
 
+void FigureScale::remove(FigureItem *item) {
+    KSL_PUBLIC(FigureScale);
+    m->itemList.removeAll(item);
+}
+
+void FigureScale::remove(const QString &itemName) {
+    KSL_PUBLIC(FigureScale);
+    for (auto item : m->itemList)
+        if (item->name() == itemName)
+            remove(item);
+}
+
 QList<FigureItem*>& FigureScale::itemList() {
     KSL_PUBLIC(FigureScale);
     return m->itemList;

@@ -40,6 +40,10 @@ public:
 
     virtual void add(FigureItem *item);
 
+    virtual void remove(FigureItem *item);
+
+    virtual void remove(const QString &itemName);
+
     QList<FigureItem*>& itemList();
 
     const QList<FigureItem*>& itemList() const;

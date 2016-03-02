@@ -899,6 +899,82 @@ Array<D,T> operator/ (const Array<D,T> &array, const T &x) {
 }
 
 
+
+template <size_t D, typename T> inline
+Array<D,T>& operator+= (Array<D,T> &a1, const Array<D,T> &a2) {
+    auto a2iter = a2.begin();
+    for (auto &elem : a1)
+        elem += (*a2iter++);
+    return a1;
+}
+
+
+
+template <size_t D, typename T> inline
+Array<D,T>& operator-= (Array<D,T> &a1, const Array<D,T> &a2) {
+    auto a2iter = a2.begin();
+    for (auto &elem : a1)
+        elem -= (*a2iter++);
+    return a1;
+}
+
+
+
+template <size_t D, typename T> inline
+Array<D,T>& operator*= (Array<D,T> &a1, const Array<D,T> &a2) {
+    auto a2iter = a2.begin();
+    for (auto &elem : a1)
+        elem *= (*a2iter++);
+    return a1;
+}
+
+
+
+template <size_t D, typename T> inline
+Array<D,T>& operator/= (Array<D,T> &a1, const Array<D,T> &a2) {
+    auto a2iter = a2.begin();
+    for (auto &elem : a1)
+        elem /= (*a2iter++);
+    return a1;
+}
+
+
+
+template <size_t D, typename T> inline
+Array<D,T>& operator+= (Array<D,T> &a1, const T&x) {
+    for (auto &elem : a1)
+        elem += x;
+    return a1;
+}
+
+
+
+template <size_t D, typename T> inline
+Array<D,T>& operator-= (Array<D,T> &a1, const T&x) {
+    for (auto &elem : a1)
+        elem -= x;
+    return a1;
+}
+
+
+
+template <size_t D, typename T> inline
+Array<D,T>& operator*= (Array<D,T> &a1, const T&x) {
+    for (auto &elem : a1)
+        elem *= x;
+    return a1;
+}
+
+
+
+template <size_t D, typename T> inline
+Array<D,T>& operator/= (Array<D,T> &a1, const T&x) {
+    for (auto &elem : a1)
+        elem /= x;
+    return a1;
+}
+
+
 /********************************************
  * Common math functions applied element-wise
  *******************************************/

@@ -47,6 +47,10 @@ public:
 
     virtual void add(FigureScale *scale);
 
+    virtual void remove(FigureScale *scale);
+
+    void remove(const QString &scaleName);
+
     QList<FigureScale*>& scaleList();
 
     const QList<FigureScale*>& scaleList() const;

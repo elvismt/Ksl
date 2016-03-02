@@ -36,7 +36,9 @@ HEADERS += \
     src/Ksl/XYAxisSampler_p.h \
     src/Ksl/XYAxisSampler.h \
     src/Ksl/FigureWidget.h \
-    src/Ksl/FigureWidget_p.h
+    src/Ksl/FigureWidget_p.h \
+    src/Ksl/Regression/Linear.h \
+    src/Ksl/Regression/Linear_p.h
 
 SOURCES += \
     tests/chart.cpp \
@@ -49,7 +51,8 @@ SOURCES += \
     src/Ksl/XYPlot.cpp \
     src/Ksl/XYAxis.cpp \
     src/Ksl/XYAxisSampler.cpp \
-    src/Ksl/FigureWidget.cpp
+    src/Ksl/FigureWidget.cpp \
+    src/Ksl/Regression/Linear.cpp
 
 RESOURCES += \
     src/qrc/Icons.qrc
