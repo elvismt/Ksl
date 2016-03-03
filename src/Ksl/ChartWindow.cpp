@@ -52,6 +52,12 @@ ChartWindow::ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
         QIcon(":/icons/icons/document-save.png"),
         tr("Export Image"), this, SLOT(save()));
     m->toolBar->addSeparator();
+    m->toolBar->addAction(
+        QIcon(":/icons/icons/move-translate.png"),
+        tr("Move viewport"), this, SLOT(save()));
+    m->toolBar->addAction(
+        QIcon(":/icons/icons/toggle-grid.png"),
+        tr("Move viewport"), this, SLOT(save()));
 
     // chartArea
     m->figureArea = new FigureWidget(this);

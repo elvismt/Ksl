@@ -7,5 +7,7 @@
         <file>icons/media-playback-stop.png</file>
         <file>icons/edit-undo.png</file>
         <file>icons/document-save.png</file>
+        <file>icons/move-translate.png</file>
+        <file>icons/toggle-grid.png</file>
     </qresource>
 </RCC>
