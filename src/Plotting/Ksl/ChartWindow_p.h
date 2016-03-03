@@ -22,9 +22,11 @@
 #define KSL_CHARTWINDOW_P_H
 
 #include <Ksl/ChartWindow.h>
+#include <Ksl/FigureWidget_p.h>
 #include <QVBoxLayout>
 #include <QToolBar>
 #include <QStatusBar>
+#include <QMouseEvent>
 #include <QHash>
 
 namespace Ksl {
@@ -36,11 +38,15 @@ public:
 
     ChartWindowPrivate(ChartWindow *publ)
         : Ksl::ObjectPrivate(publ)
+        , mousePressed(false)
     { }
 
     ~ChartWindowPrivate();
 
 
+    bool mousePressed;
+    QPoint mouseMoveP1;
+    QPoint mouseMoveP2;
     QVBoxLayout *layout;
     FigureWidget *figureArea;
     QToolBar *toolBar;

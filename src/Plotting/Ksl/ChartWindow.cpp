@@ -34,6 +34,7 @@ ChartWindow::ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
 
     // Set out layout
     setWindowTitle(title);
+    setMouseTracking(true);
     setWindowIcon(QIcon(":/icons/icons/preferences-kcalc-constants.png"));
     m->layout = new QVBoxLayout();
     setLayout(m->layout);
@@ -138,6 +139,67 @@ void ChartWindow::save() {
 void ChartWindow::showStatusMessage(const QString &message, int milisecs) {
     KSL_PUBLIC(ChartWindow);
     m->statusBar->showMessage(message, milisecs);
+}
+
+
+void ChartWindow::mousePressEvent(QMouseEvent *event) {
+    KSL_PUBLIC(ChartWindow);
+    if (event->button() == Qt::LeftButton) {
+        m->mousePressed = true;
+        m->mouseMoveP1 = event->pos();
+        m->mouseMoveP2 = event->pos();
+    }
+    if (event->button() == Qt::RightButton) {
+        for (auto scale : m->xyScales)
+            scale->rescale();
+        update();
+    }
+}
+
+
+void ChartWindow::mouseMoveEvent(QMouseEvent *event) {
+    KSL_PUBLIC(ChartWindow);
+    if (!m->xyScales.isEmpty()) {
+        QPoint figureOrigin = m->figureArea->mapToParent(QPoint(0,0));
+        if (QRect(figureOrigin, m->figureArea->size()).contains(event->pos())) {
+            QPoint figureEventPosition = event->pos() - figureOrigin;
+            QPointF dataPosition = xyScale()->unmap(figureEventPosition);
+            m->statusBar->showMessage(
+                QString("( %1, %2 )").arg(dataPosition.x(), 0, 'f', 1)
+                    .arg(dataPosition.y(), 0, 'f', 1), 3000);
+        }
+        if (m->mousePressed) {
+            m->mouseMoveP2 = event->pos();
+            update();
+        }
+    }
+}
+
+
+void ChartWindow::mouseReleaseEvent(QMouseEvent *event) {
+    KSL_PUBLIC(ChartWindow);
+    m->mousePressed = false;
+    m->mouseMoveP2 = event->pos();
+
+    if (!m->xyScales.isEmpty() && event->button() == Qt::LeftButton) {
+        for (auto scale : m->xyScales) {
+            QPointF p1 = scale->unmap(m->mouseMoveP1);
+            QPointF p2 = scale->unmap(m->mouseMoveP2);
+            if (p2.x() < p1.x()) {
+                double tmp = p2.x();
+                p2.setX(p1.x());
+                p1.setX(tmp);
+            }
+            if (p2.y() < p1.y()) {
+                double tmp = p2.y();
+                p2.setY(p1.y());
+                p1.setY(tmp);
+            }
+            scale->setXrange(p1.x(), p2.x());
+            scale->setYrange(p1.y(), p2.y());
+            update();
+        }
+    }
 }
 
 } // namespace Ksl
