@@ -12,10 +12,6 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     ChartWindow chart("Linear Regression");
 
-    auto fig1 = chart.figure("fig1");
-    auto fig2 = chart.figure("fig2");
-    auto fig3 = chart.figure("fig3");
-
     // emulate noisy data
     auto vx = linspace(0.0, 100.0);
     auto vy = vx * 2.3;
@@ -33,22 +29,8 @@ int main(int argc, char *argv[]) {
     vr += result[0];
 
     // plot data and fitting line
-    XYScale scale1;
-    fig1->add(&scale1);
-    XYPlot plot1(vx, vy, XYPlot::Circles, "Data");
-    scale1.add(&plot1);
-
-    XYScale scale2;
-    fig2->add(&scale2);
-    XYPlot plot2(vx, vr, "Fitting Line", Qt::red);
-    scale2.add(&plot2);
-
-    XYScale scale3;
-    fig3->add(&scale3);
-    XYPlot plot3(vx, vy, XYPlot::Circles, "Data");
-    XYPlot plot4(vx, vr, "Fitting Line", Qt::red);
-    scale3.add(&plot3);
-    scale3.add(&plot4);
+    chart.xyPlot("Data", vx, vy, XYPlot::Circles, Qt::black, Qt::green);
+    chart.xyPlot("Fitted line", vx, vr, XYPlot::Line, Qt::blue);
 
     chart.show();
     return app.exec();

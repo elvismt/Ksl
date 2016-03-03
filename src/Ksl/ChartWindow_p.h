@@ -38,12 +38,15 @@ public:
         : Ksl::ObjectPrivate(publ)
     { }
 
+    ~ChartWindowPrivate();
+
 
     QVBoxLayout *layout;
     FigureWidget *figureArea;
     QToolBar *toolBar;
     QStatusBar *statusBar;
-    QList<Figure*> figures;
+    QHash<QString,XYScale*> xyScales;
+    QHash<QString,XYPlot*> xyPlots;
 };
 
 } // namespace Ksl

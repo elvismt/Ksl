@@ -34,24 +34,14 @@ class FigureWidgetPrivate
 {
 public:
 
-    struct FigureTableEntry {
-        Figure *figure;
-        QPoint pos;
-        int initRow, endRow;
-        int initCol, endCol;
-    };
-
-
     FigureWidgetPrivate(FigureWidget *publ)
         : Ksl::ObjectPrivate(publ)
-        , lastRow(0), lastCol(0)
-        , sizeHint(500, 350)
+        , sizeHint(500,350)
     { }
 
 
-    int lastRow, lastCol;
     QSize sizeHint;
-    QList<FigureTableEntry> figureList;
+    Figure *figure;
     QPainter painter;
 };
 

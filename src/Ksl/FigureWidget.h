@@ -37,13 +37,7 @@ public:
     FigureWidget(QWidget *parent=0);
 
 
-    Figure* figure(const QString &name);
-
-    QList<Figure*> figureList() const;
-
-    void add(Figure *figure,
-             int initRow=0, int endRow=0,
-             int initCol=0, int endCol=0);
+    Figure* figure() const;
 
     QSize sizeHint() const;
 

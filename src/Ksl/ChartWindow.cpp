@@ -71,64 +71,55 @@ ChartWindow::ChartWindow(const QString &title,
 { }
 
 
-Figure* ChartWindow::addFigure(const QString &name,
-                               int initRow, int endRow,
-                               int initCol, int endCol)
+ChartWindowPrivate::~ChartWindowPrivate() {
+    // Clean up
+    for (auto scale : xyScales)
+        delete scale;
+    for (auto plot : xyPlots)
+        delete plot;
+}
+
+
+Figure* ChartWindow::figure() const {
+    KSL_PUBLIC(const ChartWindow);
+    return m->figureArea->figure();
+}
+
+
+XYScale* ChartWindow::xyScale(const QString &name) {
+    KSL_PUBLIC(ChartWindow);
+    if (m->xyScales.contains(name))
+        return m->xyScales[name];
+
+    auto newScale = new XYScale(name);
+    m->xyScales[name] = newScale;
+    m->figureArea->figure()->add(newScale);
+    return newScale;
+}
+
+
+XYPlot* ChartWindow::xyPlot(const QString &name,
+                            const Array<1> &x, const Array<1> &y,
+                            XYPlot::Symbol symbol,
+                            const QColor &stroke, const QColor &fill,
+                            const QString &scaleName)
 {
     KSL_PUBLIC(ChartWindow);
+    if (m->xyPlots.contains(name))
+        return nullptr;
 
-    Figure *figure = new Figure(name,this);
-    m->figures.append(figure);
-
-    // Automatically position up to
-    // 6 figures
-    if (initRow == -1) {
-        if (m->figures.size() == 1)
-            m->figureArea->add(
-                figure, 0, 0, 0, 0);
-        if (m->figures.size() == 2)
-            m->figureArea->add(
-                figure, 1, 1, 0, 0);
-        if (m->figures.size() == 3)
-            m->figureArea->add(
-                figure, 0, 0, 1, 1);
-        if (m->figures.size() == 4)
-            m->figureArea->add(
-                figure, 1, 1, 1, 1);
-        if (m->figures.size() == 5)
-            m->figureArea->add(
-                figure, 2, 2, 0, 0);
-        if (m->figures.size() == 6)
-            m->figureArea->add(
-                figure, 2, 2, 1, 1);
-    }
-    else {
-        m->figureArea->add(
-            figure, initRow, endRow,
-            initCol, endCol);
-    }
-    return figure;
+    auto newPlot = new XYPlot(x, y, symbol, name, stroke, fill);
+    m->xyPlots[name] = newPlot;
+    xyScale(scaleName)->add(newPlot);
+    return newPlot;
 }
 
 
-Figure* ChartWindow::figure(const QString &name) {
+XYPlot* ChartWindow::xyPlot(const QString &name) const {
     KSL_PUBLIC(const ChartWindow);
-    for (auto fig : m->figures)
-        if (fig->name() == name)
-            return fig;
-    return addFigure(name);
-}
-
-
-Figure* ChartWindow::figure(int index) const {
-    KSL_PUBLIC(const ChartWindow);
-    return m->figures[index];
-}
-
-
-QList<Figure*> ChartWindow::figureList() const {
-    KSL_PUBLIC(const ChartWindow);
-    return m->figures;
+    if (m->xyPlots.contains(name))
+        return m->xyPlots[name];
+    return nullptr;
 }
 
 
