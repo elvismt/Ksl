@@ -8,7 +8,12 @@ endif(UNIX)
 set(CMAKE_AUTOMOC ON)
 find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
-include_directories(src)
+
+include_directories(
+    src/Core
+    src/Plotting
+    src/Regression
+)
 
 subdirs(
     src

@@ -1,39 +1,38 @@
 
 set(Ksl_HDRS
-    Ksl/Global.h
-    Ksl/Math.h
-    Ksl/Array.h
-    Ksl/Figure.h
-    Ksl/FigureScale.h
-    Ksl/FigureItem.h
-    Ksl/XYScale.h
-    Ksl/XYPlot.h
-    Ksl/XYAxis.h
-    Ksl/XYAxisSampler.h
-    Ksl/CanvasWindow.h
-    Ksl/FigureWidget.h
-    Ksl/ChartWindow.h
-    Ksl/Regression/Linear.h
+    Core/Ksl/Global.h
+    Core/Ksl/Math.h
+    Core/Ksl/Array.h
+    Plotting/Ksl/Figure.h
+    Plotting/Ksl/FigureScale.h
+    Plotting/Ksl/FigureItem.h
+    Plotting/Ksl/XYScale.h
+    Plotting/Ksl/XYPlot.h
+    Plotting/Ksl/XYAxis.h
+    Plotting/Ksl/XYAxisSampler.h
+    Plotting/Ksl/CanvasWindow.h
+    Plotting/Ksl/FigureWidget.h
+    Plotting/Ksl/ChartWindow.h
+    Regression/Ksl/LinRegr.h
 )
 
 set(Ksl_SRCS
-    Ksl/Figure.cpp
-    Ksl/FigureScale.cpp
-    Ksl/FigureItem.cpp
-    Ksl/XYScale.cpp
-    Ksl/XYPlot.cpp
-    Ksl/XYAxis.cpp
-    Ksl/XYAxisSampler.cpp
-    Ksl/CanvasWindow.cpp
-    Ksl/FigureWidget.cpp
-    Ksl/ChartWindow.cpp
-    Ksl/Regression/Linear.cpp
+    Plotting/Ksl/Figure.cpp
+    Plotting/Ksl/FigureScale.cpp
+    Plotting/Ksl/FigureItem.cpp
+    Plotting/Ksl/XYScale.cpp
+    Plotting/Ksl/XYPlot.cpp
+    Plotting/Ksl/XYAxis.cpp
+    Plotting/Ksl/XYAxisSampler.cpp
+    Plotting/Ksl/CanvasWindow.cpp
+    Plotting/Ksl/FigureWidget.cpp
+    Plotting/Ksl/ChartWindow.cpp
+    Regression/Ksl/LinRegr.cpp
 )
 
-QT4_ADD_RESOURCES(
-    ICONS_QRC
-    qrc/Icons.qrc
+qt4_add_resources(Ksl_QRC_SRCS
+    QRC/Icons.qrc
 )
 
-add_library(Ksl SHARED ${Ksl_SRCS} ${ICONS_QRC})
+add_library(Ksl SHARED ${Ksl_SRCS} ${Ksl_QRC_SRCS})
 target_link_libraries(Ksl ${QT_LIBRARIES})

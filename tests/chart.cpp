@@ -1,12 +1,11 @@
 
 #include <QApplication>
 #include <Ksl/ChartWindow.h>
-#include <Ksl/Regression/Linear.h>
+#include <Ksl/LinRegr.h>
 #include <iostream>
 
 using namespace std;
 using namespace Ksl;
-using namespace Ksl::Regression;
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);

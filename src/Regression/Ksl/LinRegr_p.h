@@ -18,27 +18,39 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_REGRESSION_LINEAR_H
-#define KSL_REGRESSION_LINEAR_H
+#ifndef KSL_LINREGR_P_H
+#define KSL_LINREGR_P_H
 
-#include <Ksl/Object.h>
-#include <Ksl/Array.h>
+#include <Ksl/LinRegr.h>
 
 namespace Ksl {
-namespace Regression {
 
-class KSL_EXPORT LinRegr
-        : public Ksl::Object
+class LinRegrPrivate
+    : public Ksl::ObjectPrivate
 {
 public:
 
-    LinRegr(const Array<1> x, const Array<1> &y);
+    LinRegrPrivate(LinRegr *publ)
+        : Ksl::ObjectPrivate(publ)
+        , c0(0.0), c1(0.0)
+        , cov_00(0.0), cov_01(0.0), cov_11(0.0)
+        , sumsq(0.0)
+    { }
 
-    Array<1> result() const;
+    // ! BEGIN GSL CODE
+    static void gsl_fit_linear(const double *x, const double *y, const size_t n,
+                    double *c0, double *c1,
+                    double *cov_00, double *cov_01, double *cov_11,
+                    double *sumsq);
+    // ! END GSL CODE
 
-    void solve();
+    double c0, c1;
+    double cov_00, cov_01, cov_11;
+    double sumsq;
+    Array<1> x;
+    Array<1> y;
 };
 
-}} // namespace Ksl::Regression
+} // namespace Ksl
 
-#endif // KSL_REGRESSION_LINEAR_H
+#endif // KSL_LINREGR_P_H

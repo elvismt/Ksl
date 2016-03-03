@@ -18,10 +18,9 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Ksl/Regression/Linear_p.h>
+#include <Ksl/LinRegr_p.h>
 
 namespace Ksl {
-namespace Regression {
 
 LinRegr::LinRegr(const Array<1> x, const Array<1> &y)
     : Ksl::Object(new LinRegrPrivate(this))
@@ -113,4 +112,4 @@ LinRegrPrivate::gsl_fit_linear (const double *x,
 }
 // ! END GSL CODE
 
-}} // namespace Ksl::Regression
+} // namespace Ksl
