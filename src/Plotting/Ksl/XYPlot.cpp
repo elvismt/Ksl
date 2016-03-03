@@ -190,10 +190,10 @@ void XYPlotPrivate::paintAreaUnder(QPainter *painter) {
     dataPath.moveTo(p1);
 
     for (size_t k=1; k<pointCount; ++k) {
+        p2 = scale->map(QPointF(x[k],y[k]));
 
         // Only draw segments that are at least 3 pixels away
         if ((Math::pow2(p2.x()-p1.x()) + Math::pow2(p2.y()-p1.y())) > 8) {
-            p2 = scale->map(QPointF(x[k],y[k]));
             dataPath.lineTo(p2);
             p1 = p2;
         }

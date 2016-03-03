@@ -106,14 +106,9 @@ numerical data
         auto vr = vx * result[1];
         vr += result[0];
         
-        // result[0] is the linear coefficient and
-        // result[1] is the angular coefficient
-        cout << "fitting line is y = " << result[1]
-        << " x + " << result[0] << endl;
-        
         // plot data and fitting line
-        chart.xyPlot("data", vx, vy, XYPlot::Circles, Qt::blue, Qt::green);
-        chart.xyPlot("regression", vx, vr, XYPlot::Line, Qt::red);
+        chart.xyPlot("Data", vx, vy, XYPlot::Circles, Qt::black, Qt::green);
+        chart.xyPlot("Fitted line", vx, vr, XYPlot::Line, Qt::blue);
         
         chart.show();
         return app.exec();

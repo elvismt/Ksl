@@ -19,7 +19,8 @@
  */
 
 #include <Ksl/FigureWidget_p.h>
-#include <Ksl/XYScale.h>
+#include <Ksl/FigureScale.h>
+#include <Ksl/Math.h>
 
 namespace Ksl {
 
@@ -97,11 +98,6 @@ void FigureWidget::mousePressEvent(QMouseEvent *event) {
             m->mouseMoveP2 = event->pos();
             m->mousePressed = true;
         }
-        if (event->button() == Qt::RightButton) {
-            for (auto scale : m->figure->scaleList())
-                scale->rescale();
-            update();
-        }
     }
 }
 
@@ -122,6 +118,13 @@ void FigureWidget::mouseReleaseEvent(QMouseEvent *event) {
         m->mousePressed = false;
         m->mouseMoveP2 = event->pos();
         for (auto scale : m->figure->scaleList()) {
+            // Only change viewport if the drag was at least
+            // 4 points wide
+            QPoint move = m->mouseMoveP2 - m->mouseMoveP1;
+            if ((Math::pow2(move.x()) + Math::pow2(move.y())) < 16)
+                continue;
+
+            // Get drag ends in data space
             QPointF p1 = scale->unmap(m->mouseMoveP1);
             QPointF p2 = scale->unmap(m->mouseMoveP2);
 
@@ -142,6 +145,15 @@ void FigureWidget::mouseReleaseEvent(QMouseEvent *event) {
         }
         update();
     }
+}
+
+
+void FigureWidget::mouseDoubleClickEvent(QMouseEvent * event) {
+    KSL_PUBLIC(FigureWidget);
+    Q_UNUSED(event)
+    for (auto scale : m->figure->scaleList())
+        scale->rescale();
+    update();
 }
 
 } // namespace Ksl
