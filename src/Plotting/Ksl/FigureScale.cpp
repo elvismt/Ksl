@@ -116,6 +116,10 @@ QRect FigureScale::figureRect() const {
     return QRect();
 }
 
+void FigureScale::trackRect(const QRectF &rect) {
+    Q_UNUSED(rect)
+}
+
 void FigureScale::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(FigureScale);
     Q_UNUSED(rect)

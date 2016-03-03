@@ -20,6 +20,7 @@
 
 #include <Ksl/ChartWindow_p.h>
 #include <QIcon>
+#include <QAction>
 #include <QFileDialog>
 #include <QMouseEvent>
 
@@ -53,12 +54,19 @@ ChartWindow::ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
         QIcon(":/icons/icons/document-save.png"),
         tr("Export Image"), this, SLOT(save()));
     m->toolBar->addSeparator();
-    m->toolBar->addAction(
+
+    // TODO Add these action's functionality
+
+    QAction *action = m->toolBar->addAction(
         QIcon(":/icons/icons/move-translate.png"),
-        tr("Move viewport"), this, SLOT(save()));
-    m->toolBar->addAction(
+        tr("Move viewport"));
+    action->setCheckable(true);
+    connect(action, SIGNAL(toggled(bool)),
+            this, SLOT(toggleTranslation(bool)));
+    action = m->toolBar->addAction(
         QIcon(":/icons/icons/toggle-grid.png"),
-        tr("Move viewport"), this, SLOT(save()));
+        tr("Move viewport"));
+    action->setCheckable(true);
 
     // chartArea
     m->figureArea = new FigureWidget(this);
@@ -143,63 +151,26 @@ void ChartWindow::showStatusMessage(const QString &message, int milisecs) {
 
 
 void ChartWindow::mousePressEvent(QMouseEvent *event) {
-    KSL_PUBLIC(ChartWindow);
-    if (event->button() == Qt::LeftButton) {
-        m->mousePressed = true;
-        m->mouseMoveP1 = event->pos();
-        m->mouseMoveP2 = event->pos();
-    }
-    if (event->button() == Qt::RightButton) {
-        for (auto scale : m->xyScales)
-            scale->rescale();
-        update();
-    }
+    Q_UNUSED(event)
 }
 
 
 void ChartWindow::mouseMoveEvent(QMouseEvent *event) {
-    KSL_PUBLIC(ChartWindow);
-    if (!m->xyScales.isEmpty()) {
-        QPoint figureOrigin = m->figureArea->mapToParent(QPoint(0,0));
-        if (QRect(figureOrigin, m->figureArea->size()).contains(event->pos())) {
-            QPoint figureEventPosition = event->pos() - figureOrigin;
-            QPointF dataPosition = xyScale()->unmap(figureEventPosition);
-            m->statusBar->showMessage(
-                QString("( %1, %2 )").arg(dataPosition.x(), 0, 'f', 1)
-                    .arg(dataPosition.y(), 0, 'f', 1), 3000);
-        }
-        if (m->mousePressed) {
-            m->mouseMoveP2 = event->pos();
-            update();
-        }
-    }
+    Q_UNUSED(event)
 }
 
 
 void ChartWindow::mouseReleaseEvent(QMouseEvent *event) {
-    KSL_PUBLIC(ChartWindow);
-    m->mousePressed = false;
-    m->mouseMoveP2 = event->pos();
+    Q_UNUSED(event)
+}
 
-    if (!m->xyScales.isEmpty() && event->button() == Qt::LeftButton) {
-        for (auto scale : m->xyScales) {
-            QPointF p1 = scale->unmap(m->mouseMoveP1);
-            QPointF p2 = scale->unmap(m->mouseMoveP2);
-            if (p2.x() < p1.x()) {
-                double tmp = p2.x();
-                p2.setX(p1.x());
-                p1.setX(tmp);
-            }
-            if (p2.y() < p1.y()) {
-                double tmp = p2.y();
-                p2.setY(p1.y());
-                p1.setY(tmp);
-            }
-            scale->setXrange(p1.x(), p2.x());
-            scale->setYrange(p1.y(), p2.y());
-            update();
-        }
-    }
+
+void ChartWindow::toggleTranslation(bool activate) {
+    KSL_PUBLIC(ChartWindow);
+    if (activate)
+        m->mouseOperation = ChartWindowPrivate::Translate;
+    else
+        m->mouseOperation = ChartWindowPrivate::NoAction;
 }
 
 } // namespace Ksl

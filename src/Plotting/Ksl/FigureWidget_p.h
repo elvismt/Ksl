@@ -25,6 +25,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QFileDialog>
+#include <QMouseEvent>
 #include <QHash>
 
 namespace Ksl {
@@ -36,11 +37,17 @@ public:
 
     FigureWidgetPrivate(FigureWidget *publ)
         : Ksl::ObjectPrivate(publ)
+        , mouseRectPen(Qt::red)
         , sizeHint(500,350)
+        , mousePressed(false)
     { }
 
 
+    QPen mouseRectPen;
     QSize sizeHint;
+    bool mousePressed;
+    QPoint mouseMoveP1;
+    QPoint mouseMoveP2;
     Figure *figure;
     QPainter painter;
 };

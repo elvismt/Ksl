@@ -109,6 +109,11 @@ QPointF XYScale::unmap(const QPoint &point) const {
     return ret;
 }
 
+void XYScale::trackRect(const QRectF &rect) {
+    setXrange(rect.left(), rect.right());
+    setYrange(rect.top(), rect.bottom());
+}
+
 void XYScale::rescale() {
     KSL_PUBLIC(XYScale);
 

@@ -51,6 +51,10 @@ public slots:
 
 protected:
 
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+
     FigureWidget(Ksl::ObjectPrivate *priv, QWidget *parent);
 
     virtual void paintEvent(QPaintEvent *event);

@@ -59,11 +59,16 @@ public slots:
 
     void showStatusMessage(const QString &message, int milisecs);
 
+
 protected slots:
 
     virtual void mousePressEvent(QMouseEvent *event);
+
     virtual void mouseMoveEvent(QMouseEvent *event);
+
     virtual void mouseReleaseEvent(QMouseEvent *event);
+
+    virtual void toggleTranslation(bool activate);
 
 
 protected:

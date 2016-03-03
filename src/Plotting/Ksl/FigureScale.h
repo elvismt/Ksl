@@ -64,6 +64,8 @@ public:
 
     virtual QPointF unmap(const QPoint &point) const = 0;
 
+    virtual void trackRect(const QRectF &rect);
+
     virtual void rescale();
 
     virtual QRectF dataRect() const;

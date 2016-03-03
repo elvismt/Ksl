@@ -36,17 +36,21 @@ class ChartWindowPrivate
 {
 public:
 
+
+    enum MouseOperation {
+        NoAction    = 0,
+        Translate   = 1
+    };
+
     ChartWindowPrivate(ChartWindow *publ)
         : Ksl::ObjectPrivate(publ)
-        , mousePressed(false)
+        , mouseOperation(NoAction)
     { }
 
     ~ChartWindowPrivate();
 
 
-    bool mousePressed;
-    QPoint mouseMoveP1;
-    QPoint mouseMoveP2;
+    MouseOperation mouseOperation;
     QVBoxLayout *layout;
     FigureWidget *figureArea;
     QToolBar *toolBar;
