@@ -29,26 +29,6 @@
 
 namespace Ksl {
 
-class _ChartArea
-    : public QWidget
-{
-    Q_OBJECT
-
-public:
-
-    _ChartArea(const QSize defaultSize, QWidget *parent);
-
-    virtual QSize sizeHint() const;
-    virtual void paintEvent(QPaintEvent *event);
-    virtual void mouseMoveEvent(QMouseEvent *event);
-
-
-    QSize defaultSize;
-    QPainter painter;
-    Figure *figure;
-    ChartWindow *window;
-};
-
 class ChartWindowPrivate
     : public Ksl::ObjectPrivate
 {
@@ -58,16 +38,12 @@ public:
         : Ksl::ObjectPrivate(publ)
     { }
 
-    ~ChartWindowPrivate();
-
 
     QVBoxLayout *layout;
-    _ChartArea *chartArea;
+    FigureWidget *figureArea;
     QToolBar *toolBar;
     QStatusBar *statusBar;
-
-    QHash<QString,XYScale*> xyScales;
-    QHash<QString,XYPlot*> xyPlots;
+    QList<Figure*> figures;
 };
 
 } // namespace Ksl

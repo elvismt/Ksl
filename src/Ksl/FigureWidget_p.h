@@ -45,10 +45,12 @@ public:
     FigureWidgetPrivate(FigureWidget *publ)
         : Ksl::ObjectPrivate(publ)
         , lastRow(0), lastCol(0)
+        , sizeHint(500, 350)
     { }
 
 
     int lastRow, lastCol;
+    QSize sizeHint;
     QList<FigureTableEntry> figureList;
     QPainter painter;
 };

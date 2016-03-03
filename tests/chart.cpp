@@ -12,6 +12,10 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     ChartWindow chart("Linear Regression");
 
+    auto fig1 = chart.figure("fig1");
+    auto fig2 = chart.figure("fig2");
+    auto fig3 = chart.figure("fig3");
+
     // emulate noisy data
     auto vx = linspace(0.0, 100.0);
     auto vy = vx * 2.3;
@@ -28,14 +32,23 @@ int main(int argc, char *argv[]) {
     auto vr = vx * result[1];
     vr += result[0];
 
-    // result[0] is the linear coefficient and
-    // result[1] is the angular coefficient
-    cout << "fitting line is y = " << result[1]
-         << " x + " << result[0] << endl;
-
     // plot data and fitting line
-    chart.xyPlot("data", vx, vy, XYPlot::Circles, Qt::blue, Qt::green);
-    chart.xyPlot("regression", vx, vr, XYPlot::Line, Qt::red);
+    XYScale scale1;
+    fig1->add(&scale1);
+    XYPlot plot1(vx, vy, XYPlot::Circles, "Data");
+    scale1.add(&plot1);
+
+    XYScale scale2;
+    fig2->add(&scale2);
+    XYPlot plot2(vx, vr, "Fitting Line", Qt::red);
+    scale2.add(&plot2);
+
+    XYScale scale3;
+    fig3->add(&scale3);
+    XYPlot plot3(vx, vy, XYPlot::Circles, "Data");
+    XYPlot plot4(vx, vr, "Fitting Line", Qt::red);
+    scale3.add(&plot3);
+    scale3.add(&plot4);
 
     chart.show();
     return app.exec();

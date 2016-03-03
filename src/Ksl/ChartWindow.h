@@ -40,22 +40,15 @@ public:
                 int height=350, QWidget *parent=0);
 
 
-    Figure* figure() const;
+    virtual Figure *addFigure(const QString &name,
+                              int initRow=-1, int endRow=-1,
+                              int initCol=-1, int endCol=-1);
 
-    XYScale* xyScale(const QString &name="xy-scale");
+    Figure* figure(const QString &name);
 
-    XYPlot* xyPlot(const QString &name,
-                   const Array<1> &x, const Array<1> &y,
-                   XYPlot::Symbol symbol=XYPlot::Line,
-                   const QColor &stroke=Qt::blue,
-                   const QColor &fill=Qt::green,
-                   const QString &scaleName="xy-scale");
+    Figure* figure(int index) const;
 
-    XYPlot* xyPlot(const QString &name) const;
-
-    QHash<QString,XYScale*> xyScalesHash() const;
-
-    QHash<QString,XYPlot*> xyPlotsHash() const;
+    QList<Figure*> figureList() const;
 
 
 public slots:

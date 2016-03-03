@@ -54,11 +54,9 @@ ChartWindow::ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
     m->toolBar->addSeparator();
 
     // chartArea
-    m->chartArea = new _ChartArea(QSize(width, height), this);
-    m->layout->addWidget(m->chartArea, 1);
-
-    // Set up figure
-    m->chartArea->figure = new Figure(title, this);
+    m->figureArea = new FigureWidget(this);
+    m->figureArea->setSizeHint(QSize(width, height));
+    m->layout->addWidget(m->figureArea, 1);
 
     // Set up status bar
     m->statusBar = new QStatusBar(this);
@@ -66,120 +64,83 @@ ChartWindow::ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
     m->statusBar->showMessage("Ready!", 4000);
 }
 
+
 ChartWindow::ChartWindow(const QString &title,
                          int width, int height, QWidget *parent)
     : ChartWindow(new ChartWindowPrivate(this), title, width, height, parent)
 { }
 
-ChartWindowPrivate::~ChartWindowPrivate() {
-    // Clean all up
-    for (auto scale : xyScales)
-        delete scale;
-    for (auto plot : xyPlots)
-        delete plot;
+
+Figure* ChartWindow::addFigure(const QString &name,
+                               int initRow, int endRow,
+                               int initCol, int endCol)
+{
+    KSL_PUBLIC(ChartWindow);
+
+    Figure *figure = new Figure(name,this);
+    m->figures.append(figure);
+
+    // Automatically position up to
+    // 6 figures
+    if (initRow == -1) {
+        if (m->figures.size() == 1)
+            m->figureArea->add(
+                figure, 0, 0, 0, 0);
+        if (m->figures.size() == 2)
+            m->figureArea->add(
+                figure, 1, 1, 0, 0);
+        if (m->figures.size() == 3)
+            m->figureArea->add(
+                figure, 0, 0, 1, 1);
+        if (m->figures.size() == 4)
+            m->figureArea->add(
+                figure, 1, 1, 1, 1);
+        if (m->figures.size() == 5)
+            m->figureArea->add(
+                figure, 2, 2, 0, 0);
+        if (m->figures.size() == 6)
+            m->figureArea->add(
+                figure, 2, 2, 1, 1);
+    }
+    else {
+        m->figureArea->add(
+            figure, initRow, endRow,
+            initCol, endCol);
+    }
+    return figure;
 }
 
-Figure* ChartWindow::figure() const {
-    KSL_PUBLIC(ChartWindow);
-    return m->chartArea->figure;
+
+Figure* ChartWindow::figure(const QString &name) {
+    KSL_PUBLIC(const ChartWindow);
+    for (auto fig : m->figures)
+        if (fig->name() == name)
+            return fig;
+    return addFigure(name);
 }
+
+
+Figure* ChartWindow::figure(int index) const {
+    KSL_PUBLIC(const ChartWindow);
+    return m->figures[index];
+}
+
+
+QList<Figure*> ChartWindow::figureList() const {
+    KSL_PUBLIC(const ChartWindow);
+    return m->figures;
+}
+
 
 void ChartWindow::save() {
     KSL_PUBLIC(ChartWindow);
-    QString filePath = QFileDialog::getSaveFileName(
-        this, tr("Chose a file name"), QDir::homePath(), tr("PNG files (*.png)"));
-    if (filePath.isEmpty())
-        return;
-    if (!filePath.endsWith(".png", Qt::CaseInsensitive))
-        filePath.append(".png");
-    m->chartArea->figure->save(
-        filePath, m->chartArea->size());
+    m->figureArea->save();
 }
 
-XYScale* ChartWindow::xyScale(const QString &name) {
-    KSL_PUBLIC(ChartWindow);
-
-    if (m->xyScales.contains(name))
-        return m->xyScales[name];
-
-    auto newScale = new XYScale(name);
-    m->xyScales[name] = newScale;
-    m->chartArea->figure->add(newScale);
-    return newScale;
-}
-
-Ksl::XYPlot* ChartWindow::xyPlot(const QString &name,
-                                 const Array<1> &x, const Array<1> &y,
-                                 XYPlot::Symbol symbol,
-                                 const QColor &stroke,
-                                 const QColor &fill,
-                                 const QString &scaleName)
-{
-    KSL_PUBLIC(ChartWindow);
-    if (!m->xyPlots.contains(name)) {
-        auto plot = new XYPlot(x, y, symbol, name, stroke, fill);
-        m->xyPlots[name] = plot;
-        xyScale(scaleName)->add(plot);
-        return plot;
-    }
-    return nullptr;
-}
-
-XYPlot* ChartWindow::xyPlot(const QString &name) const {
-    KSL_PUBLIC(ChartWindow);
-    if (m->xyPlots.contains(name))
-        return m->xyPlots[name];
-    return nullptr;
-}
 
 void ChartWindow::showStatusMessage(const QString &message, int milisecs) {
     KSL_PUBLIC(ChartWindow);
     m->statusBar->showMessage(message, milisecs);
-}
-
-QHash<QString,XYScale*> ChartWindow::xyScalesHash() const {
-    KSL_PUBLIC(ChartWindow);
-    return m->xyScales;
-}
-
-QHash<QString,XYPlot*> ChartWindow::xyPlotsHash() const {
-    KSL_PUBLIC(ChartWindow);
-    return m->xyPlots;
-}
-
-_ChartArea::_ChartArea(const QSize defaultSize, QWidget *parent)
-    : QWidget(parent)
-{
-    this->defaultSize = defaultSize;
-    this->window = static_cast<ChartWindow*>(parent);
-    resize(defaultSize);
-    setMinimumSize(200, 200);
-    setAutoFillBackground(false);
-    setMouseTracking(true);
-}
-
-QSize _ChartArea::sizeHint() const {
-    return defaultSize;
-}
-
-void _ChartArea::paintEvent(QPaintEvent *event) {
-    Q_UNUSED(event)
-    painter.begin(this);
-    figure->paint(rect(), &painter);
-    painter.end();
-}
-
-void _ChartArea::mouseMoveEvent(QMouseEvent *event) {
-    Q_UNUSED(event)
-    auto scale = window->xyScale();
-
-    // Show position only if there is only one scale
-    // to avoid ambiguity
-    if (scale && window->xyScalesHash().size() == 1) {
-        QPointF p = scale->unmap(event->pos());
-        window->showStatusMessage(QString("X = %1, Y = %2")
-            .arg(p.x(), 0, 'f', 2).arg(p.y(), 0, 'f', 2), 3000);
-    }
 }
 
 } // namespace Ksl

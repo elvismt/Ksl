@@ -52,6 +52,8 @@ public slots:
 
     virtual void save();
 
+    void setSizeHint(const QSize &sizeHint);
+
 
 protected:
 

@@ -73,7 +73,13 @@ QList<Figure*> FigureWidget::figureList() const {
 }
 
 QSize FigureWidget::sizeHint() const {
-    return QSize(500, 350);
+    KSL_PUBLIC(const FigureWidget);
+    return m->sizeHint;
+}
+
+void FigureWidget::setSizeHint(const QSize &sizeHint) {
+    KSL_PUBLIC(FigureWidget);
+    m->sizeHint = sizeHint;
 }
 
 void FigureWidget::paintEvent(QPaintEvent *event) {
