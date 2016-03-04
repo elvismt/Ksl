@@ -30,6 +30,7 @@ int main(int argc, char *argv[]) {
     // plot data and fitting line
     chart.xyPlot("Data", vx, vy, XYPlot::Circles, Qt::black, Qt::green);
     chart.xyPlot("Fitted line", vx, vr, XYPlot::Line, Qt::blue);
+    chart.textLabel("KSL Rocks!", QPointF(30,150), Qt::red, 33.0);
 
     chart.show();
     return app.exec();

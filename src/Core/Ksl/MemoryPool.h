@@ -24,7 +24,7 @@
 #include <Ksl/Object.h>
 #include <cstdint>
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
 class KSL_EXPORT MemoryPool
     : public Ksl::Object
@@ -60,6 +60,6 @@ public:
     }
 };
 
-KSL_END_NAMESPACE
+} // namespace Ksl
 
 #endif // KSL_MEMORYPOOL_H

@@ -25,6 +25,7 @@
 #include <Ksl/FigureWidget.h>
 #include <Ksl/XYScale.h>
 #include <Ksl/XYPlot.h>
+#include <Ksl/TextLabelPlot.h>
 
 namespace Ksl {
 
@@ -51,6 +52,10 @@ public:
                    const QString &scaleName="default-scale");
 
     XYPlot* xyPlot(const QString &name) const;
+
+    TextLabelPlot* textLabel(const QString &text, const QPointF &pos,
+                             const QColor &color=Qt::blue, float rotation=0.0,
+                             const QString &scaleName="default-scale");
 
 
 public slots:

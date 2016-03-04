@@ -138,6 +138,20 @@ XYPlot* ChartWindow::xyPlot(const QString &name) const {
 }
 
 
+TextLabelPlot* ChartWindow::textLabel(const QString &text, const QPointF &pos,
+                                      const QColor &color, float rotation,
+                                      const QString &scaleName)
+{
+    auto item = xyScale(scaleName)->item(text);
+    if (!item) {
+        item = new TextLabelPlot(text, pos, QPen(color), rotation, this);
+        xyScale(scaleName)->add(item);
+        return static_cast<TextLabelPlot*>(item);
+    }
+    return nullptr;
+}
+
+
 void ChartWindow::save() {
     KSL_PUBLIC(ChartWindow);
     m->figureArea->save();

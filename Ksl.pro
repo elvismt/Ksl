@@ -27,6 +27,9 @@ HEADERS += \
     src/Core/Ksl/Math.h \
     src/Core/Ksl/Object.h \
     src/Core/Ksl/Object_p.h \
+    src/Core/Ksl/MemoryPool.h \
+    src/Core/Ksl/MemoryPool_p.h \
+    src/Core/Ksl/Graph.h \
     src/Plotting/Ksl/CanvasWindow.h \
     src/Plotting/Ksl/CanvasWindow_p.h \
     src/Plotting/Ksl/ChartWindow.h \
@@ -48,10 +51,13 @@ HEADERS += \
     src/Plotting/Ksl/XYScale.h \
     src/Plotting/Ksl/XYScale_p.h \
     src/Regression/Ksl/LinRegr.h \
-    src/Regression/Ksl/LinRegr_p.h
+    src/Regression/Ksl/LinRegr_p.h \
+    src/Plotting/Ksl/TextLabelPlot.h \
+    src/Plotting/Ksl/TextLabelPlot_p.h
 
 SOURCES += \
     tests/chart.cpp \
+    src/Core/Ksl/MemoryPool.cpp \
     src/Plotting/Ksl/CanvasWindow.cpp \
     src/Plotting/Ksl/ChartWindow.cpp \
     src/Plotting/Ksl/Figure.cpp \
@@ -62,7 +68,8 @@ SOURCES += \
     src/Plotting/Ksl/XYAxisSampler.cpp \
     src/Plotting/Ksl/XYPlot.cpp \
     src/Plotting/Ksl/XYScale.cpp \
-    src/Regression/Ksl/LinRegr.cpp
+    src/Regression/Ksl/LinRegr.cpp \
+    src/Plotting/Ksl/TextLabelPlot.cpp
 
 RESOURCES += \
     src/QRC/Icons.qrc

@@ -84,7 +84,7 @@ void FigureWidget::save() {
     if (!filePath.endsWith(".png", Qt::CaseInsensitive))
         filePath.append(".png");
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
-    QPixmap pixmap = m->canvasArea->grab();
+    QPixmap pixmap = this->grab();
 #else
     QPixmap pixmap = QPixmap::grabWidget(this);
 #endif
@@ -102,6 +102,11 @@ void FigureWidget::mousePressEvent(QMouseEvent *event) {
                 m->mouseMoveP1 = event->pos();
                 m->mouseMoveP2 = event->pos();
                 m->mousePressed = true;
+            }
+            else if (event->button() == Qt::RightButton) {
+                for (auto scale : m->figure->scaleList())
+                    scale->rescale();
+                update();
             }
         }
     }
@@ -132,6 +137,7 @@ void FigureWidget::mouseMoveEvent(QMouseEvent *event) {
 
 void FigureWidget::mouseReleaseEvent(QMouseEvent *event) {
     KSL_PUBLIC(FigureWidget);
+    Q_UNUSED(event)
     if (m->mousePressed && m->mouseOperation == Zooming) {
         m->mouseMoveP2 = event->pos();
         for (auto scale : m->figure->scaleList()) {
@@ -163,16 +169,6 @@ void FigureWidget::mouseReleaseEvent(QMouseEvent *event) {
         update();
     }
     m->mousePressed = false;
-}
-
-
-void FigureWidget::mouseDoubleClickEvent(QMouseEvent * event) {
-    KSL_PUBLIC(FigureWidget);
-    Q_UNUSED(event)
-
-    for (auto scale : m->figure->scaleList())
-        scale->rescale();
-    update();
 }
 
 

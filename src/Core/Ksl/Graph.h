@@ -23,7 +23,7 @@
 
 #include <Ksl/MemoryPool.h>
 
-KSL_BEGIN_NAMESPACE
+namespace Ksl {
 
 // Forward declaration
 template <typename VertData, typename EdgeData> class GraphEdge;
@@ -98,7 +98,7 @@ public:
     const TEdge *firstEdge() const { return m_edges; }
 
 
-    GraphVertex* find(const VertData &neighborData) {
+    GraphVertex* findNeighbor(const VertData &neighborData) {
         auto edge = m_edges;
         while (edge != nullptr) {
             if (edge->target()->data() == neighborData)
@@ -108,7 +108,7 @@ public:
         return nullptr;
     }
 
-    GraphVertex* findByEdge(const EdgeData &edgeData) {
+    GraphVertex* findNeighborByEdge(const EdgeData &edgeData) {
         auto edge = m_edges;
         while (edge != nullptr) {
             if (edge->data() == edgeData)
@@ -168,6 +168,6 @@ private:
 };
 
 
-KSL_END_NAMESPACE
+} // namespace Ksl
 
 #endif // KSL_GRAPH_H

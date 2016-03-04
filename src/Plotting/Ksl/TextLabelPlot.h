@@ -18,31 +18,31 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_MEMORYPOOL_P_H
-#define KSL_MEMORYPOOL_P_H
+#ifndef KSL_TEXTLABELPLOT_H
+#define KSL_TEXTLABELPLOT_H
 
-#include <Ksl/MemoryPool.h>
+#include <Ksl/FigureItem.h>
+#include <QPen>
 
 namespace Ksl {
 
-class MemoryPoolPrivate
-    : public Ksl::ObjectPrivate
+class KSL_EXPORT TextLabelPlot
+    : public FigureItem
 {
 public:
 
-    MemoryPoolPrivate(MemoryPool *publ)
-        : Ksl::ObjectPrivate(publ)
-    { }
+    TextLabelPlot(const QString &text, const QPointF &pos,
+                  const QPen &pen=QPen(Qt::blue), float rotation=0,
+                  QObject *parent=0);
+
+    void setPen(const QPen &pen);
 
 
-    uint64_t unitSize;
-    uint32_t numUnits;
-    uint32_t unitsUsed;
-    char **units;
-    char *currUnit;
-    char *pos;
+protected:
+
+    virtual void paint(QPainter *painter);
 };
 
 } // namespace Ksl
 
-#endif // KSL_MEMORYPOOL_P_H
+#endif // KSL_TEXTLABELPLOT_H
