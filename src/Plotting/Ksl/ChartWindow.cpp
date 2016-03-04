@@ -153,26 +153,32 @@ void ChartWindow::showStatusMessage(const QString &message, int milisecs) {
 void ChartWindow::toggleTranslation(bool activate) {
     KSL_PUBLIC(ChartWindow);
     Q_UNUSED(activate)
-    if (activate)
+    if (activate) {
         m->figureArea->setMouseOperation(
             FigureWidget::Translation);
-    else
-        m->figureArea->setMouseOperation(
-            FigureWidget::NoMouseOperation);
-    m->zoomingAction->setChecked(false);
+        if (m->zoomingAction->isChecked())
+            m->zoomingAction->setChecked(false);
+    } else {
+        if (!m->zoomingAction->isChecked())
+            m->figureArea->setMouseOperation(
+                FigureWidget::NoMouseOperation);
+    }
 }
 
 
 void ChartWindow::toggleZooming(bool activate) {
     KSL_PUBLIC(ChartWindow);
     Q_UNUSED(activate)
-    if (activate)
+    if (activate) {
         m->figureArea->setMouseOperation(
             FigureWidget::Zooming);
-    else
-        m->figureArea->setMouseOperation(
-            FigureWidget::NoMouseOperation);
-    m->translationAction->setChecked(false);
+        if (m->translationAction->isChecked())
+            m->translationAction->setChecked(false);
+    } else {
+        if (!m->translationAction->isChecked())
+            m->figureArea->setMouseOperation(
+                FigureWidget::NoMouseOperation);
+    }
 }
 
 } // namespace Ksl

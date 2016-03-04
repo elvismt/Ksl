@@ -94,7 +94,9 @@ void FigureWidget::save() {
 
 void FigureWidget::mousePressEvent(QMouseEvent *event) {
     KSL_PUBLIC(FigureWidget);
-    if (m->mouseOperation == Zooming) {
+    if (m->mouseOperation == Zooming ||
+        m->mouseOperation == Translation)
+    {
         if (!m->figure->scaleList().isEmpty()) {
             if (event->button() == Qt::LeftButton) {
                 m->mouseMoveP1 = event->pos();
@@ -108,10 +110,21 @@ void FigureWidget::mousePressEvent(QMouseEvent *event) {
 
 void FigureWidget::mouseMoveEvent(QMouseEvent *event) {
     KSL_PUBLIC(FigureWidget);
-
-    if (m->mouseOperation == Zooming) {
-        if (m->mousePressed)
-            m->mouseMoveP2 = event->pos();
+    if (m->mousePressed && m->mouseOperation == Zooming) {
+        m->mouseMoveP2 = event->pos();
+        update();
+    }
+    if (m->mousePressed && m->mouseOperation == Translation) {
+        m->mouseMoveP2 = event->pos();
+        for (auto scale : m->figure->scaleList()) {
+            // Get drag ends in data space
+            QPointF p1 = scale->unmap(m->mouseMoveP1);
+            QPointF p2 = scale->unmap(m->mouseMoveP2);
+            m->mouseMoveP1 = m->mouseMoveP2;
+            QRectF dataRect = scale->dataRect();
+            dataRect.translate(p1-p2);
+            scale->trackRect(dataRect);
+        }
         update();
     }
 }
@@ -119,40 +132,37 @@ void FigureWidget::mouseMoveEvent(QMouseEvent *event) {
 
 void FigureWidget::mouseReleaseEvent(QMouseEvent *event) {
     KSL_PUBLIC(FigureWidget);
+    if (m->mousePressed && m->mouseOperation == Zooming) {
+        m->mouseMoveP2 = event->pos();
+        for (auto scale : m->figure->scaleList()) {
+            // Only change viewport if the drag was at least
+            // 4 points wide
+            QPoint move = m->mouseMoveP2 - m->mouseMoveP1;
+            if ((Math::pow2(move.x()) + Math::pow2(move.y())) < 16)
+                continue;
 
-    if (m->mouseOperation == Zooming) {
-        if (m->mousePressed) {
-            m->mousePressed = false;
-            m->mouseMoveP2 = event->pos();
-            for (auto scale : m->figure->scaleList()) {
-                // Only change viewport if the drag was at least
-                // 4 points wide
-                QPoint move = m->mouseMoveP2 - m->mouseMoveP1;
-                if ((Math::pow2(move.x()) + Math::pow2(move.y())) < 16)
-                    continue;
+            // Get drag ends in data space
+            QPointF p1 = scale->unmap(m->mouseMoveP1);
+            QPointF p2 = scale->unmap(m->mouseMoveP2);
 
-                // Get drag ends in data space
-                QPointF p1 = scale->unmap(m->mouseMoveP1);
-                QPointF p2 = scale->unmap(m->mouseMoveP2);
-
-                if (p1.x() > p2.x()) {
-                    double tmp = p1.x();
-                    p1.setX(p2.x());
-                    p2.setX(tmp);
-                }
-                if (p1.y() > p2.y()) {
-                    double tmp = p1.y();
-                    p1.setY(p2.y());
-                    p2.setY(tmp);
-                }
-                scale->trackRect(
-                    QRectF(p1.x(), p1.y(),
-                           p2.x() - p1.x(),
-                           p2.y() - p1.y()));
+            if (p1.x() > p2.x()) {
+                double tmp = p1.x();
+                p1.setX(p2.x());
+                p2.setX(tmp);
             }
-            update();
+            if (p1.y() > p2.y()) {
+                double tmp = p1.y();
+                p1.setY(p2.y());
+                p2.setY(tmp);
+            }
+            scale->trackRect(
+                QRectF(p1.x(), p1.y(),
+                       p2.x() - p1.x(),
+                       p2.y() - p1.y()));
         }
+        update();
     }
+    m->mousePressed = false;
 }
 
 
@@ -160,11 +170,9 @@ void FigureWidget::mouseDoubleClickEvent(QMouseEvent * event) {
     KSL_PUBLIC(FigureWidget);
     Q_UNUSED(event)
 
-    if (m->mouseOperation == Zooming) {
-        for (auto scale : m->figure->scaleList())
-            scale->rescale();
-        update();
-    }
+    for (auto scale : m->figure->scaleList())
+        scale->rescale();
+    update();
 }
 
 
