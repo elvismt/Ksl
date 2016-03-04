@@ -9,5 +9,6 @@
         <file>icons/document-save.png</file>
         <file>icons/move-translate.png</file>
         <file>icons/toggle-grid.png</file>
+        <file>icons/zoom-select.png</file>
     </qresource>
 </RCC>

@@ -39,12 +39,14 @@ public:
         : Ksl::ObjectPrivate(publ)
         , mouseRectPen(Qt::red)
         , sizeHint(500,350)
+        , mouseOperation(FigureWidget::Zooming)
         , mousePressed(false)
     { }
 
 
     QPen mouseRectPen;
     QSize sizeHint;
+    FigureWidget::MouseOperation mouseOperation;
     bool mousePressed;
     QPoint mouseMoveP1;
     QPoint mouseMoveP2;

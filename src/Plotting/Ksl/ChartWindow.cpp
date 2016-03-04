@@ -54,23 +54,23 @@ ChartWindow::ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
         QIcon(":/icons/icons/document-save.png"),
         tr("Export Image"), this, SLOT(save()));
     m->toolBar->addSeparator();
-
-    // TODO Add these action's functionality
-
-    QAction *action = m->toolBar->addAction(
+    m->translationAction = m->toolBar->addAction(
         QIcon(":/icons/icons/move-translate.png"),
         tr("Move viewport"));
-    action->setCheckable(true);
-    connect(action, SIGNAL(toggled(bool)),
+    m->translationAction->setCheckable(true);
+    connect(m->translationAction, SIGNAL(toggled(bool)),
             this, SLOT(toggleTranslation(bool)));
-    action = m->toolBar->addAction(
-        QIcon(":/icons/icons/toggle-grid.png"),
-        tr("Move viewport"));
-    action->setCheckable(true);
+    m->zoomingAction = m->toolBar->addAction(
+            QIcon(":/icons/icons/zoom-select.png"),
+            tr("Move viewport"));
+    m->zoomingAction->setCheckable(true);
+    connect(m->zoomingAction, SIGNAL(toggled(bool)),
+            this, SLOT(toggleZooming(bool)));
 
     // chartArea
     m->figureArea = new FigureWidget(this);
     m->figureArea->setSizeHint(QSize(width, height));
+    m->figureArea->setMouseOperation(FigureWidget::NoMouseOperation);
     m->layout->addWidget(m->figureArea, 1);
 
     // Set up status bar
@@ -150,37 +150,29 @@ void ChartWindow::showStatusMessage(const QString &message, int milisecs) {
 }
 
 
-void ChartWindow::mousePressEvent(QMouseEvent *event) {
-    KSL_PUBLIC(ChartWindow);
-    Q_UNUSED(event)
-    if ()
-    if (!m->figureArea->figure()->scaleList().isEmpty()) {
-        if (event->button() == Qt::LeftButton) {
-            QPoint figureOrigin = m->figureArea->mapToParent(QPoint(0,0));
-            m->onMouseMove = true;
-            m->mouseMoveP1 = event->pos() - figureOrigin;
-            m->mouseMoveP2 = event->pos() - figureOrigin;
-        }
-    }
-}
-
-
-void ChartWindow::mouseMoveEvent(QMouseEvent *event) {
-    Q_UNUSED(event)
-}
-
-
-void ChartWindow::mouseReleaseEvent(QMouseEvent *event) {
-    Q_UNUSED(event)
-}
-
-
 void ChartWindow::toggleTranslation(bool activate) {
     KSL_PUBLIC(ChartWindow);
+    Q_UNUSED(activate)
     if (activate)
-        m->mouseOperation = ChartWindowPrivate::Translate;
+        m->figureArea->setMouseOperation(
+            FigureWidget::Translation);
     else
-        m->mouseOperation = ChartWindowPrivate::NoAction;
+        m->figureArea->setMouseOperation(
+            FigureWidget::NoMouseOperation);
+    m->zoomingAction->setChecked(false);
+}
+
+
+void ChartWindow::toggleZooming(bool activate) {
+    KSL_PUBLIC(ChartWindow);
+    Q_UNUSED(activate)
+    if (activate)
+        m->figureArea->setMouseOperation(
+            FigureWidget::Zooming);
+    else
+        m->figureArea->setMouseOperation(
+            FigureWidget::NoMouseOperation);
+    m->translationAction->setChecked(false);
 }
 
 } // namespace Ksl

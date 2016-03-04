@@ -34,6 +34,13 @@ class KSL_EXPORT FigureWidget
 
 public:
 
+    enum MouseOperation {
+        NoMouseOperation  = 0,
+        Translation       = 1,
+        Zooming           = 2
+    };
+
+
     FigureWidget(QWidget *parent=0);
 
 
@@ -41,22 +48,26 @@ public:
 
     QSize sizeHint() const;
 
+    MouseOperation mouseOperation() const;
+
 
 public slots:
 
     virtual void save();
+
+    void setMouseOperation(MouseOperation mouseOperation);
 
     void setSizeHint(const QSize &sizeHint);
 
 
 protected:
 
+    FigureWidget(Ksl::ObjectPrivate *priv, QWidget *parent);
+
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void mouseDoubleClickEvent(QMouseEvent * event);
-
-    FigureWidget(Ksl::ObjectPrivate *priv, QWidget *parent);
 
     virtual void paintEvent(QPaintEvent *event);
 };

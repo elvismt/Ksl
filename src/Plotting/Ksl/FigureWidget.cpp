@@ -62,7 +62,8 @@ void FigureWidget::paintEvent(QPaintEvent *event) {
 
     m->figure->paint(rect(), &m->painter);
 
-    if (m->mousePressed) {
+    if (m->mouseOperation == Zooming && m->mousePressed)
+    {
         m->painter.setPen(m->mouseRectPen);
         m->painter.setBrush(Qt::NoBrush);
         m->painter.setRenderHint(QPainter::Antialiasing, false);
@@ -73,6 +74,7 @@ void FigureWidget::paintEvent(QPaintEvent *event) {
     }
     m->painter.end();
 }
+
 
 void FigureWidget::save() {
     QString filePath = QFileDialog::getSaveFileName(
@@ -92,11 +94,13 @@ void FigureWidget::save() {
 
 void FigureWidget::mousePressEvent(QMouseEvent *event) {
     KSL_PUBLIC(FigureWidget);
-    if (!m->figure->scaleList().isEmpty()) {
-        if (event->button() == Qt::LeftButton) {
-            m->mouseMoveP1 = event->pos();
-            m->mouseMoveP2 = event->pos();
-            m->mousePressed = true;
+    if (m->mouseOperation == Zooming) {
+        if (!m->figure->scaleList().isEmpty()) {
+            if (event->button() == Qt::LeftButton) {
+                m->mouseMoveP1 = event->pos();
+                m->mouseMoveP2 = event->pos();
+                m->mousePressed = true;
+            }
         }
     }
 }
@@ -104,8 +108,10 @@ void FigureWidget::mousePressEvent(QMouseEvent *event) {
 
 void FigureWidget::mouseMoveEvent(QMouseEvent *event) {
     KSL_PUBLIC(FigureWidget);
-    if (m->mousePressed) {
-        m->mouseMoveP2 = event->pos();
+
+    if (m->mouseOperation == Zooming) {
+        if (m->mousePressed)
+            m->mouseMoveP2 = event->pos();
         update();
     }
 }
@@ -114,36 +120,38 @@ void FigureWidget::mouseMoveEvent(QMouseEvent *event) {
 void FigureWidget::mouseReleaseEvent(QMouseEvent *event) {
     KSL_PUBLIC(FigureWidget);
 
-    if (m->mousePressed) {
-        m->mousePressed = false;
-        m->mouseMoveP2 = event->pos();
-        for (auto scale : m->figure->scaleList()) {
-            // Only change viewport if the drag was at least
-            // 4 points wide
-            QPoint move = m->mouseMoveP2 - m->mouseMoveP1;
-            if ((Math::pow2(move.x()) + Math::pow2(move.y())) < 16)
-                continue;
+    if (m->mouseOperation == Zooming) {
+        if (m->mousePressed) {
+            m->mousePressed = false;
+            m->mouseMoveP2 = event->pos();
+            for (auto scale : m->figure->scaleList()) {
+                // Only change viewport if the drag was at least
+                // 4 points wide
+                QPoint move = m->mouseMoveP2 - m->mouseMoveP1;
+                if ((Math::pow2(move.x()) + Math::pow2(move.y())) < 16)
+                    continue;
 
-            // Get drag ends in data space
-            QPointF p1 = scale->unmap(m->mouseMoveP1);
-            QPointF p2 = scale->unmap(m->mouseMoveP2);
+                // Get drag ends in data space
+                QPointF p1 = scale->unmap(m->mouseMoveP1);
+                QPointF p2 = scale->unmap(m->mouseMoveP2);
 
-            if (p1.x() > p2.x()) {
-                double tmp = p1.x();
-                p1.setX(p2.x());
-                p2.setX(tmp);
+                if (p1.x() > p2.x()) {
+                    double tmp = p1.x();
+                    p1.setX(p2.x());
+                    p2.setX(tmp);
+                }
+                if (p1.y() > p2.y()) {
+                    double tmp = p1.y();
+                    p1.setY(p2.y());
+                    p2.setY(tmp);
+                }
+                scale->trackRect(
+                    QRectF(p1.x(), p1.y(),
+                           p2.x() - p1.x(),
+                           p2.y() - p1.y()));
             }
-            if (p1.y() > p2.y()) {
-                double tmp = p1.y();
-                p1.setY(p2.y());
-                p2.setY(tmp);
-            }
-            scale->trackRect(
-                QRectF(p1.x(), p1.y(),
-                       p2.x() - p1.x(),
-                       p2.y() - p1.y()));
+            update();
         }
-        update();
     }
 }
 
@@ -151,9 +159,24 @@ void FigureWidget::mouseReleaseEvent(QMouseEvent *event) {
 void FigureWidget::mouseDoubleClickEvent(QMouseEvent * event) {
     KSL_PUBLIC(FigureWidget);
     Q_UNUSED(event)
-    for (auto scale : m->figure->scaleList())
-        scale->rescale();
-    update();
+
+    if (m->mouseOperation == Zooming) {
+        for (auto scale : m->figure->scaleList())
+            scale->rescale();
+        update();
+    }
+}
+
+
+FigureWidget::MouseOperation FigureWidget::mouseOperation() const {
+    KSL_PUBLIC(const FigureWidget);
+    return m->mouseOperation;
+}
+
+
+void FigureWidget::setMouseOperation(MouseOperation mouseOperation) {
+    KSL_PUBLIC(FigureWidget);
+    m->mouseOperation = mouseOperation;
 }
 
 } // namespace Ksl
