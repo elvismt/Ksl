@@ -10,18 +10,13 @@ lessThan(QT_MAJOR_VERSION, 5) {
 }
 
 DEPENDPATH += \
-    . \
     tests \
-    build/src \
-    build/tests \
     src/QRC \
     src/Core/Ksl \
     src/Plotting/Ksl \
     src/Regression/Ksl
 
 INCLUDEPATH += \
-    . \
-    build/src \
     src/Core \
     src/Plotting \
     src/Regression
@@ -56,7 +51,7 @@ HEADERS += \
     src/Regression/Ksl/LinRegr_p.h
 
 SOURCES += \
-    tests/dev.cpp \
+    tests/chart.cpp \
     src/Plotting/Ksl/CanvasWindow.cpp \
     src/Plotting/Ksl/ChartWindow.cpp \
     src/Plotting/Ksl/Figure.cpp \

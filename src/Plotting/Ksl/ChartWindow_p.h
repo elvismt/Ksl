@@ -45,12 +45,17 @@ public:
     ChartWindowPrivate(ChartWindow *publ)
         : Ksl::ObjectPrivate(publ)
         , mouseOperation(NoAction)
+        , onMouseMove(false)
     { }
 
     ~ChartWindowPrivate();
 
 
     MouseOperation mouseOperation;
+    bool onMouseMove;
+    QPoint mouseMoveP1;
+    QPoint mouseMoveP2;
+
     QVBoxLayout *layout;
     FigureWidget *figureArea;
     QToolBar *toolBar;

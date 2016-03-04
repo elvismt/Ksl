@@ -151,7 +151,17 @@ void ChartWindow::showStatusMessage(const QString &message, int milisecs) {
 
 
 void ChartWindow::mousePressEvent(QMouseEvent *event) {
+    KSL_PUBLIC(ChartWindow);
     Q_UNUSED(event)
+    if ()
+    if (!m->figureArea->figure()->scaleList().isEmpty()) {
+        if (event->button() == Qt::LeftButton) {
+            QPoint figureOrigin = m->figureArea->mapToParent(QPoint(0,0));
+            m->onMouseMove = true;
+            m->mouseMoveP1 = event->pos() - figureOrigin;
+            m->mouseMoveP2 = event->pos() - figureOrigin;
+        }
+    }
 }
 
 
