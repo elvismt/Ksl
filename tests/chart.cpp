@@ -1,34 +1,30 @@
 
 #include <QApplication>
 #include <Ksl/ChartWindow.h>
-#include <Ksl/LinRegr.h>
-#include <iostream>
+#include <QFile>
+#include <QTextStream>
 
-using namespace std;
 using namespace Ksl;
+
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    ChartWindow chart("Linear Regression");
+    ChartWindow chart("X-Ray Diffraction Data");
 
-    // emulate noisy data
-    auto vx = linspace(0.0, 100.0);
-    auto vy = vx * 2.3;
-    vy += 20.0;
-    for (auto &y : vy)
-        y += -25.0 + 50.0*double(rand())/RAND_MAX;
+    QFile file("diffraction.dat");
+    QTextStream stream(&file);
+    Array<1> x(8501), y(8501);
 
-    // create solver and perform regression
-    LinRegr regr(vx, vy);
-    regr.solve();
+    file.open(QIODevice::Text|QIODevice::ReadOnly);
+    for (uint k=0; k<x.size(); ++k)
+        stream >> x[k] >> y[k];
+    file.close();
 
-    // plot data and fitting line
-    chart.xyPlot("Data", vx, vy, XYPlot::Circles, Qt::black, Qt::green);
-    // plot fitting line
-    chart.line("Fitted line", regr.result()[0], regr.result()[1], QPen(Qt::red));
-    // plot a fancy text label
-    chart.textLabel("KSL Rocks!", QPointF(30,150), Qt::red, 32.0);
+    // normalize to y_max = 1.0
+    y /= max(y);
 
+    chart.xyPlot("X-Ray diffraction", x, y);
     chart.show();
+
     return app.exec();
 }
