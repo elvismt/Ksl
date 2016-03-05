@@ -18,6 +18,17 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the public Ksl API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed. Do not include it
+//
+// We mean it.
+//
+
 #ifndef KSL_XYSCALE_P_H
 #define KSL_XYSCALE_P_H
 
