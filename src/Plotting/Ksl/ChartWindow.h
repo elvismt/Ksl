@@ -26,6 +26,7 @@
 #include <Ksl/XYScale.h>
 #include <Ksl/XYPlot.h>
 #include <Ksl/TextLabelPlot.h>
+#include <Ksl/LinePlot.h>
 
 namespace Ksl {
 
@@ -56,6 +57,10 @@ public:
     TextLabelPlot* textLabel(const QString &text, const QPointF &pos,
                              const QColor &color=Qt::blue, float rotation=0.0,
                              const QString &scaleName="default-scale");
+
+    LinePlot* line(const QString &name, double a, double b,
+                   const QPen &pen=QPen(Qt::red),
+                   const QString &scaleName="default-scale");
 
 
 public slots:

@@ -152,6 +152,19 @@ TextLabelPlot* ChartWindow::textLabel(const QString &text, const QPointF &pos,
 }
 
 
+LinePlot* ChartWindow::line(const QString &name, double a, double b,
+                            const QPen &pen, const QString &scaleName)
+{
+    auto item = xyScale(scaleName)->item(name);
+    if (!item) {
+        item = new LinePlot(a, b, pen, name, this);
+        xyScale(scaleName)->add(item);
+        return static_cast<LinePlot*>(item);
+    }
+    return nullptr;
+}
+
+
 void ChartWindow::save() {
     KSL_PUBLIC(ChartWindow);
     m->figureArea->save();

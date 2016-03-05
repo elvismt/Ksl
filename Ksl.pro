@@ -53,7 +53,9 @@ HEADERS += \
     src/Regression/Ksl/LinRegr.h \
     src/Regression/Ksl/LinRegr_p.h \
     src/Plotting/Ksl/TextLabelPlot.h \
-    src/Plotting/Ksl/TextLabelPlot_p.h
+    src/Plotting/Ksl/TextLabelPlot_p.h \
+    src/Plotting/Ksl/LinePlot.h \
+    src/Plotting/Ksl/LinePlot_p.h
 
 SOURCES += \
     tests/chart.cpp \
@@ -69,7 +71,8 @@ SOURCES += \
     src/Plotting/Ksl/XYPlot.cpp \
     src/Plotting/Ksl/XYScale.cpp \
     src/Regression/Ksl/LinRegr.cpp \
-    src/Plotting/Ksl/TextLabelPlot.cpp
+    src/Plotting/Ksl/TextLabelPlot.cpp \
+    src/Plotting/Ksl/LinePlot.cpp
 
 RESOURCES += \
     src/QRC/Icons.qrc

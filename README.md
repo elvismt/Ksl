@@ -101,14 +101,12 @@ numerical data
         LinRegr regr(vx, vy);
         regr.solve();
         
-        // construct array with the fitting line
-        auto result = regr.result();
-        auto vr = vx * result[1];
-        vr += result[0];
-        
         // plot data and fitting line
         chart.xyPlot("Data", vx, vy, XYPlot::Circles, Qt::black, Qt::green);
-        chart.xyPlot("Fitted line", vx, vr, XYPlot::Line, Qt::blue);
+        // plot fitting line
+        chart.line("Fitted line", regr.result()[0], regr.result()[1], QPen(Qt::red));
+        // plot a fancy text label
+        chart.textLabel("KSL Rocks!", QPointF(30,150), Qt::red, 32.0);
         
         chart.show();
         return app.exec();
