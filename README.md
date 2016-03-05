@@ -145,12 +145,14 @@ Code:
         // normalize to y_max = 1.0
         y /= max(y);
         
+        // In Qt4 use always QString::fromUtf8()
+        chart.xyScale()->axis(XYScale::BottomAxis)->setName(QString::fromUtf8("2Θ (degrees)"));
+        chart.xyScale()->axis(XYScale::LeftAxis)->setName("Intensity (normalized)");
         chart.xyPlot("X-Ray diffraction", x, y);
         chart.show();
         
         return app.exec();
     }
-
 
 If you are looking for a C/Gtk solution for 2D visualization. Take a look
 at [slope](https://github.com/elvismt/slope)
