@@ -51,6 +51,7 @@ public:
     QPoint mouseMoveP1;
     QPoint mouseMoveP2;
     Figure *figure;
+    FigureItem* selectedItem;
     QPainter painter;
 };
 

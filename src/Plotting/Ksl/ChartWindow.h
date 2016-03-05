@@ -70,6 +70,7 @@ public slots:
     void showStatusMessage(const QString &message, int milisecs);
 
     virtual void toggleTranslation(bool activate);
+
     virtual void toggleZooming(bool activate);
 
 

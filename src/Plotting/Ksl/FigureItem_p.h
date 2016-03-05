@@ -33,12 +33,14 @@ public:
     FigureItemPrivate(FigureItem *publ)
         : Ksl::ObjectPrivate(publ)
         , visible(true)
+        , selected(false)
         , rescalable(true)
         , figure(nullptr)
         , scale(nullptr)
     { }
 
     bool visible;
+    bool selected;
     bool rescalable;
     Figure *figure;
     FigureScale *scale;

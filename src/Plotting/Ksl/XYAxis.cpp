@@ -97,6 +97,11 @@ void XYAxis::paint(QPainter *painter) {
     painter->setRenderHint(QPainter::Antialiasing, false);
     painter->setPen(m->pen);
 
+    // for gui apps it is good to provide hability to
+    // visually mark the axis as selected
+    if (m->selected)
+        painter->fillRect(figureRect(), m->brush);
+
     m->setUpPaint();
     if (m->orientation == Qt::Horizontal)
         m->paintHorizontal(painter);
@@ -235,7 +240,10 @@ void XYAxisPrivate::setUpPaint() {
 
 void XYAxis::hideZero(bool hide) {
     KSL_PUBLIC(XYAxis);
-    m->hideZero = hide;
+    if (m->hideZero != hide) {
+        m->hideZero = hide;
+        emit appearenceChanged(this);
+    }
 }
 
 } // namespace Ksl

@@ -73,6 +73,8 @@ public:
 
     void setYbound(int yLowBund, int yUpBound);
 
+    FigureItem* selectAt(const QPoint &pos);
+
 protected:
 
     virtual void paint(const QRect &rect, QPainter *painter);

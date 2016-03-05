@@ -72,6 +72,8 @@ public:
 
     virtual QRect figureRect() const;
 
+    virtual FigureItem* selectAt(const QPoint &pos);
+
 
 protected:
 

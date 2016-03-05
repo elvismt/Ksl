@@ -137,4 +137,10 @@ void FigureScale::setFigure(Figure *figure) {
         item->setScale(this);
 }
 
+FigureItem* FigureScale::selectAt(const QPoint &pos) {
+    // pass
+    Q_UNUSED(pos)
+    return nullptr;
+}
+
 } // namespace Ksl 

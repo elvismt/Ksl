@@ -54,12 +54,16 @@ public:
 
     virtual QRect figureRect() const;
 
+    bool selected() const;
+
 
 public slots:
 
     void setName(const QString &name);
 
     void setVisible(bool visible);
+
+    void setSelected(bool selected);
 
 
 signals:

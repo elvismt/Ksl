@@ -50,6 +50,8 @@ public:
 
     MouseOperation mouseOperation() const;
 
+    FigureItem* selectedItem() const;
+
 
 public slots:
 
@@ -67,6 +69,7 @@ protected:
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
+    virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
     virtual void paintEvent(QPaintEvent *event);
 };

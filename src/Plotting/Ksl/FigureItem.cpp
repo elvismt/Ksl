@@ -110,4 +110,18 @@ void FigureItem::setScale(FigureScale *scale) {
     }
 }
 
+bool FigureItem::selected() const {
+    KSL_PUBLIC(const FigureItem);
+    return m->selected;
+}
+
+
+void FigureItem::setSelected(bool selected) {
+    KSL_PUBLIC(FigureItem);
+    if (m->selected != selected) {
+        m->selected = selected;
+        emit appearenceChanged(this);
+    }
+}
+
 } // namespace Ksl 

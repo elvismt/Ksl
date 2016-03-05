@@ -21,6 +21,7 @@
 #include <Ksl/XYScale_p.h>
 #include <Ksl/Figure.h>
 #include <Ksl/FigureItem.h>
+#include <QDebug>
 
 namespace Ksl {
 
@@ -278,6 +279,20 @@ void XYScale::showAxis(Axis axis) {
 void XYScale::autoChoseAxis() {
     KSL_PUBLIC(XYScale);
     m->choseAxis = true;
+}
+
+
+FigureItem* XYScale::selectAt(const QPoint &pos) {
+    KSL_PUBLIC(XYScale);
+    for (auto item : m->itemList) {
+        if (item->figureRect().contains(pos))
+            return item;
+    }
+    for (auto item : m->axisHash) {
+        if (item->figureRect().contains(pos))
+            return item;
+    }
+    return nullptr;
 }
 
 } // namespace Ksl

@@ -34,7 +34,7 @@ public:
     XYAxisPrivate(XYAxis *publ)
         : FigureItemPrivate(publ)
         , pen(Qt::black)
-        , brush(Qt::blue)
+        , brush(QColor(0,0,255,130))
         , components(XYAxis::Line|XYAxis::TicksDown)
         , hideZero(false)
     { }

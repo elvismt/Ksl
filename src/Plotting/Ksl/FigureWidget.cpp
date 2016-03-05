@@ -20,6 +20,7 @@
 
 #include <Ksl/FigureWidget_p.h>
 #include <Ksl/FigureScale.h>
+#include <Ksl/FigureItem.h>
 #include <Ksl/Math.h>
 
 namespace Ksl {
@@ -31,6 +32,8 @@ FigureWidget::FigureWidget(Ksl::ObjectPrivate *priv, QWidget *parent)
     KSL_PUBLIC(FigureWidget);
     m->mouseRectPen.setStyle(Qt::DashLine);
     m->figure = new Figure("Ksl", this);
+    m->selectedItem = nullptr;
+    connect(m->figure, SIGNAL(changed(Figure*)), this, SLOT(update()));
     setMinimumSize(200, 200);
     setAutoFillBackground(false);
     setMouseTracking(true);
@@ -137,7 +140,6 @@ void FigureWidget::mouseMoveEvent(QMouseEvent *event) {
 
 void FigureWidget::mouseReleaseEvent(QMouseEvent *event) {
     KSL_PUBLIC(FigureWidget);
-    Q_UNUSED(event)
     if (m->mousePressed && m->mouseOperation == Zooming) {
         m->mouseMoveP2 = event->pos();
         for (auto scale : m->figure->scaleList()) {
@@ -169,6 +171,24 @@ void FigureWidget::mouseReleaseEvent(QMouseEvent *event) {
         update();
     }
     m->mousePressed = false;
+}
+
+
+void FigureWidget::mouseDoubleClickEvent(QMouseEvent *event) {
+    KSL_PUBLIC(FigureWidget);
+    bool selectionChanged = false;
+    for (auto scale : m->figure->scaleList()) {
+        auto item = scale->selectAt(event->pos());
+        if (item) {
+            // Just toggle selection
+            selectionChanged = true;
+            bool select = !item->selected();
+            item->setSelected(select);
+            m->selectedItem = select ? item : nullptr;
+        }
+    }
+    if (selectionChanged)
+        update();
 }
 
 

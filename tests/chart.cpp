@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     // plot fitting line
     chart.line("Fitted line", regr.result()[0], regr.result()[1], QPen(Qt::red));
     // plot a fancy text label
-    chart.textLabel("KSL Rocks!", QPointF(30,150), Qt::red, 33.0);
+    chart.textLabel("KSL Rocks!", QPointF(30,150), Qt::red, 32.0);
 
     chart.show();
     return app.exec();
