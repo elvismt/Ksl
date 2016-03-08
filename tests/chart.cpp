@@ -1,33 +1,30 @@
 
 #include <QApplication>
 #include <Ksl/ChartWindow.h>
-#include <QFile>
-#include <QTextStream>
 
 using namespace Ksl;
 
 
+double wave1(double x) {
+    return sin(x) + 0.2*cos(5*x);
+}
+
+double wave2(double x) {
+    return cos(x) + 0.2*sin(5*x);
+}
+
+
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    ChartWindow chart("X-Ray Diffraction Data");
+    ChartWindow chart("Waves");
 
-    QFile file("diffraction.dat");
-    QTextStream stream(&file);
-    Array<1> x(8501), y(8501);
+    auto x = linspace(0.0, 4*M_PI, 0.1);
+    auto y1 = applied(wave1, x);
+    auto y2 = applied(wave2, x);
 
-    file.open(QIODevice::Text|QIODevice::ReadOnly);
-    for (uint k=0; k<x.size(); ++k)
-        stream >> x[k] >> y[k];
-    file.close();
+    chart.xyPlot("Wave1", x, y1, XYPlot::Line, Qt::red);
+    chart.xyPlot("Wave2", x, y2, XYPlot::Line, Qt::blue);
 
-    // normalize to y_max = 1.0
-    y /= max(y);
-
-    // In Qt4 use always QString::fromUtf8()
-    chart.xyScale()->axis(XYScale::BottomAxis)->setName(QString::fromUtf8("2Θ (degrees)"));
-    chart.xyScale()->axis(XYScale::LeftAxis)->setName("Intensity (normalized)");
-    chart.xyPlot("X-Ray diffraction", x, y);
     chart.show();
-
     return app.exec();
 }
