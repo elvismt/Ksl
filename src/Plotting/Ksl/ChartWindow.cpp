@@ -116,14 +116,15 @@ XYScale* ChartWindow::xyScale(const QString &name) {
 XYPlot* ChartWindow::xyPlot(const QString &name,
                             const Array<1> &x, const Array<1> &y,
                             XYPlot::Symbol symbol,
-                            const QColor &stroke, const QColor &fill,
+                            const QPen &pen,
+                            const QBrush &brush,
                             const QString &scaleName)
 {
     KSL_PUBLIC(ChartWindow);
     if (m->xyPlots.contains(name))
         return nullptr;
 
-    auto newPlot = new XYPlot(x, y, symbol, name, stroke, fill);
+    auto newPlot = new XYPlot(x, y, symbol, name, pen, brush);
     m->xyPlots[name] = newPlot;
     xyScale(scaleName)->add(newPlot);
     return newPlot;

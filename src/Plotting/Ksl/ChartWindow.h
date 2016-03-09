@@ -49,7 +49,8 @@ public:
     XYPlot* xyPlot(const QString &name,
                    const Array<1> &x, const Array<1> &y,
                    XYPlot::Symbol symbol=XYPlot::Line,
-                   const QColor &stroke=Qt::blue, const QColor &fill=Qt::red,
+                   const QPen &pen=QPen(Qt::blue),
+                   const QBrush &brush=QBrush(Qt::NoBrush),
                    const QString &scaleName="default-scale");
 
     XYPlot* xyPlot(const QString &name) const;

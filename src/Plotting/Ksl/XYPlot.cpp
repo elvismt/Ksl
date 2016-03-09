@@ -34,26 +34,30 @@ XYPlot::XYPlot(Ksl::ObjectPrivate *priv, const QString &name,
 
 XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
                const QString &name,
-               const QColor &stroke, const QColor &fill,
+               const QPen &pen,
+               const QBrush &brush,
                QObject *parent)
     : XYPlot(new XYPlotPrivate(this), name, Line, parent)
 {
     KSL_PUBLIC(XYPlot);
-    m->pen.setColor(stroke);
-    m->brush = QBrush(fill);
+    m->pen = pen;
+    m->pen.setWidth(2);
+    m->brush = brush;
     setData(x, y);
 }
 
 XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
                XYPlot::Symbol symbol,
                const QString &name,
-               const QColor &stroke, const QColor &fill,
+               const QPen &pen,
+               const QBrush &brush,
                QObject *parent)
     : XYPlot(new XYPlotPrivate(this), name, symbol, parent)
 {
     KSL_PUBLIC(XYPlot);
-    m->pen.setColor(stroke);
-    m->brush = QBrush(fill);
+    m->pen = pen;
+    m->pen.setWidth(2);
+    m->brush = brush;
     setData(x, y);
 }
 
