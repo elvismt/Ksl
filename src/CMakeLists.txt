@@ -10,6 +10,8 @@ set(Ksl_HDRS
     Plotting/Ksl/XYPlot.h
     Plotting/Ksl/XYAxis.h
     Plotting/Ksl/XYAxisSampler.h
+    Plotting/Ksl/LinePlot.h
+    Plotting/Ksl/TextLabelPlot.h
     Plotting/Ksl/CanvasWindow.h
     Plotting/Ksl/FigureWidget.h
     Plotting/Ksl/ChartWindow.h
@@ -24,6 +26,8 @@ set(Ksl_SRCS
     Plotting/Ksl/XYPlot.cpp
     Plotting/Ksl/XYAxis.cpp
     Plotting/Ksl/XYAxisSampler.cpp
+    Plotting/Ksl/LinePlot.cpp
+    Plotting/Ksl/TextLabelPlot.cpp
     Plotting/Ksl/CanvasWindow.cpp
     Plotting/Ksl/FigureWidget.cpp
     Plotting/Ksl/ChartWindow.cpp
