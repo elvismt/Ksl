@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     auto y2 = applied(wave2, x);
 
     chart.xyPlot("Wave1", x, y1, XYPlot::Line, QPen(Qt::green));
-    chart.xyPlot("Wave2", x, y2, XYPlot::Line, QPen(Qt::blue));
+    chart.xyPlot("Wave2", x, y2, XYPlot::Line|XYPlot::Circles, QPen(Qt::blue), QBrush(Qt::red));
 
     chart.show();
     return app.exec();

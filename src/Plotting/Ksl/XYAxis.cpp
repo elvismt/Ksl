@@ -31,7 +31,6 @@ XYAxis::XYAxis(Qt::Orientation orientation,
     m->rescalable = false;
     m->orientation = orientation;
     m->sampler = new XYAxisSampler();
-    m->pen.setWidth(2);
 }
 
 XYAxisPrivate::~XYAxisPrivate() {
