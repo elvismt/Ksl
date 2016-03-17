@@ -41,6 +41,7 @@ XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
 {
     KSL_PUBLIC(XYPlot);
     m->pen = pen;
+    m->pen.setWidthF(1.5);
     m->brush = brush;
     setData(x, y);
 }
@@ -55,6 +56,7 @@ XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
 {
     KSL_PUBLIC(XYPlot);
     m->pen = pen;
+    m->pen.setWidthF(1.5);
     m->brush = brush;
     setData(x, y);
 }

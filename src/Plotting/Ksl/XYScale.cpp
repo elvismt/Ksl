@@ -36,16 +36,14 @@ XYScale::XYScale(const QString &name)
         XYAxis::Line|XYAxis::TicksDown|XYAxis::MiddleTitle);
 
     m->axisHash[TopAxis] = new XYAxis(Qt::Horizontal, "KSL");
-    m->axisHash[TopAxis]->showComponents(
-        XYAxis::Line|XYAxis::TicksUp|XYAxis::MiddleTitle);
+    m->axisHash[TopAxis]->showComponents(XYAxis::Line);
 
     m->axisHash[LeftAxis] = new XYAxis(Qt::Vertical, "Y");
     m->axisHash[LeftAxis]->showComponents(
         XYAxis::Line|XYAxis::TicksDown|XYAxis::MiddleTitle);
 
     m->axisHash[RightAxis] = new XYAxis(Qt::Vertical, "");
-    m->axisHash[RightAxis]->showComponents(
-        XYAxis::Line|XYAxis::TicksUp|XYAxis::MiddleTitle);
+    m->axisHash[RightAxis]->showComponents(XYAxis::Line);
 
     m->axisHash[X_Axis] = new XYAxis(Qt::Horizontal, "X");
     m->axisHash[X_Axis]->showComponents(
@@ -65,8 +63,8 @@ XYScale::XYScale(const QString &name)
         axis->setScale(this);
 
     // Allocate space for axis on chart bounds
-    setXbound(70, 50);
-    setYbound(40, 40);
+    setXbound(75, 20);
+    setYbound(20, 40);
     rescale();
 }
 
@@ -80,6 +78,17 @@ XYAxis* XYScale::axis(Axis axis) {
     if (m->axisHash.contains(axis))
         return m->axisHash[axis];
     return nullptr;
+}
+
+
+QBrush XYScale::backBrush() const {
+    KSL_PUBLIC(const XYScale);
+    return m->backBrush;
+}
+
+void XYScale::setBackBrush(const QBrush &brush) {
+    KSL_PUBLIC(XYScale);
+    m->backBrush = brush;
 }
 
 QPoint XYScale::map(const QPointF &point) const {
@@ -194,10 +203,11 @@ void XYScale::paint(const QRect &rect, QPainter *painter) {
     m->figHeight = m->figYmax - m->figYmin;
 
     // Use base class meyhod to paint item
+    QRect innerRect(m->figXmin, m->figYmin,
+                    m->figWidth+1, m->figHeight+1);
     painter->save();
-    painter->setClipRect(
-        m->figXmin, m->figYmin,
-        m->figWidth+1, m->figHeight+1);
+    painter->setClipRect(innerRect);
+    painter->fillRect(innerRect, m->backBrush);
     FigureScale::paint(rect, painter);
     painter->restore();
 

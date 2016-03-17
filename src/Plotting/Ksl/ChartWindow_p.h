@@ -63,7 +63,6 @@ public:
     QVBoxLayout *layout;
     FigureWidget *figureArea;
     QToolBar *toolBar;
-    QStatusBar *statusBar;
     QHash<QString,XYScale*> xyScales;
     QHash<QString,XYPlot*> xyPlots;
 };

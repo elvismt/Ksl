@@ -45,7 +45,7 @@ public:
         : Ksl::ObjectPrivate(publ)
         , fillBack(true)
         , onError(false)
-        , backBrush(Qt::white)
+        , backBrush(Qt::lightGray)
     {
 #if defined(Q_OS_LINUX)
         font = QFont("SansSerif", 9);

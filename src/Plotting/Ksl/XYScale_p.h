@@ -48,6 +48,7 @@ public:
         , xLowBound(20), xUpBound(20)
         , yLowBound(20), yUpBound(20)
         , choseAxis(true)
+        , backBrush(QColor(Qt::white))
     { }
 
     ~XYScalePrivate();
@@ -60,6 +61,8 @@ public:
     int yLowBound, yUpBound;
 
     bool choseAxis;
+
+    QBrush backBrush;
 
     int figXmin, figXmax;
     int figYmin, figYmax;

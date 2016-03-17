@@ -72,11 +72,6 @@ ChartWindow::ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
     m->figureArea->setSizeHint(QSize(width, height));
     m->figureArea->setMouseOperation(FigureWidget::NoMouseOperation);
     m->layout->addWidget(m->figureArea, 1);
-
-    // Set up status bar
-    m->statusBar = new QStatusBar(this);
-    m->layout->addWidget(m->statusBar);
-    m->statusBar->showMessage("Ready!", 4000);
 }
 
 
@@ -169,12 +164,6 @@ LinePlot* ChartWindow::line(const QString &name, double a, double b,
 void ChartWindow::save() {
     KSL_PUBLIC(ChartWindow);
     m->figureArea->save();
-}
-
-
-void ChartWindow::showStatusMessage(const QString &message, int milisecs) {
-    KSL_PUBLIC(ChartWindow);
-    m->statusBar->showMessage(message, milisecs);
 }
 
 

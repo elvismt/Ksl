@@ -53,6 +53,10 @@ public:
 
     void autoChoseAxis();
 
+    QBrush backBrush() const;
+
+    void setBackBrush(const QBrush &brush);
+
     virtual QPoint map(const QPointF &point) const;
 
     virtual QPointF unmap(const QPoint &point) const;
