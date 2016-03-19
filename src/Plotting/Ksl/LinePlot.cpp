@@ -61,11 +61,17 @@ void LinePlot::paint(QPainter *painter) {
     KSL_PUBLIC(LinePlot);
 
     if (m->useParams) {
-        QRectF dataRect = m->scale->dataRect();
+        const QRectF dataRect = m->scale->dataRect();
+
         double x = dataRect.left();
-        m->p1 = QPointF(x, m->a + m->b*x);
+        double y = m->a + m->b*x;
+        m->p1.setX(x);
+        m->p1.setY(y);
+
         x = dataRect.right();
-        m->p2 = QPointF(x, m->a + m->b*x);
+        y = m->a + m->b*x;
+        m->p2.setX(x);
+        m->p2.setY(y);
     }
 
     QPoint figureP1 = m->scale->map(m->p1);

@@ -161,6 +161,20 @@ LinePlot* ChartWindow::line(const QString &name, double a, double b,
 }
 
 
+PolyPlot* ChartWindow::poly(const QString &name,
+               const Array<1> &a, double xMin, double xMax,
+               const QColor &color, const QString &scaleName)
+{
+    auto item = xyScale(scaleName)->item(name);
+    if (!item) {
+        item = new PolyPlot(a, color, xMin, xMax, name, this);
+        xyScale(scaleName)->add(item);
+        return static_cast<PolyPlot*>(item);
+    }
+    return nullptr;
+}
+
+
 void ChartWindow::save() {
     KSL_PUBLIC(ChartWindow);
     m->figureArea->save();

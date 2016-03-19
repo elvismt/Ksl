@@ -1,4 +1,7 @@
 #include <QApplication>
+#include <QFile>
+#include <QTextStream>
+
 #include <Ksl/ChartWindow.h>
 #include <Ksl/LinRegr.h>
 

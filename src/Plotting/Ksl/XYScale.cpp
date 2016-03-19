@@ -21,7 +21,6 @@
 #include <Ksl/XYScale_p.h>
 #include <Ksl/Figure.h>
 #include <Ksl/FigureItem.h>
-#include <QDebug>
 
 namespace Ksl {
 
@@ -128,8 +127,8 @@ void XYScale::rescale() {
     KSL_PUBLIC(XYScale);
 
     if (m->itemList.isEmpty()) {
-        setXrange(0.0, 1.0);
-        setYrange(0.0, 1.0);
+        setXrange(-1.0, 1.0);
+        setYrange(-1.0, 1.0);
         return;
     }
 

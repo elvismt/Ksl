@@ -27,6 +27,7 @@
 #include <Ksl/XYPlot.h>
 #include <Ksl/TextLabelPlot.h>
 #include <Ksl/LinePlot.h>
+#include <Ksl/PolyPlot.h>
 
 namespace Ksl {
 
@@ -61,6 +62,11 @@ public:
 
     LinePlot* line(const QString &name, double a, double b,
                    const QPen &pen=QPen(Qt::red),
+                   const QString &scaleName="default-scale");
+
+    PolyPlot* poly(const QString &name,
+                   const Array<1> &a, double xMin, double xMax,
+                   const QColor &color=Qt::red,
                    const QString &scaleName="default-scale");
 
 

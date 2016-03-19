@@ -55,10 +55,13 @@ HEADERS += \
     src/Plotting/Ksl/TextLabelPlot.h \
     src/Plotting/Ksl/TextLabelPlot_p.h \
     src/Plotting/Ksl/LinePlot.h \
-    src/Plotting/Ksl/LinePlot_p.h
+    src/Plotting/Ksl/LinePlot_p.h \
+    src/Core/Ksl/Functions.h \
+    src/Plotting/Ksl/PolyPlot.h \
+    src/Plotting/Ksl/PolyPlot_p.h
 
 SOURCES += \
-    tests/chart.cpp \
+    tests/devtest.cpp \
     src/Core/Ksl/MemoryPool.cpp \
     src/Plotting/Ksl/CanvasWindow.cpp \
     src/Plotting/Ksl/ChartWindow.cpp \
@@ -72,7 +75,8 @@ SOURCES += \
     src/Plotting/Ksl/XYScale.cpp \
     src/Regression/Ksl/LinRegr.cpp \
     src/Plotting/Ksl/TextLabelPlot.cpp \
-    src/Plotting/Ksl/LinePlot.cpp
+    src/Plotting/Ksl/LinePlot.cpp \
+    src/Plotting/Ksl/PolyPlot.cpp
 
 RESOURCES += \
     src/QRC/Icons.qrc
