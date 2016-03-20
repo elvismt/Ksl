@@ -24,27 +24,28 @@
 namespace Ksl {
 
 LinePlot::LinePlot(const QPointF &p1, const QPointF &p2,
-                   const QPen &pen, const QString &name,
+                   const QColor &color, const QString &name,
                    QObject *parent)
     : FigureItem(new LinePlotPrivate(this), name, parent)
 {
     KSL_PUBLIC(LinePlot);
     m->p1 = p1;
     m->p2 = p2;
-    m->pen = pen;
+    m->pen.setColor(color);
+    m->pen.setWidth(2);
     m->rescalable = false;
 }
 
 
 LinePlot::LinePlot(double x1, double y1, double x2, double y2,
-                   const QPen &pen, const QString &name,
+                   const QColor &color, const QString &name,
                    QObject *parent)
-    : LinePlot(QPointF(x1,y1),QPointF(x2,y2), pen, name, parent)
+    : LinePlot(QPointF(x1,y1),QPointF(x2,y2), color, name, parent)
 { }
 
 
 LinePlot::LinePlot(double linear, double angular,
-                   const QPen &pen, const QString &name,
+                   const QColor &color, const QString &name,
                    QObject *parent)
     : FigureItem(new LinePlotPrivate(this), name, parent)
 {
@@ -52,7 +53,8 @@ LinePlot::LinePlot(double linear, double angular,
     m->useParams = true;
     m->a = linear;
     m->b = angular;
-    m->pen = pen;
+    m->pen.setColor(color);
+    m->pen.setWidth(2);
     m->rescalable = false;
 }
 

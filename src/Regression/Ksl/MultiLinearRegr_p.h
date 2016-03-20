@@ -29,41 +29,45 @@
 // We mean it.
 //
 
-#ifndef KSL_POLYPLOT_P_H
-#define KSL_POLYPLOT_P_H
+#ifndef KSL_MULTILINEARREGR_P_H
+#define KSL_MULTILINEARREGR_P_H
 
-#include <Ksl/PolyPlot.h>
-#include <Ksl/FigureItem_p.h>
+#include <Ksl/MultiLinearRegr.h>
+#include <gsl/gsl_multifit.h>
+
 
 namespace Ksl {
 
-class PolyPlotPrivate
-    : public FigureItemPrivate
+class MultiLinearRegrPrivate
+    : public ObjectPrivate
 {
 public:
 
-    PolyPlotPrivate(PolyPlot *publ)
-        : FigureItemPrivate(publ)
-        , antialias(true)
-        , pointCount(50)
+    MultiLinearRegrPrivate(MultiLinearRegr *publ)
+        : ObjectPrivate(publ)
+        , valid(false)
     { }
 
+    ~MultiLinearRegrPrivate();
 
-    void updateData();
 
+    bool valid;
 
-    bool antialias;
-    uint32_t pointCount;
-
-    QPen pen;
+    size_t N, M;
+    gsl_multifit_linear_workspace *workspace;
+    gsl_matrix *X;
+    gsl_matrix *cov;
 
     Array<1> a;
-    Array<1> x, y;
-
-    double xMin, xMax;
-    double yMin, yMax;
+    Array<1> w;
+    Array<1> x;
+    Array<1> y;
+    gsl_vector_view a_view;
+    gsl_vector_view w_view;
+    gsl_vector_view x_view;
+    gsl_vector_view y_view;
 };
 
 } // namespace Ksl
 
-#endif // KSL_POLYPLOT_P_H
+#endif // KSL_MULTILINEARREGR_P_H

@@ -32,34 +32,37 @@ XYPlot::XYPlot(Ksl::ObjectPrivate *priv, const QString &name,
     m->symbol = symbol;
 }
 
+
 XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
                const QString &name,
-               const QPen &pen,
-               const QBrush &brush,
+               const QColor &stroke,
+               const QColor &fill,
                QObject *parent)
     : XYPlot(new XYPlotPrivate(this), name, Line, parent)
 {
     KSL_PUBLIC(XYPlot);
-    m->pen = pen;
+    m->pen.setColor(stroke);
     m->pen.setWidthF(1.5);
-    m->brush = brush;
+    m->brush = QBrush(fill);
     setData(x, y);
 }
+
 
 XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
                XYPlot::Symbol symbol,
                const QString &name,
-               const QPen &pen,
-               const QBrush &brush,
+               const QColor &stroke,
+               const QColor &fill,
                QObject *parent)
     : XYPlot(new XYPlotPrivate(this), name, symbol, parent)
 {
     KSL_PUBLIC(XYPlot);
-    m->pen = pen;
+    m->pen.setColor(stroke);
     m->pen.setWidthF(1.5);
-    m->brush = brush;
+    m->brush = QBrush(fill);
     setData(x, y);
 }
+
 
 void XYPlot::setData(const Array<1> &x, const Array<1> &y) {
     KSL_PUBLIC(XYPlot);
@@ -69,12 +72,14 @@ void XYPlot::setData(const Array<1> &x, const Array<1> &y) {
     emit dataChanged(this);
 }
 
+
 QRectF XYPlot::dataRect() const {
     KSL_PUBLIC(const XYPlot);
     return QRectF(m->xMin, m->yMin,
                   m->xMax - m->xMin,
                   m->yMax - m->yMin);
 }
+
 
 void XYPlot::paint(QPainter *painter) {
     KSL_PUBLIC(XYPlot);
@@ -97,6 +102,7 @@ void XYPlot::paint(QPainter *painter) {
     else if (m->symbol == (AreaUnder))
         m->paintAreaUnder(painter);
 }
+
 
 void XYPlotPrivate::checkRanges() {
     pointCount = qMin(x.size(), y.size());

@@ -29,19 +29,19 @@
 // We mean it.
 //
 
-#ifndef KSL_LINREGR_P_H
-#define KSL_LINREGR_P_H
+#ifndef KSL_LINEREGR_P_H
+#define KSL_LINEREGR_P_H
 
-#include <Ksl/LinRegr.h>
+#include <Ksl/LineRegr.h>
 
 namespace Ksl {
 
-class LinRegrPrivate
+class LineRegrPrivate
     : public Ksl::ObjectPrivate
 {
 public:
 
-    LinRegrPrivate(LinRegr *publ)
+    LineRegrPrivate(LineRegr *publ)
         : Ksl::ObjectPrivate(publ)
         , c0(0.0), c1(0.0)
         , cov_00(0.0), cov_01(0.0), cov_11(0.0)
@@ -64,4 +64,4 @@ public:
 
 } // namespace Ksl
 
-#endif // KSL_LINREGR_P_H
+#endif // KSL_LINEREGR_P_H

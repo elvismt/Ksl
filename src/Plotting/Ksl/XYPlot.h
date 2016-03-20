@@ -50,15 +50,15 @@ public:
 
     XYPlot(const Array<1> &x, const Array<1> &y,
            const QString &name="plot",
-           const QPen &pen=QPen(Qt::blue),
-           const QBrush &brush=QBrush(Qt::NoBrush),
+           const QColor &stroke=Qt::blue,
+           const QColor &fill=Qt::red,
            QObject *parent=0);
 
     XYPlot(const Array<1> &x, const Array<1> &y,
            Symbol symbol,
            const QString &name="plot",
-           const QPen &pen=QPen(Qt::blue),
-           const QBrush &brush=QBrush(Qt::NoBrush),
+           const QColor &stroke=Qt::blue,
+           const QColor &fill=Qt::red,
            QObject *parent=0);
 
 

@@ -18,21 +18,21 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Ksl/LinRegr_p.h>
+#include <Ksl/LineRegr_p.h>
 
 namespace Ksl {
 
-LinRegr::LinRegr(const Array<1> x, const Array<1> &y)
-    : Ksl::Object(new LinRegrPrivate(this))
+LineRegr::LineRegr(const Array<1> &x, const Array<1> &y)
+    : Ksl::Object(new LineRegrPrivate(this))
 {
-    KSL_PUBLIC(LinRegr);
+    KSL_PUBLIC(LineRegr);
     m->x = x;
     m->y = y;
 }
 
 
-Array<1> LinRegr::result() const {
-    KSL_PUBLIC(const LinRegr);
+Array<1> LineRegr::result() const {
+    KSL_PUBLIC(const LineRegr);
     Array<1> ret(6);
     ret[0] = m->c0;
     ret[1] = m->c1;
@@ -44,9 +44,9 @@ Array<1> LinRegr::result() const {
 }
 
 
-void LinRegr::solve() {
-    KSL_PUBLIC(LinRegr);
-    LinRegrPrivate::gsl_fit_linear(
+void LineRegr::solve() {
+    KSL_PUBLIC(LineRegr);
+    LineRegrPrivate::gsl_fit_linear(
         m->x.begin(), m->y.begin(), qMin(m->x.size(), m->y.size()),
         &m->c0, &m->c1, &m->cov_00, &m->cov_01, &m->cov_11, &m->sumsq);
 }
@@ -54,7 +54,7 @@ void LinRegr::solve() {
 
 // ! BEGIN GSL_CODE
 void
-LinRegrPrivate::gsl_fit_linear (const double *x,
+LineRegrPrivate::gsl_fit_linear (const double *x,
                                 const double *y,
                                 const size_t n,
                                 double *c0, double *c1,

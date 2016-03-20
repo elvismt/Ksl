@@ -18,26 +18,25 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_LINREGR_H
-#define KSL_LINREGR_H
+#ifndef KSL_MULTILINEARREGR_H
+#define KSL_MULTILINEARREGR_H
 
-#include <Ksl/Object.h>
-#include <Ksl/Array.h>
+#include <Ksl/Csv.h>
 
 namespace Ksl {
 
-class KSL_EXPORT LinRegr
+class KSL_EXPORT MultiLinearRegr
         : public Ksl::Object
 {
 public:
 
-    LinRegr(const Array<1> x, const Array<1> &y);
+    MultiLinearRegr();
 
-    Array<1> result() const;
+    void fitCsv(const Csv &csv);
 
-    void solve();
+
 };
 
 } // namespace Ksl
 
-#endif // KSL_LINREGR_H
+#endif // KSL_MULTILINEARREGR_H

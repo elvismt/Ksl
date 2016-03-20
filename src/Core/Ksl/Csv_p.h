@@ -18,35 +18,37 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_LINEPLOT_H
-#define KSL_LINEPLOT_H
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the public Ksl API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed. Do not include it
+//
+// We mean it.
+//
 
-#include <Ksl/FigureItem.h>
+#ifndef QSL_CSV_P_H
+#define QSL_CSV_P_H
+
+#include <Ksl/Csv.h>
 
 namespace Ksl {
 
-class KSL_EXPORT LinePlot
-    : public FigureItem
+class CsvPrivate
+    : public Ksl::ObjectPrivate
 {
 public:
 
-    LinePlot(const QPointF &p1, const QPointF &p2,
-             const QColor &color=Qt::red,
-             const QString &name="line", QObject *parent=0);
+    CsvPrivate(Csv *publ)
+        : Ksl::ObjectPrivate(publ)
+    { }
 
-    LinePlot(double x1, double y1, double x2, double y2,
-             const QColor &color=Qt::red,
-             const QString &name="line", QObject *parent=0);
-
-    LinePlot(double linear, double angular,
-             const QColor &color=Qt::red,
-             const QString &name="line", QObject *parent=0);
-
-protected:
-
-    virtual void paint(QPainter *painter);
+    QString filePath;
+    Csv::StringData dataBase;
 };
 
 } // namespace Ksl
 
-#endif // KSL_LINEPLOT_H
+#endif // QSL_CSV_P_H

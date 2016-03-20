@@ -76,6 +76,9 @@ public:
     reference operator[] (size_type index) { return m_data->data[index]; }
     const_reference operator[] (size_type index) const { return m_data->data[index]; }
 
+    pointer c_ptr() { return m_data ? m_data->data : nullptr; }
+    const_pointer c_ptr() const { return m_data ? m_data->data : nullptr; }
+
     iterator begin() { return m_data ? m_data->data : nullptr; }
     iterator end() { return m_data ? m_data->data + m_data->size : nullptr; }
     const_iterator begin() const { return m_data ? m_data->data : nullptr; }
@@ -430,7 +433,7 @@ void Array<2,T>::_free()
         if (m_data->refc == 0) {
             delete[] m_data->data[0];
             delete[] m_data->data;
-            delete[] m_data;
+            delete m_data;
         }
         m_data = nullptr;
     }
@@ -493,7 +496,8 @@ Array<2,T>::Array(std::initializer_list<
     size_type bigrow = 0;
     for (const auto &row : initlist)
         if (row.size() > bigrow) bigrow = row.size();
-    // fill matrix with provided rows and padd remaining entries with zeros
+    // fill matrix with provided rows
+    // and padd remaining entries with zeros
     if (initlist.size() > 0 && bigrow > 0) {
         _alloc(initlist.size(), bigrow);
         size_type j = 0;
@@ -659,6 +663,18 @@ Array<2,T> array2D(size_t m, size_t n, const QList<T> &qlst)
 
 
 template <typename T> inline
+std::ostream& operator<< (std::ostream &out, const Array<2,T> &array)
+{
+    for (size_t i=0; i<array.rows(); ++i) {
+        out << "| ";
+        for (size_t j=0; j<array.cols()-1; ++j)
+            out << array[i][j]  << ", ";
+        out << array[i][array.cols()-1] << " |" << std::endl;
+    }
+    return out;
+}
+
+template <typename T> inline
 QTextStream& operator<< (QTextStream &out, const Array<2,T> &array)
 {
     for (size_t i=0; i<array.rows(); ++i) {
@@ -670,15 +686,14 @@ QTextStream& operator<< (QTextStream &out, const Array<2,T> &array)
     return out;
 }
 
-
 template <typename T> inline
-std::ostream& operator<< (std::ostream &out, const Array<2,T> &array)
+QDebug operator<< (QDebug out, const Array<2,T> &array)
 {
     for (size_t i=0; i<array.rows(); ++i) {
         out << "| ";
         for (size_t j=0; j<array.cols()-1; ++j)
             out << array[i][j]  << ", ";
-        out << array[i][array.cols()-1] << " |" << std::endl;
+        out << array[i][array.cols()-1] << " |" << '\n';
     }
     return out;
 }
@@ -780,6 +795,15 @@ T mean(const Array<D,T> &array) {
     for (const auto &elem : array)
         ret += elem;
     return ret / array.size();
+}
+
+
+template <size_t D, typename T> inline
+T median(const Array<D,T> &array) {
+    size_t k = array.size() / 2;
+    if (array.size() % 2 == 0)
+        return (array.begin()[k-1] + array.begin()[k]) / T(2);
+    return array.begin()[k];
 }
 
 

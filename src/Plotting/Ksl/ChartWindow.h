@@ -50,23 +50,23 @@ public:
     XYPlot* xyPlot(const QString &name,
                    const Array<1> &x, const Array<1> &y,
                    XYPlot::Symbol symbol=XYPlot::Line,
-                   const QPen &pen=QPen(Qt::blue),
-                   const QBrush &brush=QBrush(Qt::NoBrush),
+                   const QColor &stroke=Qt::blue,
+                   const QColor &fill=Qt::red,
                    const QString &scaleName="default-scale");
 
     XYPlot* xyPlot(const QString &name) const;
 
     TextLabelPlot* textLabel(const QString &text, const QPointF &pos,
-                             const QColor &color=Qt::blue, float rotation=0.0,
+                             const QColor &stroke=Qt::blue, float rotation=0.0,
                              const QString &scaleName="default-scale");
 
     LinePlot* line(const QString &name, double a, double b,
-                   const QPen &pen=QPen(Qt::red),
+                   const QColor &stroke=Qt::blue,
                    const QString &scaleName="default-scale");
 
     PolyPlot* poly(const QString &name,
                    const Array<1> &a, double xMin, double xMax,
-                   const QColor &color=Qt::red,
+                   const QColor &stroke=Qt::blue,
                    const QString &scaleName="default-scale");
 
 

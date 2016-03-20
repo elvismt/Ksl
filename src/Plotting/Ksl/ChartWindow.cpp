@@ -111,15 +111,15 @@ XYScale* ChartWindow::xyScale(const QString &name) {
 XYPlot* ChartWindow::xyPlot(const QString &name,
                             const Array<1> &x, const Array<1> &y,
                             XYPlot::Symbol symbol,
-                            const QPen &pen,
-                            const QBrush &brush,
+                            const QColor &stroke,
+                            const QColor &fill,
                             const QString &scaleName)
 {
     KSL_PUBLIC(ChartWindow);
     if (m->xyPlots.contains(name))
         return nullptr;
 
-    auto newPlot = new XYPlot(x, y, symbol, name, pen, brush);
+    auto newPlot = new XYPlot(x, y, symbol, name, stroke, fill);
     m->xyPlots[name] = newPlot;
     xyScale(scaleName)->add(newPlot);
     return newPlot;
@@ -135,12 +135,12 @@ XYPlot* ChartWindow::xyPlot(const QString &name) const {
 
 
 TextLabelPlot* ChartWindow::textLabel(const QString &text, const QPointF &pos,
-                                      const QColor &color, float rotation,
+                                      const QColor &stroke, float rotation,
                                       const QString &scaleName)
 {
     auto item = xyScale(scaleName)->item(text);
     if (!item) {
-        item = new TextLabelPlot(text, pos, QPen(color), rotation, this);
+        item = new TextLabelPlot(text, pos, stroke, rotation, this);
         xyScale(scaleName)->add(item);
         return static_cast<TextLabelPlot*>(item);
     }
@@ -149,11 +149,11 @@ TextLabelPlot* ChartWindow::textLabel(const QString &text, const QPointF &pos,
 
 
 LinePlot* ChartWindow::line(const QString &name, double a, double b,
-                            const QPen &pen, const QString &scaleName)
+                            const QColor &stroke, const QString &scaleName)
 {
     auto item = xyScale(scaleName)->item(name);
     if (!item) {
-        item = new LinePlot(a, b, pen, name, this);
+        item = new LinePlot(a, b, stroke, name, this);
         xyScale(scaleName)->add(item);
         return static_cast<LinePlot*>(item);
     }
@@ -162,12 +162,12 @@ LinePlot* ChartWindow::line(const QString &name, double a, double b,
 
 
 PolyPlot* ChartWindow::poly(const QString &name,
-               const Array<1> &a, double xMin, double xMax,
-               const QColor &color, const QString &scaleName)
+                            const Array<1> &a, double xMin, double xMax,
+                            const QColor &stroke, const QString &scaleName)
 {
     auto item = xyScale(scaleName)->item(name);
     if (!item) {
-        item = new PolyPlot(a, color, xMin, xMax, name, this);
+        item = new PolyPlot(a, stroke, xMin, xMax, name, this);
         xyScale(scaleName)->add(item);
         return static_cast<PolyPlot*>(item);
     }

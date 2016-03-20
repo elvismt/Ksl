@@ -1,20 +1,42 @@
 #include <QApplication>
 #include <QDebug>
-#include <Ksl/ChartWindow.h>
-#include <Ksl/Functions.h>
 
+#include <iostream>
+using namespace std;
+
+#include <Ksl/ChartWindow.h>
+#include <Ksl/MultiLinearRegr.h>
 using namespace Ksl;
 
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+
     ChartWindow chart;
+    chart.xyScale()->axis(XYScale::LeftAxis)
+        ->setName("NORMALIZED VALUES");
+    chart.xyScale()->axis(XYScale::BottomAxis)
+        ->setName("SAMPLE OERDER");
 
-    // polynomial: y = 2*x^2 + 4*x^3 + 3*x^4 - x^5
-    Array<1> a = { 0.0, 0.0, 2.0, 4.0, 3.0, - 1.0 };
 
-    chart.poly("polynomial", a, -3, 5, Qt::blue);
+    Csv csv("housing.data");
+    auto matrix = csv.asMatrix();
+
+    auto value = getcol(matrix, 13);
+    value /= max(value);
+
+    auto crime = getcol(matrix, 0);
+    crime /= max(crime);
+
+    auto rooms = getcol(matrix, 5);
+    rooms /= max(rooms);
+
+    auto x = linspace(0.0, double(crime.size()));
+
+    chart.xyPlot("crime", x, crime, XYPlot::Line, Qt::red);
+    chart.xyPlot("rooms", x, rooms, XYPlot::Line, Qt::green);
+    chart.xyPlot("value", x, value, XYPlot::Circles, Qt::blue);
 
     chart.show();
     return app.exec();

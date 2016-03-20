@@ -1,6 +1,7 @@
 
 TEMPLATE = app
 TARGET = Ksl_test
+
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
     CONFIG += c++11
@@ -9,6 +10,10 @@ lessThan(QT_MAJOR_VERSION, 5) {
     QMAKE_CXXFLAGS += -std=c++11
 }
 
+LIBS += -lgsl -lgslcblas
+
+
+# Input
 DEPENDPATH += \
     tests \
     src/QRC \
@@ -50,15 +55,19 @@ HEADERS += \
     src/Plotting/Ksl/XYPlot_p.h \
     src/Plotting/Ksl/XYScale.h \
     src/Plotting/Ksl/XYScale_p.h \
-    src/Regression/Ksl/LinRegr.h \
-    src/Regression/Ksl/LinRegr_p.h \
     src/Plotting/Ksl/TextLabelPlot.h \
     src/Plotting/Ksl/TextLabelPlot_p.h \
     src/Plotting/Ksl/LinePlot.h \
     src/Plotting/Ksl/LinePlot_p.h \
     src/Core/Ksl/Functions.h \
     src/Plotting/Ksl/PolyPlot.h \
-    src/Plotting/Ksl/PolyPlot_p.h
+    src/Plotting/Ksl/PolyPlot_p.h \
+    src/Regression/Ksl/LineRegr.h \
+    src/Regression/Ksl/LineRegr_p.h \
+    src/Regression/Ksl/MultiLinearRegr.h \
+    src/Regression/Ksl/MultiLinearRegr_p.h \
+    src/Core/Ksl/Csv.h \
+    src/Core/Ksl/Csv_p.h
 
 SOURCES += \
     tests/devtest.cpp \
@@ -73,10 +82,12 @@ SOURCES += \
     src/Plotting/Ksl/XYAxisSampler.cpp \
     src/Plotting/Ksl/XYPlot.cpp \
     src/Plotting/Ksl/XYScale.cpp \
-    src/Regression/Ksl/LinRegr.cpp \
     src/Plotting/Ksl/TextLabelPlot.cpp \
     src/Plotting/Ksl/LinePlot.cpp \
-    src/Plotting/Ksl/PolyPlot.cpp
+    src/Plotting/Ksl/PolyPlot.cpp \
+    src/Regression/Ksl/LineRegr.cpp \
+    src/Regression/Ksl/MultiLinearRegr.cpp \
+    src/Core/Ksl/Csv.cpp
 
 RESOURCES += \
     src/QRC/Icons.qrc
