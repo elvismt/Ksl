@@ -24,7 +24,6 @@
 #include <Ksl/Object.h>
 #include <Ksl/Array.h>
 #include <QStringList>
-#include <QHash>
 #include <QVector>
 
 namespace Ksl {
@@ -34,39 +33,30 @@ class KSL_EXPORT Csv
 {
 public:
 
-    typedef QStringList Row;
-    typedef QHash< QString, QVector<QString> > StringData;
-
-
     Csv();
 
     Csv(const QString &filePath,
         bool hasHeader=true, char delimiter=' ');
 
 
-    virtual void read(const QString &filePath,
-                      bool hasHeader=true, char delimiter=' ');
+    virtual void readAll(const QString &filePath,
+                         bool hasHeader=true, char delimiter=' ');
 
     int rows() const;
 
     int cols() const;
 
+    const QVector<QString> column(const QString &key) const;
 
-    StringData& data();
+    const QVector<QString> column(int index) const;
 
-    const StringData& data() const;
+    Array<1> array(const QString &key) const;
 
+    Array<1> array(int index) const;
 
-    Array<1> column(const QString &columnLabel) const;
+    Array<2> matrix() const;
 
-    Array<1,int> intColumn(const QString &columnLabel) const;
-
-    QVector<QString> stringColumn(const QString &columnLabel) const;
-
-    Array<2> asMatrix() const;
-
-    Array<2> asMatrixTransposed() const;
-
+    Array<2> submatrix(int i, int j, int rows, int cols) const;
 };
 
 } // namespace Ksl

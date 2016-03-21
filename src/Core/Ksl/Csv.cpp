@@ -33,11 +33,11 @@ Csv::Csv(const QString &filePath,
          bool hasHeader, char delimiter)
     : Ksl::Object(new CsvPrivate(this))
 {
-    read(filePath, hasHeader, delimiter);
+    readAll(filePath, hasHeader, delimiter);
 }
 
 
-void Csv::read(const QString &filePath,
+void Csv::readAll(const QString &filePath,
                bool hasHeader, char delimiter) {
     KSL_PUBLIC(Csv);
 
@@ -46,43 +46,44 @@ void Csv::read(const QString &filePath,
     file.open(QIODevice::Text|QIODevice::ReadOnly);
     QTextStream str(&file);
 
-    // read the headers of the columns
-    // or create syntetic ones
     while (!str.atEnd()) {
-        QString textLine = str.readLine();
-        if (textLine.contains('#'))
-            textLine.chop(textLine.size() - textLine.indexOf('#'));
-        if (textLine.isEmpty())
+        QString line = str.readLine();
+        if (int k = line.indexOf('#') > -1)
+            line.chop(line.size() - k);
+        if (line.isEmpty())
             continue;
 
-        QStringList line = textLine.split(delimiter, QString::SkipEmptyParts);
+        QStringList attrs = line.split(
+            delimiter, QString::SkipEmptyParts);
         if (hasHeader) {
-            for (auto &label : line)
-                m->dataBase[label.trimmed()] = QVector<QString>();
+            for (auto &label : attrs) {
+                m->keys.append(label.trimmed());
+                m->columns.append(QVector<QString>());
+            }
         }
         else {
-            for (int k=1; k<line.size()+1; k++)
-                m->dataBase[QString::number(k)] = QVector<QString>();
-            bool seekOk = str.seek(0);
-            if (!seekOk)
-                qDebug() << "Error setting file pointer position";
+            for (int k=1; k<attrs.size()+1; k++) {
+                m->keys.append(QString::number(k));
+                m->columns.append(QVector<QString>());
+            }
+            if (!str.seek(0))
+                qDebug() << "SEEK error!";
         }
         break;
     }
 
-
-    // read the data entries
     while (!str.atEnd()) {
-        QString textLine = str.readLine();
-        if (textLine.contains('#'))
-            textLine.chop(textLine.size() - textLine.indexOf('#'));
-        if (textLine.isEmpty())
+        QString line = str.readLine();
+        if (int k = line.indexOf('#') > -1)
+            line.chop(line.size() - k);
+        if (line.isEmpty())
             continue;
 
-        QStringList line = textLine.split(delimiter, QString::SkipEmptyParts);
-        auto lineIter = line.begin();
-        for (auto &column : m->dataBase) {
-            column.append(*lineIter++);
+        QStringList attrs = line.split(
+            delimiter, QString::SkipEmptyParts);
+        auto iter = attrs.begin();
+        for (auto &column : m->columns) {
+            column.append(*iter++);
         }
     }
 }
@@ -90,77 +91,55 @@ void Csv::read(const QString &filePath,
 
 int Csv::rows() const {
     KSL_PUBLIC(const Csv);
-    return (m->dataBase.begin())->size();
+    return m->columns[0].size();
 }
+
 
 int Csv::cols() const {
     KSL_PUBLIC(const Csv);
-    return m->dataBase.size();
-}
-
-Csv::StringData& Csv::data() {
-    KSL_PUBLIC(Csv);
-    return m->dataBase;
+    return m->keys.size();
 }
 
 
-const Csv::StringData& Csv::data() const {
+const QVector<QString> Csv::column(const QString &key) const {
     KSL_PUBLIC(const Csv);
-    return m->dataBase;
+    if (!m->keys.contains(key))
+        return QVector<QString>();
+    return m->columns.at(m->keys.indexOf(key));
 }
 
 
-// buggy!
-Array<1> Csv::column(const QString &columnLabel) const {
+const QVector<QString> Csv::column(int index) const {
     KSL_PUBLIC(const Csv);
-    if (!m->dataBase.contains(columnLabel))
+    return m->columns[index];
+}
+
+
+Array<1> Csv::array(const QString &key) const {
+    KSL_PUBLIC(const Csv);
+    auto column = this->column(key);
+    if (column.isEmpty())
         return Array<1>();
 
-    QVector<QString> textColumn = m->dataBase[columnLabel];
-    Array<1> ret(textColumn.size());
-    bool ok = true;
-    for (int k=0; k<textColumn.size(); ++k) {
-        double value = textColumn[k].trimmed().toDouble(&ok);
-        ret[k] = value;
-        qDebug() << "text:" << textColumn[k];
-        qDebug() << "double:" << value;
-        if (!ok)
-            qDebug() << "conversion to double failed!";
-    }
+    Array<1> ret(column.size());
+    for (int k=0; k<column.size(); ++k)
+        ret[k] = column[k].trimmed().toDouble();
+
     return std::move(ret);
 }
 
 
-Array<1,int> Csv::intColumn(const QString &columnLabel) const {
+Array<1> Csv::array(int index) const {
     KSL_PUBLIC(const Csv);
-    if (!m->dataBase.contains(columnLabel))
-        return Array<1,int>();
-
-    QVector<QString> textColumn = m->dataBase[columnLabel];
-    Array<1,int> ret(textColumn.size());
-    bool ok = true;
-    for (int k=0; k<textColumn.size(); ++k) {
-        ret[k] = textColumn[k].trimmed().toInt(&ok);
-    }
-    return std::move(ret);
+    return array(m->keys[index]);
 }
 
 
-QVector<QString> Csv::stringColumn(const QString &columnLabel) const {
-    KSL_PUBLIC(const Csv);
-    if (!m->dataBase.contains(columnLabel))
-        return QVector<QString>();
-
-    QVector<QString> textColumn = m->dataBase[columnLabel];
-    return std::move(textColumn);
-}
-
-
-Array<2> Csv::asMatrix() const {
+Array<2> Csv::matrix() const {
     KSL_PUBLIC(const Csv);
     Array<2> mat(rows(), cols());
     int i=0;
-    for (auto &column : m->dataBase) {
+    for (auto &column : m->columns) {
         for (int j=0; j<column.size(); ++j)
             mat[j][i] = column[j].trimmed().toDouble();
         ++i;
@@ -168,15 +147,19 @@ Array<2> Csv::asMatrix() const {
     return std::move(mat);
 }
 
-
-Array<2> Csv::asMatrixTransposed() const {
+Array<2> Csv::submatrix(int i, int j, int rows, int cols) const {
     KSL_PUBLIC(const Csv);
-    Array<2> mat(cols(), rows());
-    int i=0;
-    for (auto &column : m->dataBase) {
-        for (int j=0; j<column.size(); ++j)
-            mat[i][j] = column[j].trimmed().toDouble();
-        ++i;
+    Array<2> mat(rows, cols);
+
+    auto coliter = m->columns.begin();
+    for (int k=0; k<j; ++k)
+        ++coliter;
+
+    for (int k=0; k<cols; ++k) {
+        for (int l=i; l<rows; ++l) {
+            mat[l-i][k] = (*coliter)[l].trimmed().toDouble();
+        }
+        ++coliter;
     }
     return std::move(mat);
 }

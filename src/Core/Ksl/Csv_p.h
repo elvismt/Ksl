@@ -46,7 +46,8 @@ public:
     { }
 
     QString filePath;
-    Csv::StringData dataBase;
+    QStringList keys;
+    QList< QVector<QString> > columns;
 };
 
 } // namespace Ksl
