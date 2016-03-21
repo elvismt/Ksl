@@ -13,7 +13,7 @@ MultiLinearRegr::MultiLinearRegr()
 
 
 void MultiLinearRegr::fitCsv(const Csv &csv) {
-    KSL_PUBLIC(MultiLinearRegr);
+    // KSL_PUBLIC(MultiLinearRegr);
 
 }
 

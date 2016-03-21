@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
     chart.xyScale()->axis(XYScale::BottomAxis)
         ->setName("SAMPLE OERDER");
 
-
     Csv csv("housing.data");
     auto matrix = csv.asMatrix();
 

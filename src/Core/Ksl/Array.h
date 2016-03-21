@@ -72,6 +72,7 @@ public:
     Array& operator= (Array &&that);
 
     size_type size() const { return m_data ? m_data->size : 0; }
+    size_type capacity() const { return m_data ? m_data->maxsize : 0; }
 
     reference operator[] (size_type index) { return m_data->data[index]; }
     const_reference operator[] (size_type index) const { return m_data->data[index]; }
@@ -85,26 +86,36 @@ public:
     const_iterator end() const { return m_data ? m_data->data + m_data->size : nullptr; }
 
 
+    inline void resize(size_type newsize);
+    inline void reserve(size_type maxsize);
+    inline void append(const data_type &value);
+    inline Array& operator<< (const data_type &value) { append(value); return *this; }
+
+    inline void squeeze();
+
+
 private:
 
     struct SharedData {
         pointer data;
         size_type size;
+        size_type maxsize;
         size_type refc;
     };
 
     SharedData *m_data;
     inline void _free();
-    inline void _alloc(size_type n);
+    inline void _alloc(size_type size);
 };
 
 
 template <typename T> inline
-void Array<1,T>::_alloc(size_type n)
+void Array<1,T>::_alloc(size_type size)
 {
-    m_data = new SharedData();
-    m_data->data = new data_type[n];
-    m_data->size = n;
+    m_data = (SharedData*) malloc(sizeof(SharedData));
+    m_data->data = (pointer) malloc(size * sizeof(data_type));
+    m_data->size = size;
+    m_data->maxsize = size;
     m_data->refc = 1;
 }
 
@@ -115,10 +126,66 @@ void Array<1,T>::_free()
     if (m_data) {
         m_data->refc -= 1;
         if (m_data->refc == 0) {
-            delete[] m_data->data;
-            delete m_data;
+            free(m_data->data);
+            free(m_data);
         }
         m_data = nullptr;
+    }
+}
+
+
+template <typename T> inline
+void Array<1,T>::resize(size_type newsize) {
+    if (!m_data) {
+        _alloc(newsize);
+    }
+    else if (m_data->newsize <= m_data->maxsize) {
+        m_data->size = newsize;
+    }
+    else {
+        reserve(newsize);
+        m_data->size = newsize;
+    }
+}
+
+
+template <typename T> inline
+void Array<1,T>::reserve(size_type maxsize) {
+    if (!m_data) {
+        _alloc(maxsize);
+        m_data->size = 0;
+    }
+    else if (maxsize > 0 && maxsize > m_data->maxsize) {
+        m_data->data = (pointer) realloc(
+            m_data->data, maxsize * sizeof(data_type));
+        m_data->maxsize = maxsize;
+    }
+}
+
+
+template <typename T> inline
+void Array<1,T>::append(const data_type &value) {
+    if (!m_data)
+        reserve(10);
+    else if (m_data->maxsize == m_data->size) {
+        if (m_data->maxsize < 12)
+            reserve(12);
+        else
+            reserve( 4 * m_data->size / 3 );
+    }
+    m_data->data[m_data->size] = value;
+    m_data->size += 1;
+}
+
+
+template <typename T> inline
+void Array<1,T>::squeeze() {
+    if (!m_data)
+        return;
+    if (m_data->maxsize > m_data->size) {
+        m_data->data = (pointer) realloc(
+            m_data->data, m_data->size * sizeof(data_type));
+        m_data->maxsize = m_data->size;
     }
 }
 
@@ -126,10 +193,10 @@ void Array<1,T>::_free()
 template <typename T>
 Array<1,T>::Array(size_type n)
 {
-    if (n > 0)
-        _alloc(n);
-    else
+    if (n <= 0)
         m_data = nullptr;
+    else
+        _alloc(n);
 }
 
 
