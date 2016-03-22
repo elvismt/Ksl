@@ -35,10 +35,13 @@ HEADERS += \
     src/Core/Ksl/MemoryPool.h \
     src/Core/Ksl/MemoryPool_p.h \
     src/Core/Ksl/Graph.h \
+    src/Core/Ksl/Functions.h \
+    src/Core/Ksl/Csv.h \
+    src/Core/Ksl/Csv_p.h \
     src/Plotting/Ksl/CanvasWindow.h \
     src/Plotting/Ksl/CanvasWindow_p.h \
-    src/Plotting/Ksl/ChartWindow.h \
-    src/Plotting/Ksl/ChartWindow_p.h \
+    src/Plotting/Ksl/Chart.h \
+    src/Plotting/Ksl/Chart_p.h \
     src/Plotting/Ksl/Figure.h \
     src/Plotting/Ksl/Figure_p.h \
     src/Plotting/Ksl/FigureItem.h \
@@ -55,25 +58,23 @@ HEADERS += \
     src/Plotting/Ksl/XYPlot_p.h \
     src/Plotting/Ksl/XYScale.h \
     src/Plotting/Ksl/XYScale_p.h \
-    src/Plotting/Ksl/TextLabelPlot.h \
-    src/Plotting/Ksl/TextLabelPlot_p.h \
+    src/Plotting/Ksl/TextPlot.h \
+    src/Plotting/Ksl/TextPlot_p.h \
     src/Plotting/Ksl/LinePlot.h \
     src/Plotting/Ksl/LinePlot_p.h \
-    src/Core/Ksl/Functions.h \
     src/Plotting/Ksl/PolyPlot.h \
     src/Plotting/Ksl/PolyPlot_p.h \
     src/Regression/Ksl/LineRegr.h \
     src/Regression/Ksl/LineRegr_p.h \
-    src/Regression/Ksl/MultiLinearRegr.h \
-    src/Regression/Ksl/MultiLinearRegr_p.h \
-    src/Core/Ksl/Csv.h \
-    src/Core/Ksl/Csv_p.h
+    src/Regression/Ksl/MultiLineRegr.h \
+    src/Regression/Ksl/MultiLineRegr_p.h \
 
 SOURCES += \
-    tests/devtest.cpp \
+    tests/multifit.cpp \
     src/Core/Ksl/MemoryPool.cpp \
+    src/Core/Ksl/Csv.cpp \
     src/Plotting/Ksl/CanvasWindow.cpp \
-    src/Plotting/Ksl/ChartWindow.cpp \
+    src/Plotting/Ksl/Chart.cpp \
     src/Plotting/Ksl/Figure.cpp \
     src/Plotting/Ksl/FigureItem.cpp \
     src/Plotting/Ksl/FigureScale.cpp \
@@ -82,12 +83,11 @@ SOURCES += \
     src/Plotting/Ksl/XYAxisSampler.cpp \
     src/Plotting/Ksl/XYPlot.cpp \
     src/Plotting/Ksl/XYScale.cpp \
-    src/Plotting/Ksl/TextLabelPlot.cpp \
+    src/Plotting/Ksl/TextPlot.cpp \
     src/Plotting/Ksl/LinePlot.cpp \
     src/Plotting/Ksl/PolyPlot.cpp \
     src/Regression/Ksl/LineRegr.cpp \
-    src/Regression/Ksl/MultiLinearRegr.cpp \
-    src/Core/Ksl/Csv.cpp
+    src/Regression/Ksl/MultiLineRegr.cpp \
 
 RESOURCES += \
     src/QRC/Icons.qrc

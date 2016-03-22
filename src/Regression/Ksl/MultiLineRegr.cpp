@@ -18,39 +18,39 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Ksl/MultiLinearRegr_p.h>
+#include <Ksl/MultiLineRegr_p.h>
 
 namespace Ksl {
 
-MultiLinearRegr::MultiLinearRegr()
-    : Ksl::Object(new MultiLinearRegrPrivate(this))
+MultiLineRegr::MultiLineRegr()
+    : Ksl::Object(new MultiLineRegrPrivate(this))
 { }
 
 
-MultiLinearRegr::MultiLinearRegr(const Array<2> &X, const Array<1> &y)
-    : Ksl::Object(new MultiLinearRegrPrivate(this))
+MultiLineRegr::MultiLineRegr(const Array<2> &X, const Array<1> &y)
+    : Ksl::Object(new MultiLineRegrPrivate(this))
 {
     fit(X, y);
 }
 
 
-MultiLinearRegr::MultiLinearRegr(const Array<2> &X, const Array<1> &y,
+MultiLineRegr::MultiLineRegr(const Array<2> &X, const Array<1> &y,
                                  const Array<1> &w)
-    : Ksl::Object(new MultiLinearRegrPrivate(this))
+    : Ksl::Object(new MultiLineRegrPrivate(this))
 {
     fit(X, y, w);
 }
 
 
-MultiLinearRegrPrivate::~MultiLinearRegrPrivate() {
+MultiLineRegrPrivate::~MultiLineRegrPrivate() {
     if (workspace)
         gsl_multifit_linear_free(workspace);
 }
 
 
-void MultiLinearRegr::fit(const Array<2> &X, const Array<1> &y)
+void MultiLineRegr::fit(const Array<2> &X, const Array<1> &y)
 {
-    KSL_PUBLIC(MultiLinearRegr);
+    KSL_PUBLIC(MultiLineRegr);
     m->N = X.rows();
     m->P = X.cols();
 
@@ -71,10 +71,10 @@ void MultiLinearRegr::fit(const Array<2> &X, const Array<1> &y)
 }
 
 
-void MultiLinearRegr::fit(const Array<2> &X, const Array<1> &y,
+void MultiLineRegr::fit(const Array<2> &X, const Array<1> &y,
                           const Array<1> &w)
 {
-    KSL_PUBLIC(MultiLinearRegr);
+    KSL_PUBLIC(MultiLineRegr);
     m->N = X.rows();
     m->P = X.cols();
 
@@ -97,14 +97,14 @@ void MultiLinearRegr::fit(const Array<2> &X, const Array<1> &y,
 }
 
 
-Array<1> MultiLinearRegr::result() const {
-    KSL_PUBLIC(const MultiLinearRegr);
+Array<1> MultiLineRegr::result() const {
+    KSL_PUBLIC(const MultiLineRegr);
     return m->a;
 }
 
 
-Array<2> MultiLinearRegr::covariance() const {
-    KSL_PUBLIC(const MultiLinearRegr);
+Array<2> MultiLineRegr::covariance() const {
+    KSL_PUBLIC(const MultiLineRegr);
     return m->cov;
 }
 

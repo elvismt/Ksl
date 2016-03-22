@@ -18,31 +18,41 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_TEXTLABELPLOT_H
-#define KSL_TEXTLABELPLOT_H
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the public Ksl API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed. Do not include it
+//
+// We mean it.
+//
 
-#include <Ksl/FigureItem.h>
-#include <QPen>
+#ifndef KSL_TEXTLABELPLOT_P_H
+#define KSL_TEXTLABELPLOT_P_H
+
+#include <Ksl/TextPlot.h>
+#include <Ksl/FigureItem_p.h>
 
 namespace Ksl {
 
-class KSL_EXPORT TextLabelPlot
-    : public FigureItem
+class TextPlotPrivate
+    : public FigureItemPrivate
 {
 public:
 
-    TextLabelPlot(const QString &text, const QPointF &pos,
-                  const QPen &pen=QPen(Qt::blue), float rotation=0,
-                  QObject *parent=0);
-
-    void setPen(const QPen &pen);
+    TextPlotPrivate(TextPlot *publ)
+        : FigureItemPrivate(publ)
+    { }
 
 
-protected:
-
-    virtual void paint(QPainter *painter);
+    QString text;
+    QPointF pos;
+    QPen pen;
+    float rotation;
 };
 
 } // namespace Ksl
 
-#endif // KSL_TEXTLABELPLOT_H
+#endif // KSL_TEXTLABELPLOT_P_H

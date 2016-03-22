@@ -4,8 +4,8 @@
 #include <iostream>
 using namespace std;
 
-#include <Ksl/ChartWindow.h>
-#include <Ksl/MultiLinearRegr.h>
+#include <Ksl/Chart.h>
+#include <Ksl/MultiLineRegr.h>
 using namespace Ksl;
 
 
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    ChartWindow chart;
+    Chart chart;
     chart.xyScale()->axis(XYScale::LeftAxis)
         ->setName("BUILDING VALUES");
     chart.xyScale()->axis(XYScale::BottomAxis)
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     for (int k=1; k<8; k++)
         X.setCol(k, xi[k-1]);
 
-    MultiLinearRegr regr(X, y);
+    MultiLineRegr regr(X, y);
 
     // create series of predicted values
     auto c = regr.result();

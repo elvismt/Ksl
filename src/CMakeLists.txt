@@ -11,14 +11,17 @@ set(Ksl_HDRS
     Plotting/Ksl/XYAxis.h
     Plotting/Ksl/XYAxisSampler.h
     Plotting/Ksl/LinePlot.h
-    Plotting/Ksl/TextLabelPlot.h
+    Plotting/Ksl/TextPlot.h
+    Plotting/Ksl/PolyPlot.h
     Plotting/Ksl/CanvasWindow.h
     Plotting/Ksl/FigureWidget.h
-    Plotting/Ksl/ChartWindow.h
-    Regression/Ksl/LinRegr.h
+    Plotting/Ksl/Chart.h
+    Regression/Ksl/LineRegr.h
+    Regression/Ksl/MultiLineRegr.h
 )
 
 set(Ksl_SRCS
+    Core/Ksl/Csv.cpp
     Plotting/Ksl/Figure.cpp
     Plotting/Ksl/FigureScale.cpp
     Plotting/Ksl/FigureItem.cpp
@@ -27,11 +30,13 @@ set(Ksl_SRCS
     Plotting/Ksl/XYAxis.cpp
     Plotting/Ksl/XYAxisSampler.cpp
     Plotting/Ksl/LinePlot.cpp
-    Plotting/Ksl/TextLabelPlot.cpp
+    Plotting/Ksl/TextPlot.cpp
+    Plotting/Ksl/PolyPlot.cpp
     Plotting/Ksl/CanvasWindow.cpp
     Plotting/Ksl/FigureWidget.cpp
-    Plotting/Ksl/ChartWindow.cpp
-    Regression/Ksl/LinRegr.cpp
+    Plotting/Ksl/Chart.cpp
+    Regression/Ksl/LineRegr.cpp
+    Regression/Ksl/MultiLineRegr.cpp
 )
 
 qt4_add_resources(Ksl_QRC_SRCS
@@ -39,4 +44,4 @@ qt4_add_resources(Ksl_QRC_SRCS
 )
 
 add_library(Ksl SHARED ${Ksl_SRCS} ${Ksl_QRC_SRCS})
-target_link_libraries(Ksl ${QT_LIBRARIES})
+target_link_libraries(Ksl ${QT_LIBRARIES} -lgsl -lgslcblas)

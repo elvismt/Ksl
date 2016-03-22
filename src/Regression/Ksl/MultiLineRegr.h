@@ -25,16 +25,16 @@
 
 namespace Ksl {
 
-class KSL_EXPORT MultiLinearRegr
+class KSL_EXPORT MultiLineRegr
         : public Ksl::Object
 {
 public:
 
-    MultiLinearRegr();
+    MultiLineRegr();
 
-    MultiLinearRegr(const Array<2> &X, const Array<1> &y);
+    MultiLineRegr(const Array<2> &X, const Array<1> &y);
 
-    MultiLinearRegr(const Array<2> &X, const Array<1> &y, const Array<1> &w);
+    MultiLineRegr(const Array<2> &X, const Array<1> &y, const Array<1> &w);
 
     void fit(const Array<2> &X, const Array<1> &y);
 

@@ -25,13 +25,13 @@
 #include <Ksl/FigureWidget.h>
 #include <Ksl/XYScale.h>
 #include <Ksl/XYPlot.h>
-#include <Ksl/TextLabelPlot.h>
+#include <Ksl/TextPlot.h>
 #include <Ksl/LinePlot.h>
 #include <Ksl/PolyPlot.h>
 
 namespace Ksl {
 
-class KSL_EXPORT ChartWindow
+class KSL_EXPORT Chart
     : public QWidget
     , public Ksl::Object
 {
@@ -39,7 +39,7 @@ class KSL_EXPORT ChartWindow
 
 public:
 
-    ChartWindow(const QString &title="Ksl Chart", int width=500,
+    Chart(const QString &title="Ksl Chart", int width=500,
                 int height=350, QWidget *parent=0);
 
 
@@ -56,7 +56,7 @@ public:
 
     XYPlot* xyPlot(const QString &name) const;
 
-    TextLabelPlot* textLabel(const QString &text, const QPointF &pos,
+    TextPlot* textLabel(const QString &text, const QPointF &pos,
                              const QColor &stroke=Qt::blue, float rotation=0.0,
                              const QString &scaleName="default-scale");
 
@@ -81,7 +81,7 @@ public slots:
 
 protected:
 
-    ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
+    Chart(Ksl::ObjectPrivate *priv, const QString &title,
                 int width, int height, QWidget *parent);
 };
 

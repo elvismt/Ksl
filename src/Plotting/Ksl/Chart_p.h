@@ -29,46 +29,44 @@
 // We mean it.
 //
 
-#ifndef KSL_MULTILINEARREGR_P_H
-#define KSL_MULTILINEARREGR_P_H
+#ifndef KSL_CHARTWINDOW_P_H
+#define KSL_CHARTWINDOW_P_H
 
-#include <Ksl/MultiLinearRegr.h>
-#include <gsl/gsl_multifit.h>
-
+#include <Ksl/Chart.h>
+#include <Ksl/FigureWidget_p.h>
+#include <QVBoxLayout>
+#include <QToolBar>
+#include <QStatusBar>
+#include <QMouseEvent>
+#include <QHash>
 
 namespace Ksl {
 
-class MultiLinearRegrPrivate
-    : public ObjectPrivate
+class ChartPrivate
+    : public Ksl::ObjectPrivate
 {
 public:
 
-    MultiLinearRegrPrivate(MultiLinearRegr *publ)
-        : ObjectPrivate(publ)
-        , valid(false)
-        , workspace(nullptr)
+
+
+
+    ChartPrivate(Chart *publ)
+        : Ksl::ObjectPrivate(publ)
     { }
 
-    ~MultiLinearRegrPrivate();
+    ~ChartPrivate();
 
 
-    bool valid;
-    gsl_multifit_linear_workspace *workspace;
+    QAction *translationAction;
+    QAction *zoomingAction;
 
-    double chisq;
-    size_t N, P;
-
-    Array<1> a;
-    Array<1> y;
-    Array<1> w;
-    Array<2> cov;
-    gsl_matrix_view X;
-    gsl_matrix_view cov_view;
-    gsl_vector_view a_view;
-    gsl_vector_view y_view;
-    gsl_vector_view w_view;
+    QVBoxLayout *layout;
+    FigureWidget *figureArea;
+    QToolBar *toolBar;
+    QHash<QString,XYScale*> xyScales;
+    QHash<QString,XYPlot*> xyPlots;
 };
 
 } // namespace Ksl
 
-#endif // KSL_MULTILINEARREGR_P_H
+#endif // KSL_CHARTWINDOW_P_H

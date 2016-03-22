@@ -18,16 +18,16 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Ksl/TextLabelPlot_p.h>
+#include <Ksl/TextPlot_p.h>
 #include <Ksl/FigureScale.h>
 
 namespace Ksl {
 
-TextLabelPlot::TextLabelPlot(const QString &text, const QPointF &pos,
+TextPlot::TextPlot(const QString &text, const QPointF &pos,
                              const QPen &pen, float rotation, QObject *parent)
-    : FigureItem(new TextLabelPlotPrivate(this), text, parent)
+    : FigureItem(new TextPlotPrivate(this), text, parent)
 {
-    KSL_PUBLIC(TextLabelPlot);
+    KSL_PUBLIC(TextPlot);
     m->text = text;
     m->pos = pos;
     m->pen = pen;
@@ -36,8 +36,8 @@ TextLabelPlot::TextLabelPlot(const QString &text, const QPointF &pos,
 }
 
 
-void TextLabelPlot::setPen(const QPen &pen) {
-    KSL_PUBLIC(TextLabelPlot);
+void TextPlot::setPen(const QPen &pen) {
+    KSL_PUBLIC(TextPlot);
     if (m->pen != pen) {
         m->pen = pen;
         emit appearenceChanged(this);
@@ -45,8 +45,8 @@ void TextLabelPlot::setPen(const QPen &pen) {
 }
 
 
-void TextLabelPlot::paint(QPainter *painter) {
-    KSL_PUBLIC(TextLabelPlot);
+void TextPlot::paint(QPainter *painter) {
+    KSL_PUBLIC(TextPlot);
 
     QPoint figurePos = m->scale->map(m->pos);
     painter->setPen(m->pen);

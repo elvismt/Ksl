@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Ksl/ChartWindow_p.h>
+#include <Ksl/Chart_p.h>
 #include <QIcon>
 #include <QAction>
 #include <QFileDialog>
@@ -26,12 +26,12 @@
 
 namespace Ksl {
 
-ChartWindow::ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
+Chart::Chart(Ksl::ObjectPrivate *priv, const QString &title,
                          int width, int height, QWidget *parent)
     : QWidget(parent)
     , Ksl::Object(priv)
 {
-    KSL_PUBLIC(ChartWindow);
+    KSL_PUBLIC(Chart);
 
     // Set out layout
     setWindowTitle(title);
@@ -75,13 +75,13 @@ ChartWindow::ChartWindow(Ksl::ObjectPrivate *priv, const QString &title,
 }
 
 
-ChartWindow::ChartWindow(const QString &title,
+Chart::Chart(const QString &title,
                          int width, int height, QWidget *parent)
-    : ChartWindow(new ChartWindowPrivate(this), title, width, height, parent)
+    : Chart(new ChartPrivate(this), title, width, height, parent)
 { }
 
 
-ChartWindowPrivate::~ChartWindowPrivate() {
+ChartPrivate::~ChartPrivate() {
     // Clean up
     for (auto scale : xyScales)
         delete scale;
@@ -90,14 +90,14 @@ ChartWindowPrivate::~ChartWindowPrivate() {
 }
 
 
-Figure* ChartWindow::figure() const {
-    KSL_PUBLIC(const ChartWindow);
+Figure* Chart::figure() const {
+    KSL_PUBLIC(const Chart);
     return m->figureArea->figure();
 }
 
 
-XYScale* ChartWindow::xyScale(const QString &name) {
-    KSL_PUBLIC(ChartWindow);
+XYScale* Chart::xyScale(const QString &name) {
+    KSL_PUBLIC(Chart);
     if (m->xyScales.contains(name))
         return m->xyScales[name];
 
@@ -108,14 +108,14 @@ XYScale* ChartWindow::xyScale(const QString &name) {
 }
 
 
-XYPlot* ChartWindow::xyPlot(const QString &name,
+XYPlot* Chart::xyPlot(const QString &name,
                             const Array<1> &x, const Array<1> &y,
                             XYPlot::Symbol symbol,
                             const QColor &stroke,
                             const QColor &fill,
                             const QString &scaleName)
 {
-    KSL_PUBLIC(ChartWindow);
+    KSL_PUBLIC(Chart);
     if (m->xyPlots.contains(name))
         return nullptr;
 
@@ -126,29 +126,29 @@ XYPlot* ChartWindow::xyPlot(const QString &name,
 }
 
 
-XYPlot* ChartWindow::xyPlot(const QString &name) const {
-    KSL_PUBLIC(const ChartWindow);
+XYPlot* Chart::xyPlot(const QString &name) const {
+    KSL_PUBLIC(const Chart);
     if (m->xyPlots.contains(name))
         return m->xyPlots[name];
     return nullptr;
 }
 
 
-TextLabelPlot* ChartWindow::textLabel(const QString &text, const QPointF &pos,
+TextPlot* Chart::textLabel(const QString &text, const QPointF &pos,
                                       const QColor &stroke, float rotation,
                                       const QString &scaleName)
 {
     auto item = xyScale(scaleName)->item(text);
     if (!item) {
-        item = new TextLabelPlot(text, pos, stroke, rotation, this);
+        item = new TextPlot(text, pos, stroke, rotation, this);
         xyScale(scaleName)->add(item);
-        return static_cast<TextLabelPlot*>(item);
+        return static_cast<TextPlot*>(item);
     }
     return nullptr;
 }
 
 
-LinePlot* ChartWindow::line(const QString &name, double a, double b,
+LinePlot* Chart::line(const QString &name, double a, double b,
                             const QColor &stroke, const QString &scaleName)
 {
     auto item = xyScale(scaleName)->item(name);
@@ -161,7 +161,7 @@ LinePlot* ChartWindow::line(const QString &name, double a, double b,
 }
 
 
-PolyPlot* ChartWindow::poly(const QString &name,
+PolyPlot* Chart::poly(const QString &name,
                             const Array<1> &a, double xMin, double xMax,
                             const QColor &stroke, const QString &scaleName)
 {
@@ -175,14 +175,14 @@ PolyPlot* ChartWindow::poly(const QString &name,
 }
 
 
-void ChartWindow::save() {
-    KSL_PUBLIC(ChartWindow);
+void Chart::save() {
+    KSL_PUBLIC(Chart);
     m->figureArea->save();
 }
 
 
-void ChartWindow::toggleTranslation(bool activate) {
-    KSL_PUBLIC(ChartWindow);
+void Chart::toggleTranslation(bool activate) {
+    KSL_PUBLIC(Chart);
     Q_UNUSED(activate)
     if (activate) {
         m->figureArea->setMouseOperation(
@@ -197,8 +197,8 @@ void ChartWindow::toggleTranslation(bool activate) {
 }
 
 
-void ChartWindow::toggleZooming(bool activate) {
-    KSL_PUBLIC(ChartWindow);
+void Chart::toggleZooming(bool activate) {
+    KSL_PUBLIC(Chart);
     Q_UNUSED(activate)
     if (activate) {
         m->figureArea->setMouseOperation(

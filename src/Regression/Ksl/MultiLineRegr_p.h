@@ -29,44 +29,46 @@
 // We mean it.
 //
 
-#ifndef KSL_CHARTWINDOW_P_H
-#define KSL_CHARTWINDOW_P_H
+#ifndef KSL_MULTILINEARREGR_P_H
+#define KSL_MULTILINEARREGR_P_H
 
-#include <Ksl/ChartWindow.h>
-#include <Ksl/FigureWidget_p.h>
-#include <QVBoxLayout>
-#include <QToolBar>
-#include <QStatusBar>
-#include <QMouseEvent>
-#include <QHash>
+#include <Ksl/MultiLineRegr.h>
+#include <gsl/gsl_multifit.h>
+
 
 namespace Ksl {
 
-class ChartWindowPrivate
-    : public Ksl::ObjectPrivate
+class MultiLineRegrPrivate
+    : public ObjectPrivate
 {
 public:
 
-
-
-
-    ChartWindowPrivate(ChartWindow *publ)
-        : Ksl::ObjectPrivate(publ)
+    MultiLineRegrPrivate(MultiLineRegr *publ)
+        : ObjectPrivate(publ)
+        , valid(false)
+        , workspace(nullptr)
     { }
 
-    ~ChartWindowPrivate();
+    ~MultiLineRegrPrivate();
 
 
-    QAction *translationAction;
-    QAction *zoomingAction;
+    bool valid;
+    gsl_multifit_linear_workspace *workspace;
 
-    QVBoxLayout *layout;
-    FigureWidget *figureArea;
-    QToolBar *toolBar;
-    QHash<QString,XYScale*> xyScales;
-    QHash<QString,XYPlot*> xyPlots;
+    double chisq;
+    size_t N, P;
+
+    Array<1> a;
+    Array<1> y;
+    Array<1> w;
+    Array<2> cov;
+    gsl_matrix_view X;
+    gsl_matrix_view cov_view;
+    gsl_vector_view a_view;
+    gsl_vector_view y_view;
+    gsl_vector_view w_view;
 };
 
 } // namespace Ksl
 
-#endif // KSL_CHARTWINDOW_P_H
+#endif // KSL_MULTILINEARREGR_P_H
