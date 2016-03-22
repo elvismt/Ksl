@@ -157,7 +157,7 @@ Array<2> Csv::matrix() const {
     return std::move(mat);
 }
 
-Array<2> Csv::submatrix(int i, int j, int rows, int cols) const {
+Array<2> Csv::matrix(int i, int j, int rows, int cols) const {
     KSL_PUBLIC(const Csv);
     Array<2> mat(rows, cols);
 
@@ -172,6 +172,24 @@ Array<2> Csv::submatrix(int i, int j, int rows, int cols) const {
         ++coliter;
     }
     return std::move(mat);
+}
+
+
+void Csv::fillcol(Array<2> &a, int j, const QString &key) const {
+    auto column = this->column(key);
+    if (column.isEmpty())
+        return;
+    for (int k=0; k<column.size(); ++k)
+        a[k][j] = column[k].trimmed().toDouble();
+}
+
+
+void Csv::fillcol(Array<2> &a, int j, int col) const {
+    auto column = this->column(col);
+    if (column.isEmpty())
+        return;
+    for (int k=0; k<column.size(); ++k)
+        a[k][j] = column[k].trimmed().toDouble();
 }
 
 } // namespace Ksl

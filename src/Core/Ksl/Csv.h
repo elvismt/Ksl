@@ -58,7 +58,11 @@ public:
 
     Array<2> matrix() const;
 
-    Array<2> submatrix(int i, int j, int rows, int cols) const;
+    Array<2> matrix(int i, int j, int rows, int cols) const;
+
+    void fillcol(Array<2> &a, int j, const QString &key) const;
+
+    void fillcol(Array<2> &a, int j, int col) const;
 };
 
 } // namespace Ksl

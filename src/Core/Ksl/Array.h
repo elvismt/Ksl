@@ -462,10 +462,18 @@ public:
     const_iterator begin() const { return m_data ? m_data->data[0] : nullptr; }
     const_iterator end() const { return m_data ? m_data->data[0] + (m_data->rows*m_data->cols) : nullptr; }
 
-    void setCol(size_type j, const Array<1> &array);
-    void setCol(size_type j, const data_type &value);
-    void setRow(size_type j, const Array<1> &array);
-    void setRow(size_type j, const data_type &value);
+    void setcol(size_type j, const data_type &value);
+    void setcol(size_type j, const Array<1> &array);
+    void coltocol(size_type j, const Array<2> &array, size_type aj);
+    void rowtocol(size_type j, const Array<2> &array, size_type aj);
+
+    void setrow(size_type j, const data_type &value);
+    void setrow(size_type j, const Array<1> &array);
+    void coltorow(size_type j, const Array<2> &array, size_type aj);
+    void rowtorow(size_type j, const Array<2> &array, size_type aj);
+
+    Array submat(int i, int j, int rows, int cols);
+
 
 private:
 
@@ -621,7 +629,7 @@ Array<2,T>& Array<2,T>::operator= (Array &&that)
 
 
 template <typename T>
-void Array<2,T>::setCol(size_type j, const Array<1> &array) {
+void Array<2,T>::setcol(size_type j, const Array<1> &array) {
     size_type n = qMin(array.size(), this->rows());
     for (size_type k=0; k<n; ++k)
         (*this)[k][j] = array[k];
@@ -629,14 +637,31 @@ void Array<2,T>::setCol(size_type j, const Array<1> &array) {
 
 
 template <typename T>
-void Array<2,T>::setCol(size_type j, const T &value) {
+void Array<2,T>::setcol(size_type j, const T &value) {
     for (int k=0; k<this->rows(); ++k)
         (*this)[k][j] = value;
 }
 
 
 template <typename T>
-void Array<2,T>::setRow(size_type j, const Array<1> &array) {
+void Array<2,T>::coltocol(size_type j, const Array<2> &array, size_type aj) {
+    size_type n = qMin(array.rows(), this->rows());
+
+    for (size_type k=0; k<n; ++k)
+        (*this)[k][j] = array[k][aj];
+}
+
+
+template <typename T>
+void Array<2,T>::rowtocol(size_type j, const Array<2> &array, size_type aj) {
+    size_type n = qMin(array.cols(), this->rows());
+    for (size_type k=0; k<n; ++k)
+        (*this)[k][j] = array[aj][k];
+}
+
+
+template <typename T>
+void Array<2,T>::setrow(size_type j, const Array<1> &array) {
     size_type n = qMin(array.size(), this->cols());
     for (size_type k=0; k<n; ++k)
         (*this)[j][k] = array[k];
@@ -644,9 +669,35 @@ void Array<2,T>::setRow(size_type j, const Array<1> &array) {
 
 
 template <typename T>
-void Array<2,T>::setRow(size_type j, const T &value) {
+void Array<2,T>::setrow(size_type j, const T &value) {
     for (size_type k=0; k<this->cols(); ++k)
         (*this)[j][k] = value;
+}
+
+
+template <typename T>
+void Array<2,T>::coltorow(size_type j, const Array<2> &array, size_type aj) {
+    size_type n = qMin(array.rows(), this->cols());
+    for (size_type k=0; k<n; ++k)
+        (*this)[j][k] = array[k][aj];
+}
+
+
+template <typename T>
+void Array<2,T>::rowtorow(size_type j, const Array<2> &array, size_type aj) {
+    size_type n = qMin(array.cols(), this->cols());
+    for (size_type k=0; k<n; ++k)
+        (*this)[j][k] = array[aj][k];
+}
+
+
+template <typename T>
+Array<2,T> Array<2,T>::submat(int i, int j, int rows, int cols) {
+    Array<2,T> ret(rows, cols);
+    for (int l=0; l<rows; l++)
+        for (int m=0; m<cols; m++)
+            ret[l][m] = (*this)[l+i][m+j];
+    return std::move(ret);
 }
 
 
@@ -669,7 +720,7 @@ template <typename T>
 Array<1,T> getcol(const Array<2,T> &array, size_t k)
 {
     Array<1,T> ret(array.rows());
-    for (size_t j=0; j<array.rows(); ++j)
+    for (int j=0; j<array.rows(); ++j)
         ret[j] = array[j][k];
     return std::move(ret);
 }
@@ -766,9 +817,9 @@ Array<2,T> array2D(size_t m, size_t n, const QList<T> &qlst)
 template <typename T> inline
 std::ostream& operator<< (std::ostream &out, const Array<2,T> &array)
 {
-    for (size_t i=0; i<array.rows(); ++i) {
+    for (int i=0; i<array.rows(); ++i) {
         out << "| ";
-        for (size_t j=0; j<array.cols()-1; ++j)
+        for (int j=0; j<array.cols()-1; ++j)
             out << array[i][j]  << ", ";
         out << array[i][array.cols()-1] << " |" << std::endl;
     }
@@ -778,9 +829,9 @@ std::ostream& operator<< (std::ostream &out, const Array<2,T> &array)
 template <typename T> inline
 QTextStream& operator<< (QTextStream &out, const Array<2,T> &array)
 {
-    for (size_t i=0; i<array.rows(); ++i) {
+    for (int i=0; i<array.rows(); ++i) {
         out << "| ";
-        for (size_t j=0; j<array.cols()-1; ++j)
+        for (int j=0; j<array.cols()-1; ++j)
             out << array[i][j]  << ", ";
         out << array[i][array.cols()-1] << " |" << std::endl;
     }
@@ -790,9 +841,9 @@ QTextStream& operator<< (QTextStream &out, const Array<2,T> &array)
 template <typename T> inline
 QDebug operator<< (QDebug out, const Array<2,T> &array)
 {
-    for (size_t i=0; i<array.rows(); ++i) {
+    for (int i=0; i<array.rows(); ++i) {
         out << "| ";
-        for (size_t j=0; j<array.cols()-1; ++j)
+        for (int j=0; j<array.cols()-1; ++j)
             out << array[i][j]  << ", ";
         out << array[i][array.cols()-1] << " |" << '\n';
     }

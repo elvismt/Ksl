@@ -21,39 +21,33 @@ int main(int argc, char *argv[])
 
 
     // File containing data
-    Csv csv("housing.data");
+    auto DATA = Csv("housing.data").matrix();
 
     // Y values from training set
-    auto y = csv.array("MEDV");
+    auto y = getcol(DATA, 13);
+    int N = DATA.rows();
 
-    // X values from training set
-    Array<2> X(csv.rows(), 8);
-    QList<Array<1>> xi;
-    // Use variables
-    // LSTAT NOX RM AGE DIS RAD PTRATIO
-    xi.append(csv.array("LSTAT"));
-    xi.append(csv.array("NOX"));
-    xi.append(csv.array("RM"));
-    xi.append(csv.array("AGE"));
-    xi.append(csv.array("DIS"));
-    xi.append(csv.array("RAD"));
-    xi.append(csv.array("PTRATIO"));
-    X.setCol(0, 1.0);
-    for (int k=1; k<8; k++)
-        X.setCol(k, xi[k-1]);
+    // indices of data columns to use as parameters
+    Array<1,int> param = linspace<int>(0, 12);
 
-    MultiLineRegr regr(X, y);
+    // fill matrix with params
+    Array<2> X(N, param.size()+1);
+    X.setcol(0, 1.0);
+    for (int j=0; j<param.size(); ++j) {
+        X.coltocol(j+1, DATA, param[j]);
+    }
+
+    // Perform regression
+    auto c = MultiLineRegr(X, y).result();
 
     // create series of predicted values
-    auto c = regr.result();
     auto y_fit = samesize(y);
     for (int k=0; k<y_fit.size(); k++) {
         double yk = c[0];
         for (int l=1; l<c.size(); l++)
-            yk += c[l] * xi[l-1][k];
+            yk += c[l] * DATA[k][param[l-1]];
         y_fit[k] = yk;
     }
-
 
     // plot comparison
     auto x = linspace(0.0, double(y.size()));
