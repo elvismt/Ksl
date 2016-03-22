@@ -43,8 +43,10 @@ public:
 
     CsvPrivate(Csv *publ)
         : Ksl::ObjectPrivate(publ)
+        , empty(true)
     { }
 
+    bool empty;
     QString filePath;
     QStringList keys;
     QList< QVector<QString> > columns;

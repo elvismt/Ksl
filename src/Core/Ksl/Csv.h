@@ -39,12 +39,14 @@ public:
         bool hasHeader=true, char delimiter=' ');
 
 
-    virtual void readAll(const QString &filePath,
+    virtual bool readAll(const QString &filePath,
                          bool hasHeader=true, char delimiter=' ');
 
     int rows() const;
 
     int cols() const;
+
+    bool empty() const;
 
     const QVector<QString> column(const QString &key) const;
 

@@ -37,13 +37,16 @@ Csv::Csv(const QString &filePath,
 }
 
 
-void Csv::readAll(const QString &filePath,
+bool Csv::readAll(const QString &filePath,
                bool hasHeader, char delimiter) {
     KSL_PUBLIC(Csv);
 
     m->filePath = filePath;
     QFile file(m->filePath);
-    file.open(QIODevice::Text|QIODevice::ReadOnly);
+    if (!file.open(QIODevice::Text|QIODevice::ReadOnly)) {
+        qDebug() << "Csv::readAll: File not found!";
+        return false;
+    }
     QTextStream str(&file);
 
     while (!str.atEnd()) {
@@ -86,6 +89,14 @@ void Csv::readAll(const QString &filePath,
             column.append(*iter++);
         }
     }
+    m->empty = false;
+    return true;
+}
+
+
+bool Csv::empty() const {
+    KSL_PUBLIC(const Csv);
+    return m->empty;
 }
 
 
@@ -116,7 +127,6 @@ const QVector<QString> Csv::column(int index) const {
 
 
 Array<1> Csv::array(const QString &key) const {
-    KSL_PUBLIC(const Csv);
     auto column = this->column(key);
     if (column.isEmpty())
         return Array<1>();

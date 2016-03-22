@@ -71,8 +71,8 @@ public:
     Array& operator= (const Array &that);
     Array& operator= (Array &&that);
 
-    size_type size() const { return m_data ? m_data->size : 0; }
-    size_type capacity() const { return m_data ? m_data->maxsize : 0; }
+    int size() const { return m_data ? m_data->size : 0; }
+    int capacity() const { return m_data ? m_data->maxsize : 0; }
 
     reference operator[] (size_type index) { return m_data->data[index]; }
     const_reference operator[] (size_type index) const { return m_data->data[index]; }
@@ -139,7 +139,7 @@ void Array<1,T>::resize(size_type newsize) {
     if (!m_data) {
         _alloc(newsize);
     }
-    else if (m_data->newsize <= m_data->maxsize) {
+    else if (newsize <= m_data->maxsize) {
         m_data->size = newsize;
     }
     else {
@@ -449,9 +449,9 @@ public:
     Array& operator= (Array &&that);
 
 
-    size_type rows() const { return m_data ? m_data->rows : 0; }
-    size_type cols() const { return m_data ? m_data->cols : 0; }
-    size_type size() const { return m_data ? m_data->rows*m_data->cols : 0; }
+    int rows() const { return m_data ? m_data->rows : 0; }
+    int cols() const { return m_data ? m_data->cols : 0; }
+    int size() const { return m_data ? m_data->rows*m_data->cols : 0; }
 
 
     pointer operator[] (size_type index) { return m_data->data[index]; }
@@ -462,6 +462,10 @@ public:
     const_iterator begin() const { return m_data ? m_data->data[0] : nullptr; }
     const_iterator end() const { return m_data ? m_data->data[0] + (m_data->rows*m_data->cols) : nullptr; }
 
+    void setCol(size_type j, const Array<1> &array);
+    void setCol(size_type j, const data_type &value);
+    void setRow(size_type j, const Array<1> &array);
+    void setRow(size_type j, const data_type &value);
 
 private:
 
@@ -534,7 +538,7 @@ template <typename T>
 Array<2,T>::Array(const Array &that)
 {
     if (that.m_data) {
-        m_data = that.m_dat;
+        m_data = that.m_data;
         m_data->refc += 1;
     }
     else
@@ -613,6 +617,36 @@ Array<2,T>& Array<2,T>::operator= (Array &&that)
             m_data->refc += 1;
     }
     return *this;
+}
+
+
+template <typename T>
+void Array<2,T>::setCol(size_type j, const Array<1> &array) {
+    size_type n = qMin(array.size(), this->rows());
+    for (size_type k=0; k<n; ++k)
+        (*this)[k][j] = array[k];
+}
+
+
+template <typename T>
+void Array<2,T>::setCol(size_type j, const T &value) {
+    for (int k=0; k<this->rows(); ++k)
+        (*this)[k][j] = value;
+}
+
+
+template <typename T>
+void Array<2,T>::setRow(size_type j, const Array<1> &array) {
+    size_type n = qMin(array.size(), this->cols());
+    for (size_type k=0; k<n; ++k)
+        (*this)[j][k] = array[k];
+}
+
+
+template <typename T>
+void Array<2,T>::setRow(size_type j, const T &value) {
+    for (size_type k=0; k<this->cols(); ++k)
+        (*this)[j][k] = value;
 }
 
 
@@ -848,6 +882,8 @@ T min(const Array<D,T> &array) {
 
 template <size_t D, typename T> inline
 T max(const Array<D,T> &array) {
+    if (array.size() == 0)
+        return T(0);
     T ret = *array.begin();
     for (const auto &elem : array)
         if (elem > ret)

@@ -46,26 +46,27 @@ public:
     MultiLinearRegrPrivate(MultiLinearRegr *publ)
         : ObjectPrivate(publ)
         , valid(false)
+        , workspace(nullptr)
     { }
 
     ~MultiLinearRegrPrivate();
 
 
     bool valid;
-
-    size_t N, M;
     gsl_multifit_linear_workspace *workspace;
-    gsl_matrix *X;
-    gsl_matrix *cov;
+
+    double chisq;
+    size_t N, P;
 
     Array<1> a;
-    Array<1> w;
-    Array<1> x;
     Array<1> y;
+    Array<1> w;
+    Array<2> cov;
+    gsl_matrix_view X;
+    gsl_matrix_view cov_view;
     gsl_vector_view a_view;
-    gsl_vector_view w_view;
-    gsl_vector_view x_view;
     gsl_vector_view y_view;
+    gsl_vector_view w_view;
 };
 
 } // namespace Ksl

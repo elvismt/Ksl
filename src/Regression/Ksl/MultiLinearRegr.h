@@ -32,9 +32,17 @@ public:
 
     MultiLinearRegr();
 
-    void fitCsv(const Csv &csv);
+    MultiLinearRegr(const Array<2> &X, const Array<1> &y);
 
+    MultiLinearRegr(const Array<2> &X, const Array<1> &y, const Array<1> &w);
 
+    void fit(const Array<2> &X, const Array<1> &y);
+
+    void fit(const Array<2> &X, const Array<1> &y, const Array<1> &w);
+
+    Array<1> result() const;
+
+    Array<2> covariance() const;
 };
 
 } // namespace Ksl
