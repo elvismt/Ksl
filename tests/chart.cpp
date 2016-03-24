@@ -24,11 +24,11 @@ int main(int argc, char *argv[]) {
     regr.solve();
 
     // plot data and fitting line
-    chart.xyPlot("Data", vx, vy, XYPlot::Circles, Qt::black, Qt::green);
+    chart.plot("Data", vx, vy, "ro");
     // plot fitting line
-    chart.line("Fitted line", regr.result()[0], regr.result()[1], Qt::red);
+    chart.line("Fitted line", regr.result()[0], regr.result()[1], "r");
     // plot a fancy text label
-    chart.textLabel("KSL Rocks!", QPointF(30,150), Qt::red, 32.0);
+    chart.text("KSL Rocks!", QPointF(30,150), Qt::red, 32.0);
 
     chart.show();
     return app.exec();
