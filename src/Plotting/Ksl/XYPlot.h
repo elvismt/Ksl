@@ -47,28 +47,14 @@ public:
     )
 
 
-
-    XYPlot(const Array<1> &x, const Array<1> &y,
-           const QString &name="plot",
-           const QColor &stroke=Qt::blue,
-           const QColor &fill=Qt::red,
-           QObject *parent=0);
-
-    XYPlot(const Array<1> &x, const Array<1> &y,
-           Symbol symbol,
-           const QString &name="plot",
-           const QColor &stroke=Qt::blue,
-           const QColor &fill=Qt::red,
-           QObject *parent=0);
-
     XYPlot(const Array<1> &x, const Array<1> &y,
            const QString &style, const QString &name="plot",
            QObject *parent=0);
 
 
-    void setStyle(const QString &style);
-
     virtual void setData(const Array<1> &x, const Array<1> &y);
+
+    virtual void setStyle(const QString &style);
 
     virtual QRectF dataRect() const;
 
@@ -96,7 +82,7 @@ protected:
     virtual void paint(QPainter *painter);
 
     XYPlot(Ksl::ObjectPrivate *priv, const QString &name,
-           Symbol symbol, QObject *parent);
+           QObject *parent);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(XYPlot::Symbol)

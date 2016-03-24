@@ -25,51 +25,15 @@
 namespace Ksl {
 
 XYPlot::XYPlot(Ksl::ObjectPrivate *priv, const QString &name,
-               Symbol symbol, QObject *parent)
+               QObject *parent)
     : FigureItem(priv, name, parent)
-{
-    KSL_PUBLIC(XYPlot);
-    m->symbol = symbol;
-}
+{ }
 
 
 XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
-               const QString &name,
-               const QColor &stroke,
-               const QColor &fill,
+               const QString &style, const QString &name,
                QObject *parent)
-    : XYPlot(new XYPlotPrivate(this), name, Line, parent)
-{
-    KSL_PUBLIC(XYPlot);
-    m->pen.setColor(stroke);
-    m->pen.setWidthF(1.5);
-    m->brush = QBrush(fill);
-    setData(x, y);
-}
-
-
-XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
-               XYPlot::Symbol symbol,
-               const QString &name,
-               const QColor &stroke,
-               const QColor &fill,
-               QObject *parent)
-    : XYPlot(new XYPlotPrivate(this), name, symbol, parent)
-{
-    KSL_PUBLIC(XYPlot);
-    m->pen.setColor(stroke);
-    m->pen.setWidthF(1.5);
-    m->brush = QBrush(fill);
-    setData(x, y);
-}
-
-
-
-XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
-               const QString &style,
-               const QString &name,
-               QObject *parent)
-    : XYPlot(new XYPlotPrivate(this), name, Line, parent)
+    : XYPlot(new XYPlotPrivate(this), name, parent)
 {
     setStyle(style);
     setData(x, y);
@@ -230,31 +194,47 @@ void XYPlotPrivate::paintAreaUnder(QPainter *painter) {
         painter->strokePath(dataPath, pen);
 }
 
+
 void XYPlot::setStyle(const QString &style) {
     KSL_PUBLIC(XYPlot);
     Symbol symbol = Line;
     QPen pen(Qt::blue);
     QBrush brush(Qt::green);
     bool antialias = false;
+    int idx = 0;
 
     // Color
-    if (!style.isEmpty()) {
-        switch (style.at(0).toLatin1()) {
+    if (style.size() > idx) {
+        switch (style.at(idx).toLatin1()) {
             case 'r': pen.setColor(Qt::red); break;
             case 'g': pen.setColor(Qt::green); break;
             case 'b': pen.setColor(Qt::blue); break;
             case 'y': pen.setColor(Qt::yellow); break;
             default: break;
         }
+        ++idx;
     }
 
     // Symbol
-    if (style.size() > 1) {
-        switch (style.at(1).toLatin1()) {
-            case '-': symbol = Line; break;
+    if (style.size() > idx) {
+        switch (style.at(idx).toLatin1()) {
             case 'o': symbol = Circles; break;
+            case '^': symbol = Squares; break;
+            case '-': {
+                symbol = Line;
+                if (style.size() > idx+1) {
+                    char s = style.at(idx+1).toLatin1();
+                    if (QString("o^").contains(s)) {
+                        if (s == 'o') symbol |= Circles;
+                        if (s == '^') symbol |= Squares;
+                        ++idx;
+                    }
+                }
+                break;
+            }
             default: break;
         }
+        ++idx;
     }
 
     m->pen = pen;
@@ -262,6 +242,7 @@ void XYPlot::setStyle(const QString &style) {
     m->symbol = symbol;
     m->antialias = antialias;
 }
+
 
 QPen XYPlot::pen() const {
     KSL_PUBLIC(const XYPlot);

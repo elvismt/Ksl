@@ -31,9 +31,9 @@ PolyPlot::PolyPlot(const Array<1> &a, const QColor &color,
     KSL_PUBLIC(PolyPlot);
 
     m->pen.setColor(color);
-    m->pen.setWidth(2);
-    setParametes(a);
-    setLimits(xMin, xMax);
+    m->a = copy(a);
+    m->xMin = xMin;
+    m->xMax = xMax;
 }
 
 

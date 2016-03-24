@@ -109,24 +109,6 @@ XYScale* Chart::scale(const QString &name) {
 
 
 XYPlot* Chart::plot(const QString &name,
-                            const Array<1> &x, const Array<1> &y,
-                            XYPlot::Symbol symbol,
-                            const QColor &stroke,
-                            const QColor &fill,
-                            const QString &scaleName)
-{
-    KSL_PUBLIC(Chart);
-    if (m->xyPlots.contains(name))
-        return nullptr;
-
-    auto newPlot = new XYPlot(x, y, symbol, name, stroke, fill, this);
-    m->xyPlots[name] = newPlot;
-    scale(scaleName)->add(newPlot);
-    return newPlot;
-}
-
-
-XYPlot* Chart::plot(const QString &name,
                     const Array<1> &x, const Array<1> &y,
                     const QString &style,
                     const QString &scaleName)
