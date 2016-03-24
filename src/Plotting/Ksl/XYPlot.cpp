@@ -64,6 +64,18 @@ XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
 }
 
 
+
+XYPlot::XYPlot(const Array<1> &x, const Array<1> &y,
+               const QString &style,
+               const QString &name,
+               QObject *parent)
+    : XYPlot(new XYPlotPrivate(this), name, Line, parent)
+{
+    setStyle(style);
+    setData(x, y);
+}
+
+
 void XYPlot::setData(const Array<1> &x, const Array<1> &y) {
     KSL_PUBLIC(XYPlot);
     m->x = x;
@@ -216,6 +228,39 @@ void XYPlotPrivate::paintAreaUnder(QPainter *painter) {
     painter->fillPath(boundPath, brush);
     if (pen != Qt::NoPen)
         painter->strokePath(dataPath, pen);
+}
+
+void XYPlot::setStyle(const QString &style) {
+    KSL_PUBLIC(XYPlot);
+    Symbol symbol = Line;
+    QPen pen(Qt::blue);
+    QBrush brush(Qt::green);
+    bool antialias = false;
+
+    // Color
+    if (!style.isEmpty()) {
+        switch (style.at(0).toLatin1()) {
+            case 'r': pen.setColor(Qt::red); break;
+            case 'g': pen.setColor(Qt::green); break;
+            case 'b': pen.setColor(Qt::blue); break;
+            case 'y': pen.setColor(Qt::yellow); break;
+            default: break;
+        }
+    }
+
+    // Symbol
+    if (style.size() > 1) {
+        switch (style.at(1).toLatin1()) {
+            case '-': symbol = Line; break;
+            case 'o': symbol = Circles; break;
+            default: break;
+        }
+    }
+
+    m->pen = pen;
+    m->brush = brush;
+    m->symbol = symbol;
+    m->antialias = antialias;
 }
 
 QPen XYPlot::pen() const {

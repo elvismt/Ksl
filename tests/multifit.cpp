@@ -14,9 +14,9 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     Chart chart;
-    chart.xyScale()->axis(XYScale::LeftAxis)
+    chart.scale()->axis(XYScale::LeftAxis)
         ->setName("BUILDING VALUES");
-    chart.xyScale()->axis(XYScale::BottomAxis)
+    chart.scale()->axis(XYScale::BottomAxis)
         ->setName("SAMPLE ORDER");
 
 
@@ -51,8 +51,8 @@ int main(int argc, char *argv[])
 
     // plot comparison
     auto x = linspace(0.0, double(y.size()));
-    chart.xyPlot("value", x, y, XYPlot::Line, Qt::blue);
-    chart.xyPlot("fit value", x, y_fit, XYPlot::Line, Qt::red);
+    chart.plot("value", x, y, "bo");
+    chart.plot("fit value", x, y_fit, "r-");
 
     chart.show();
     return app.exec();

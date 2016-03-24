@@ -45,20 +45,25 @@ public:
 
     Figure* figure() const;
 
-    XYScale* xyScale(const QString &name="default-scale");
+    XYScale* scale(const QString &name="default-scale");
 
-    XYPlot* xyPlot(const QString &name,
-                   const Array<1> &x, const Array<1> &y,
-                   XYPlot::Symbol symbol=XYPlot::Line,
-                   const QColor &stroke=Qt::blue,
-                   const QColor &fill=Qt::red,
+    XYPlot* plot(const QString &name,
+                 const Array<1> &x, const Array<1> &y,
+                 XYPlot::Symbol symbol=XYPlot::Line,
+                 const QColor &stroke=Qt::blue,
+                 const QColor &fill=Qt::red,
+                 const QString &scaleName="default-scale");
+
+    XYPlot* plot(const QString &name,
+                 const Array<1> &x, const Array<1> &y,
+                 const QString &style,
+                 const QString &scaleName="default-scale");
+
+    XYPlot* plot(const QString &name) const;
+
+    TextPlot* text(const QString &text, const QPointF &pos,
+                   const QColor &stroke=Qt::blue, float rotation=0.0,
                    const QString &scaleName="default-scale");
-
-    XYPlot* xyPlot(const QString &name) const;
-
-    TextPlot* textLabel(const QString &text, const QPointF &pos,
-                             const QColor &stroke=Qt::blue, float rotation=0.0,
-                             const QString &scaleName="default-scale");
 
     LinePlot* line(const QString &name, double a, double b,
                    const QColor &stroke=Qt::blue,

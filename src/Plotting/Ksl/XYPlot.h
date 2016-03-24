@@ -61,6 +61,12 @@ public:
            const QColor &fill=Qt::red,
            QObject *parent=0);
 
+    XYPlot(const Array<1> &x, const Array<1> &y,
+           const QString &style, const QString &name="plot",
+           QObject *parent=0);
+
+
+    void setStyle(const QString &style);
 
     virtual void setData(const Array<1> &x, const Array<1> &y);
 

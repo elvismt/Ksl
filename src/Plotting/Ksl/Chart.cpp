@@ -96,7 +96,7 @@ Figure* Chart::figure() const {
 }
 
 
-XYScale* Chart::xyScale(const QString &name) {
+XYScale* Chart::scale(const QString &name) {
     KSL_PUBLIC(Chart);
     if (m->xyScales.contains(name))
         return m->xyScales[name];
@@ -108,7 +108,7 @@ XYScale* Chart::xyScale(const QString &name) {
 }
 
 
-XYPlot* Chart::xyPlot(const QString &name,
+XYPlot* Chart::plot(const QString &name,
                             const Array<1> &x, const Array<1> &y,
                             XYPlot::Symbol symbol,
                             const QColor &stroke,
@@ -119,14 +119,30 @@ XYPlot* Chart::xyPlot(const QString &name,
     if (m->xyPlots.contains(name))
         return nullptr;
 
-    auto newPlot = new XYPlot(x, y, symbol, name, stroke, fill);
+    auto newPlot = new XYPlot(x, y, symbol, name, stroke, fill, this);
     m->xyPlots[name] = newPlot;
-    xyScale(scaleName)->add(newPlot);
+    scale(scaleName)->add(newPlot);
     return newPlot;
 }
 
 
-XYPlot* Chart::xyPlot(const QString &name) const {
+XYPlot* Chart::plot(const QString &name,
+                    const Array<1> &x, const Array<1> &y,
+                    const QString &style,
+                    const QString &scaleName)
+{
+    KSL_PUBLIC(Chart);
+    if (m->xyPlots.contains(name))
+        return nullptr;
+
+    auto newPlot = new XYPlot(x, y, style, name, this);
+    m->xyPlots[name] = newPlot;
+    scale(scaleName)->add(newPlot);
+    return newPlot;
+}
+
+
+XYPlot* Chart::plot(const QString &name) const {
     KSL_PUBLIC(const Chart);
     if (m->xyPlots.contains(name))
         return m->xyPlots[name];
@@ -134,14 +150,14 @@ XYPlot* Chart::xyPlot(const QString &name) const {
 }
 
 
-TextPlot* Chart::textLabel(const QString &text, const QPointF &pos,
+TextPlot* Chart::text(const QString &text, const QPointF &pos,
                                       const QColor &stroke, float rotation,
                                       const QString &scaleName)
 {
-    auto item = xyScale(scaleName)->item(text);
+    auto item = scale(scaleName)->item(text);
     if (!item) {
         item = new TextPlot(text, pos, stroke, rotation, this);
-        xyScale(scaleName)->add(item);
+        scale(scaleName)->add(item);
         return static_cast<TextPlot*>(item);
     }
     return nullptr;
@@ -151,10 +167,10 @@ TextPlot* Chart::textLabel(const QString &text, const QPointF &pos,
 LinePlot* Chart::line(const QString &name, double a, double b,
                             const QColor &stroke, const QString &scaleName)
 {
-    auto item = xyScale(scaleName)->item(name);
+    auto item = scale(scaleName)->item(name);
     if (!item) {
         item = new LinePlot(a, b, stroke, name, this);
-        xyScale(scaleName)->add(item);
+        scale(scaleName)->add(item);
         return static_cast<LinePlot*>(item);
     }
     return nullptr;
@@ -165,10 +181,10 @@ PolyPlot* Chart::poly(const QString &name,
                             const Array<1> &a, double xMin, double xMax,
                             const QColor &stroke, const QString &scaleName)
 {
-    auto item = xyScale(scaleName)->item(name);
+    auto item = scale(scaleName)->item(name);
     if (!item) {
         item = new PolyPlot(a, stroke, xMin, xMax, name, this);
-        xyScale(scaleName)->add(item);
+        scale(scaleName)->add(item);
         return static_cast<PolyPlot*>(item);
     }
     return nullptr;
