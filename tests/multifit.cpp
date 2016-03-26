@@ -1,3 +1,4 @@
+
 #include <QApplication>
 #include <QDebug>
 
@@ -21,39 +22,27 @@ int main(int argc, char *argv[])
         ->setName("SAMPLE ORDER");
 
 
-    // File containing data
-    auto DATA = Csv("housing.data").matrix();
-
-    // Y values from training set
-    auto y = getcol(DATA, 13);
-    int N = DATA.rows();
-
-    // indices of data columns to use as parameters
-    Array<1,int> param = linspace<int>(0, 12);
-
-    // fill matrix with params
-    Array<2> X(N, param.size()+1);
-    X.setcol(0, 1.0);
-    for (int j=0; j<param.size(); ++j) {
-        X.coltocol(j+1, DATA, param[j]);
+    // Open file containing data
+    Csv csv("housing.data");
+    if (csv.empty()) {
+        cout << "CSV file not found";
+        return -1;
     }
 
     // Perform regression
-    auto c = MultiLineRegr(X, y).result();
+    MultiLineRegr regr(csv, linspace<int>(0, 12), 13);
 
     // create series of predicted values
-    auto y_fit = samesize(y);
-    for (int k=0; k<y_fit.size(); k++) {
-        double yk = c[0];
-        for (int l=1; l<c.size(); l++)
-            yk += c[l] * DATA[k][param[l-1]];
-        y_fit[k] = yk;
-    }
+    Array<1> y_data = csv.array(13);
+    Array<1> y_model(y_data.size());
+
+    for (int k=0; k<y_model.size(); k++)
+        y_model[k] = regr.model(k);
 
     // plot comparison
-    auto x = linspace(0.0, double(y.size()));
-    chart.plot("value", x, y, "bl");
-    chart.plot("fit value", x, y_fit, "rl");
+    auto x = linspace(0.0, double(y_data.size()));
+    chart.plot("value", x, y_data, "bl");
+    chart.plot("fit value", x, y_model, "rl");
 
     chart.show();
     return app.exec();

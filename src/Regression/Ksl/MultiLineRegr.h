@@ -22,12 +22,12 @@
 #define KSL_MULTILINEARREGR_H
 
 #include <Ksl/Object.h>
-#include <Ksl/Array.h>
+#include <Ksl/Csv.h>
 
 namespace Ksl {
 
 class KSL_EXPORT MultiLineRegr
-        : public Ksl::Object
+    : public Ksl::Object
 {
 public:
 
@@ -37,9 +37,21 @@ public:
 
     MultiLineRegr(const Array<2> &X, const Array<1> &y, const Array<1> &w);
 
+    MultiLineRegr(const Csv &csv, const Array<1,int> &columns, const Array<1> &y);
+
+    MultiLineRegr(const Csv &csv, const Array<1,int> &columns, int yCol);
+
+
     void fit(const Array<2> &X, const Array<1> &y);
 
     void fit(const Array<2> &X, const Array<1> &y, const Array<1> &w);
+
+    void fit(const Csv &csv, const Array<1,int> &columns, const Array<1> &y);
+
+    void fit(const Csv &csv, const Array<1,int> &columns, int yCol);
+
+
+    double model(int idx) const;
 
     Array<1> result() const;
 

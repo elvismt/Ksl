@@ -35,16 +35,44 @@ MultiLineRegr::MultiLineRegr(const Array<2> &X, const Array<1> &y)
 
 
 MultiLineRegr::MultiLineRegr(const Array<2> &X, const Array<1> &y,
-                                 const Array<1> &w)
+                             const Array<1> &w)
     : Ksl::Object(new MultiLineRegrPrivate(this))
 {
     fit(X, y, w);
 }
 
 
+MultiLineRegr::MultiLineRegr(const Csv &csv, const Array<1,int> &columns,
+                             const Array<1> &y)
+    : Ksl::Object(new MultiLineRegrPrivate(this))
+{
+    fit(csv, columns, y);
+}
+
+
+MultiLineRegr::MultiLineRegr(const Csv &csv, const Array<1,int> &columns,
+                             int yCol)
+    : Ksl::Object(new MultiLineRegrPrivate(this))
+{
+    fit(csv, columns, yCol);
+}
+
+
 MultiLineRegrPrivate::~MultiLineRegrPrivate() {
     if (workspace)
         gsl_multifit_linear_free(workspace);
+}
+
+
+Array<1> MultiLineRegr::result() const {
+    KSL_PUBLIC(const MultiLineRegr);
+    return m->a;
+}
+
+
+Array<2> MultiLineRegr::covariance() const {
+    KSL_PUBLIC(const MultiLineRegr);
+    return m->cov;
 }
 
 
@@ -72,7 +100,7 @@ void MultiLineRegr::fit(const Array<2> &X, const Array<1> &y)
 
 
 void MultiLineRegr::fit(const Array<2> &X, const Array<1> &y,
-                          const Array<1> &w)
+                        const Array<1> &w)
 {
     KSL_PUBLIC(MultiLineRegr);
     m->N = X.rows();
@@ -97,15 +125,51 @@ void MultiLineRegr::fit(const Array<2> &X, const Array<1> &y,
 }
 
 
-Array<1> MultiLineRegr::result() const {
-    KSL_PUBLIC(const MultiLineRegr);
-    return m->a;
+void MultiLineRegr::fit(const Csv &csv, const Array<1,int> &columns,
+                        const Array<1> &y)
+{
+    // File containing data
+    auto DATA = csv.matrix();
+    int N = DATA.rows();
+
+    // fill matrix with params
+    Array<2> X(N, columns.size()+1);
+    X.setcol(0, 1.0);
+    for (int j=0; j<columns.size(); ++j) {
+        X.coltocol(j+1, DATA, columns[j]);
+    }
+
+    // Perform regression
+    fit(X, y);
 }
 
 
-Array<2> MultiLineRegr::covariance() const {
-    KSL_PUBLIC(const MultiLineRegr);
-    return m->cov;
+void MultiLineRegr::fit(const Csv &csv, const Array<1,int> &columns, int yCol)
+{
+    // File containing data
+    auto DATA = csv.matrix();
+    int N = DATA.rows();
+    auto Y = getcol(DATA, yCol);
+
+    // fill matrix with params
+    Array<2> X(N, columns.size()+1);
+    X.setcol(0, 1.0);
+    for (int j=0; j<columns.size(); ++j) {
+        X.coltocol(j+1, DATA, columns[j]);
+    }
+
+    // Perform regression
+    fit(X, Y);
+}
+
+
+double MultiLineRegr::model(int idx) const {
+    KSL_PUBLIC(MultiLineRegr);
+
+    double yk = m->a[0];
+    for (int l=1; l<m->a.size(); l++)
+        yk += m->a[l] * gsl_matrix_get(&m->X.matrix, idx, l);
+    return yk;
 }
 
 } // namespace Ksl

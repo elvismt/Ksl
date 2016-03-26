@@ -42,6 +42,7 @@ public:
     virtual bool readAll(const QString &filePath,
                          bool hasHeader=true, char delimiter=' ');
 
+
     int rows() const;
 
     int cols() const;

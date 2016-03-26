@@ -38,7 +38,8 @@ Csv::Csv(const QString &filePath,
 
 
 bool Csv::readAll(const QString &filePath,
-               bool hasHeader, char delimiter) {
+                  bool hasHeader, char delimiter)
+{
     KSL_PUBLIC(Csv);
 
     m->filePath = filePath;
@@ -102,6 +103,8 @@ bool Csv::empty() const {
 
 int Csv::rows() const {
     KSL_PUBLIC(const Csv);
+    if (m->columns.isEmpty())
+        return 0;
     return m->columns[0].size();
 }
 
