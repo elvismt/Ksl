@@ -31,11 +31,19 @@ class KSL_EXPORT LineRegr
 {
 public:
 
+    LineRegr();
+
     LineRegr(const Array<1> &x, const Array<1> &y);
 
-    Array<1> result() const;
+    LineRegr(const Array<1> &x, const Array<1> &y,
+             const Array<1> &w);
 
-    void solve();
+    void fit(const Array<1> &x, const Array<1> &y);
+
+    void fit(const Array<1> &x, const Array<1> &y,
+             const Array<1> &w);
+
+    Array<1> result() const;
 };
 
 } // namespace Ksl

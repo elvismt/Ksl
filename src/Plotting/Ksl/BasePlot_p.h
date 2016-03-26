@@ -29,48 +29,49 @@
 // We mean it.
 //
 
-#ifndef KSL_XYPLOT_P_H
-#define KSL_XYPLOT_P_H
+#ifndef KSL_BASEPLOT_P_H
+#define KSL_BASEPLOT_P_H
 
-#include <Ksl/XYPlot.h>
+#include <Ksl/BasePlot.h>
 #include <Ksl/FigureItem_p.h>
 
 namespace Ksl {
 
-class XYPlotPrivate
+class BasePlotPrivate
     : public FigureItemPrivate
 {
 public:
 
-    XYPlotPrivate(XYPlot *publ)
+    BasePlotPrivate(BasePlot *publ)
         : FigureItemPrivate(publ)
-        , symbol(XYPlot::Line)
+        , symbol(BasePlot::Line)
         , antialias(true)
         , symbolRadius(2)
     { }
 
 
     void checkRanges();
-    void paintLine(QPainter *painter);
-    void paintCircles(QPainter *painter);
-    void paintLineCircles(QPainter *painter);
-    void paintSquares(QPainter *painter);
-    void paintLineSquares(QPainter *painter);
-    void paintAreaUnder(QPainter *painter);
+    void paintLine(FigureScale *scale, QPainter *painter);
+    void paintCircles(FigureScale *scale, QPainter *painter);
+    void paintLineCircles(FigureScale *scale, QPainter *painter);
+    void paintSquares(FigureScale *scale, QPainter *painter);
+    void paintLineSquares(FigureScale *scale, QPainter *painter);
+    void paintTriangles(FigureScale *scale, QPainter *painter);
+    void paintLineTriangles(FigureScale *scale, QPainter *painter);
 
 
-    XYPlot::Symbol symbol;
+    BasePlot::Symbol symbol;
     bool antialias;
     int symbolRadius;
     QPen pen;
     QBrush brush;
 
     Array<1> x, y;
-    size_t pointCount;
+    int pointCount;
     double xMin, xMax;
     double yMin, yMax;
 };
 
 } // namespace Ksl
 
-#endif // KSL_XYPLOT_P_H
+#endif // KSL_BASEPLOT_P_H

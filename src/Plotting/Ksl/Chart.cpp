@@ -27,7 +27,7 @@
 namespace Ksl {
 
 Chart::Chart(Ksl::ObjectPrivate *priv, const QString &title,
-                         int width, int height, QWidget *parent)
+             int width, int height, QWidget *parent)
     : QWidget(parent)
     , Ksl::Object(priv)
 {
@@ -36,7 +36,8 @@ Chart::Chart(Ksl::ObjectPrivate *priv, const QString &title,
     // Set out layout
     setWindowTitle(title);
     setMouseTracking(true);
-    setWindowIcon(QIcon(":/icons/icons/preferences-kcalc-constants.png"));
+    setWindowIcon(QIcon(
+        ":/icons/icons/preferences-kcalc-constants.png"));
     m->layout = new QVBoxLayout();
     setLayout(m->layout);
 
@@ -98,43 +99,44 @@ Figure* Chart::figure() const {
 
 XYScale* Chart::scale(const QString &name) {
     KSL_PUBLIC(Chart);
-    if (m->xyScales.contains(name))
-        return m->xyScales[name];
 
-    auto newScale = new XYScale(name);
-    m->xyScales[name] = newScale;
-    m->figureArea->figure()->add(newScale);
-    return newScale;
+    // If there is already a scale with this name
+    // return it
+    for (auto scl : m->xyScales)
+        if (scl->name() == name)
+            return scl;
+
+    // Otherwise create a new one
+    auto scl = new XYScale(name);
+    m->xyScales.append(scl);
+    m->figureArea->figure()->add(scl);
+    return scl;
 }
 
 
-XYPlot* Chart::plot(const QString &name,
-                    const Array<1> &x, const Array<1> &y,
-                    const QString &style,
-                    const QString &scaleName)
+Plot* Chart::plot(const QString &name,
+                  const Array<1> &x, const Array<1> &y,
+                  const QString &style,
+                  const QString &scaleName)
 {
     KSL_PUBLIC(Chart);
-    if (m->xyPlots.contains(name))
-        return nullptr;
 
-    auto newPlot = new XYPlot(x, y, style, name, this);
-    m->xyPlots[name] = newPlot;
+    // If there is already a scale with this name
+    // do nothing
+    for (auto plt : m->xyPlots)
+        if (plt->name() == name)
+            return nullptr;
+
+    auto newPlot = new Plot(x, y, style, name, this);
+    m->xyPlots.append(newPlot);
     scale(scaleName)->add(newPlot);
     return newPlot;
 }
 
 
-XYPlot* Chart::plot(const QString &name) const {
-    KSL_PUBLIC(const Chart);
-    if (m->xyPlots.contains(name))
-        return m->xyPlots[name];
-    return nullptr;
-}
-
-
 TextPlot* Chart::text(const QString &text, const QPointF &pos,
-                                      const QColor &stroke, float rotation,
-                                      const QString &scaleName)
+                      const QColor &stroke, float rotation,
+                      const QString &scaleName)
 {
     auto item = scale(scaleName)->item(text);
     if (!item) {
@@ -147,11 +149,11 @@ TextPlot* Chart::text(const QString &text, const QPointF &pos,
 
 
 LinePlot* Chart::line(const QString &name, double a, double b,
-                            const QColor &stroke, const QString &scaleName)
+                      const QString &style, const QString &scaleName)
 {
     auto item = scale(scaleName)->item(name);
     if (!item) {
-        item = new LinePlot(a, b, stroke, name, this);
+        item = new LinePlot(a, b, style, name, this);
         scale(scaleName)->add(item);
         return static_cast<LinePlot*>(item);
     }

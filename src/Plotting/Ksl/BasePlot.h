@@ -18,17 +18,15 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_XYPLOT_H
-#define KSL_XYPLOT_H
+#ifndef KSL_BASEPLOT_H
+#define KSL_BASEPLOT_H
 
-#include <Ksl/Array.h>
 #include <Ksl/FigureItem.h>
-#include <QPen>
-#include <QBrush>
+#include <Ksl/Array.h>
 
 namespace Ksl {
 
-class KSL_EXPORT XYPlot
+class KSL_EXPORT BasePlot
     : public FigureItem
 {
     Q_OBJECT
@@ -36,23 +34,13 @@ class KSL_EXPORT XYPlot
 public:
 
     enum SymbolEnum {
-        Line         = 0x00000001,
-        Circles      = 0x00000002,
-        Squares      = 0x00000004,
-        AreaUnder    = 0x00000008
+        Line       = 0x00000001,
+        Circles    = 0x00000002,
+        Squares    = 0x00000004,
+        Triangles  = 0x00000008
     };
-    Q_DECLARE_FLAGS(
-        Symbol,
-        SymbolEnum
-    )
+    Q_DECLARE_FLAGS(Symbol, SymbolEnum)
 
-
-    XYPlot(const Array<1> &x, const Array<1> &y,
-           const QString &style, const QString &name="plot",
-           QObject *parent=0);
-
-
-    virtual void setData(const Array<1> &x, const Array<1> &y);
 
     virtual void setStyle(const QString &style);
 
@@ -77,16 +65,18 @@ public slots:
 
     void setAntialias(bool antialias);
 
+
 protected:
 
-    virtual void paint(QPainter *painter);
+    BasePlot(Ksl::ObjectPrivate *priv, const QString &name,
+             QObject *parent);
 
-    XYPlot(Ksl::ObjectPrivate *priv, const QString &name,
-           QObject *parent);
+
+    void paint(QPainter *painter);
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(XYPlot::Symbol)
+Q_DECLARE_OPERATORS_FOR_FLAGS(BasePlot::Symbol)
 
 } // namespace Ksl
 
-#endif // KSL_XYPLOT_H
+#endif // KSL_BASEPLOT_H

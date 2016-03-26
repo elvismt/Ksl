@@ -21,7 +21,8 @@
 #ifndef KSL_MULTILINEARREGR_H
 #define KSL_MULTILINEARREGR_H
 
-#include <Ksl/Csv.h>
+#include <Ksl/Object.h>
+#include <Ksl/Array.h>
 
 namespace Ksl {
 

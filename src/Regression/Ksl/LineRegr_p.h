@@ -43,21 +43,11 @@ public:
 
     LineRegrPrivate(LineRegr *publ)
         : Ksl::ObjectPrivate(publ)
-        , c0(0.0), c1(0.0)
-        , cov_00(0.0), cov_01(0.0), cov_11(0.0)
-        , sumsq(0.0)
+        , result(6)
     { }
 
-    // ! BEGIN GSL CODE
-    static void gsl_fit_linear(const double *x, const double *y, const size_t n,
-                    double *c0, double *c1,
-                    double *cov_00, double *cov_01, double *cov_11,
-                    double *sumsq);
-    // ! END GSL CODE
 
-    double c0, c1;
-    double cov_00, cov_01, cov_11;
-    double sumsq;
+    Array<1> result;
     Array<1> x;
     Array<1> y;
 };

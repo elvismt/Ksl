@@ -47,9 +47,6 @@ class ChartPrivate
 {
 public:
 
-
-
-
     ChartPrivate(Chart *publ)
         : Ksl::ObjectPrivate(publ)
     { }
@@ -63,8 +60,9 @@ public:
     QVBoxLayout *layout;
     FigureWidget *figureArea;
     QToolBar *toolBar;
-    QHash<QString,XYScale*> xyScales;
-    QHash<QString,XYPlot*> xyPlots;
+
+    QList<XYScale*> xyScales;
+    QList<Plot*> xyPlots;
 };
 
 } // namespace Ksl

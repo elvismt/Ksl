@@ -21,10 +21,9 @@ int main(int argc, char *argv[]) {
 
     // create solver and perform regression
     LineRegr regr(vx, vy);
-    regr.solve();
 
     // plot data and fitting line
-    chart.plot("Data", vx, vy, "ro");
+    chart.plot("Data", vx, vy, "bo");
     // plot fitting line
     chart.line("Fitted line", regr.result()[0], regr.result()[1], "r");
     // plot a fancy text label

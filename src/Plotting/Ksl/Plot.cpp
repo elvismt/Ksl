@@ -18,40 +18,26 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_LINEPLOT_H
-#define KSL_LINEPLOT_H
-
-#include <Ksl/FigureItem.h>
+#include <Ksl/Plot_p.h>
 
 namespace Ksl {
 
-class KSL_EXPORT LinePlot
-    : public FigureItem
+Plot::Plot(const Array<1> &x, const Array<1> &y,
+           const QString &style, const QString &name,
+           QObject *parent)
+    : BasePlot(new PlotPrivate(this), name, parent)
 {
-public:
-
-    LinePlot(const QPointF &p1, const QPointF &p2,
-             const QString &style,
-             const QString &name="line", QObject *parent=0);
-
-    LinePlot(double x1, double y1, double x2, double y2,
-             const QString &style,
-             const QString &name="line", QObject *parent=0);
-
-    LinePlot(double linear, double angular,
-             const QString &style,
-             const QString &name="line", QObject *parent=0);
-
-public slots:
-
-    void setStyle(const QString &style);
+    setData(x, y);
+    setStyle(style);
+}
 
 
-protected:
-
-    virtual void paint(QPainter *painter);
-};
+void Plot::setData(const Array<1> &x, const Array<1> &y) {
+    KSL_PUBLIC(Plot);
+    m->x = x;
+    m->y = y;
+    m->checkRanges();
+    emit dataChanged(this);
+}
 
 } // namespace Ksl
-
-#endif // KSL_LINEPLOT_H

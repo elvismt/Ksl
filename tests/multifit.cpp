@@ -5,6 +5,7 @@
 using namespace std;
 
 #include <Ksl/Chart.h>
+#include <Ksl/Csv.h>
 #include <Ksl/MultiLineRegr.h>
 using namespace Ksl;
 
@@ -51,8 +52,8 @@ int main(int argc, char *argv[])
 
     // plot comparison
     auto x = linspace(0.0, double(y.size()));
-    chart.plot("value", x, y, "bo");
-    chart.plot("fit value", x, y_fit, "r-");
+    chart.plot("value", x, y, "bl");
+    chart.plot("fit value", x, y_fit, "rl");
 
     chart.show();
     return app.exec();

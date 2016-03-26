@@ -45,10 +45,12 @@ public:
     LinePlotPrivate(LinePlot *publ)
         : FigureItemPrivate(publ)
         , useParams(false)
+        , antialias(false)
     { }
 
 
     bool useParams;
+    bool antialias;
     double a, b;
 
     QPointF p1;

@@ -50,6 +50,7 @@ public:
         , scale(nullptr)
     { }
 
+
     bool visible;
     bool selected;
     bool rescalable;

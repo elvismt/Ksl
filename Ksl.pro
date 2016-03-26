@@ -54,8 +54,6 @@ HEADERS += \
     src/Plotting/Ksl/XYAxis_p.h \
     src/Plotting/Ksl/XYAxisSampler.h \
     src/Plotting/Ksl/XYAxisSampler_p.h \
-    src/Plotting/Ksl/XYPlot.h \
-    src/Plotting/Ksl/XYPlot_p.h \
     src/Plotting/Ksl/XYScale.h \
     src/Plotting/Ksl/XYScale_p.h \
     src/Plotting/Ksl/TextPlot.h \
@@ -68,6 +66,10 @@ HEADERS += \
     src/Regression/Ksl/LineRegr_p.h \
     src/Regression/Ksl/MultiLineRegr.h \
     src/Regression/Ksl/MultiLineRegr_p.h \
+    src/Plotting/Ksl/BasePlot.h \
+    src/Plotting/Ksl/BasePlot_p.h \
+    src/Plotting/Ksl/Plot.h \
+    src/Plotting/Ksl/Plot_p.h
 
 SOURCES += \
     tests/multifit.cpp \
@@ -81,13 +83,14 @@ SOURCES += \
     src/Plotting/Ksl/FigureWidget.cpp \
     src/Plotting/Ksl/XYAxis.cpp \
     src/Plotting/Ksl/XYAxisSampler.cpp \
-    src/Plotting/Ksl/XYPlot.cpp \
     src/Plotting/Ksl/XYScale.cpp \
     src/Plotting/Ksl/TextPlot.cpp \
     src/Plotting/Ksl/LinePlot.cpp \
     src/Plotting/Ksl/PolyPlot.cpp \
     src/Regression/Ksl/LineRegr.cpp \
     src/Regression/Ksl/MultiLineRegr.cpp \
+    src/Plotting/Ksl/BasePlot.cpp \
+    src/Plotting/Ksl/Plot.cpp
 
 RESOURCES += \
     src/QRC/Icons.qrc

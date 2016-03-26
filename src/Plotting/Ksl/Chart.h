@@ -24,7 +24,7 @@
 #include <QWidget>
 #include <Ksl/FigureWidget.h>
 #include <Ksl/XYScale.h>
-#include <Ksl/XYPlot.h>
+#include <Ksl/Plot.h>
 #include <Ksl/TextPlot.h>
 #include <Ksl/LinePlot.h>
 #include <Ksl/PolyPlot.h>
@@ -47,19 +47,17 @@ public:
 
     XYScale* scale(const QString &name="default-scale");
 
-    XYPlot* plot(const QString &name,
-                 const Array<1> &x, const Array<1> &y,
-                 const QString &style,
-                 const QString &scaleName="default-scale");
-
-    XYPlot* plot(const QString &name) const;
+    Plot* plot(const QString &name,
+               const Array<1> &x, const Array<1> &y,
+               const QString &style,
+               const QString &scaleName="default-scale");
 
     TextPlot* text(const QString &text, const QPointF &pos,
                    const QColor &stroke=Qt::blue, float rotation=0.0,
                    const QString &scaleName="default-scale");
 
     LinePlot* line(const QString &name, double a, double b,
-                   const QColor &stroke=Qt::blue,
+                   const QString &style="b",
                    const QString &scaleName="default-scale");
 
     PolyPlot* poly(const QString &name,
