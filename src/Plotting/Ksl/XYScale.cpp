@@ -79,6 +79,12 @@ XYAxis* XYScale::axis(Axis axis) {
     return nullptr;
 }
 
+void XYScale::axisLabels(const QString &xTitle, const QString &yTitle) {
+    KSL_PUBLIC(XYScale);
+    m->axisHash[BottomAxis]->setName(xTitle);
+    m->axisHash[LeftAxis]->setName(yTitle);
+}
+
 
 QBrush XYScale::backBrush() const {
     KSL_PUBLIC(const XYScale);

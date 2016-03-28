@@ -7,7 +7,8 @@ set(Ksl_HDRS
     Plotting/Ksl/FigureScale.h
     Plotting/Ksl/FigureItem.h
     Plotting/Ksl/XYScale.h
-    Plotting/Ksl/XYPlot.h
+    Plotting/Ksl/BasePlot.h
+    Plotting/Ksl/Plot.h
     Plotting/Ksl/XYAxis.h
     Plotting/Ksl/XYAxisSampler.h
     Plotting/Ksl/LinePlot.h
@@ -26,7 +27,8 @@ set(Ksl_SRCS
     Plotting/Ksl/FigureScale.cpp
     Plotting/Ksl/FigureItem.cpp
     Plotting/Ksl/XYScale.cpp
-    Plotting/Ksl/XYPlot.cpp
+    Plotting/Ksl/BasePlot.cpp
+    Plotting/Ksl/Plot.cpp
     Plotting/Ksl/XYAxis.cpp
     Plotting/Ksl/XYAxisSampler.cpp
     Plotting/Ksl/LinePlot.cpp

@@ -16,11 +16,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     Chart chart;
-    chart.scale()->axis(XYScale::LeftAxis)
-        ->setName("BUILDING VALUES");
-    chart.scale()->axis(XYScale::BottomAxis)
-        ->setName("SAMPLE ORDER");
-
+    chart.scale()->axisLabels("BUILDING VALUES", "SAMPLE ORDER");
 
     // Open file containing data
     Csv csv("housing.data");

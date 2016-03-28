@@ -45,9 +45,12 @@ public:
         AxisEnum
     )
 
+
     XYScale(const QString &name="scale");
 
     XYAxis* axis(Axis axis);
+
+    void axisLabels(const QString &xTitle, const QString &yTitle);
 
     void showAxis(Axis axis);
 
@@ -78,6 +81,7 @@ public:
     void setYbound(int yLowBund, int yUpBound);
 
     FigureItem* selectAt(const QPoint &pos);
+
 
 protected:
 
