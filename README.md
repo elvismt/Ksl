@@ -13,7 +13,7 @@ KSL's (growing) list of current features is:
    * Advanced Data Structures
    * Regression Engines
 
-The numerical routines in Ksl are primarily adapted from the Mighty GNU
+The numerical routines used Ksl classes are primarily from the Mighty GNU
 Scientific Library [GSL](http://www.gnu.org/software/gsl)
 We thank and congratulate it's developers for the great work. Ksl follows
 some of KDE's software design goals and all of it's philosophy but it is
@@ -24,16 +24,16 @@ not an official KDE component.
 The following minimal code
 
     #include <QApplication>
-    #include <Ksl/ChartWindow.h>
+    #include <Ksl/Chart.h>
 
     using namespace Ksl;
 
     int main(int argc, char *argv[]) {
         QApplication app(argc, argv);
-        ChartWindow chart;
+        Chart chart;
 
         auto x = linspace(-2*M_PI, 2*M_PI, 0.2);
-        chart.xyPlot("Cos(X)", x, cos(x));
+        chart.plot("Cos(X)", x, cos(x), "bl");
 
         chart.show();
         return app.exec();
@@ -43,116 +43,62 @@ produces a chart similar to the following
 
  ![](https://github.com/elvismt/Ksl/blob/master/tests/chart1.png)
 
-And you can make more elaborate ones with code like
-
-    #include <QApplication>
-    #include <Ksl/ChartWindow.h>
-
-    using namespace Ksl;
-
-    int main(int argc, char *argv[]) {
-        QApplication app(argc, argv);
-        ChartWindow chart;
-
-        auto x = linspace(-2*M_PI, 2*M_PI, 0.2);
-
-        chart.xyPlot("Sin(X)", x, sin(x), XYPlot::AreaUnder, QPen(Qt::blue));
-        QBrush sinBrush(QColor(0,0,255,100));
-        chart.xyPlot("Sin(X)")->setBrush(sinBrush);
-
-        chart.xyPlot("Cos(X)", x, cos(x), XYPlot::AreaUnder, QPen(Qt::red));
-        QBrush cosBrush(QColor(255,0,0,100));
-        chart.xyPlot("Cos(X)")->setBrush(cosBrush);
-
-        chart.show();
-        return app.exec();
-    }
-
-It gives you
-
- ![](https://github.com/elvismt/Ksl/blob/master/tests/chart2.png)
 
 # REGRESSION
 
-Whith the following program you can fit a strait line to a series of
-numerical data
+ 
+Whith the following program predits building values at boston city from
+a set of known parameters by using a linear regression
 
-    #include <QApplication>
-    #include <Ksl/ChartWindow.h>
-    #include <Ksl/LinReg.h>
+	#include <QApplication>
+	#include <QDebug>
 
-    using namespace Ksl;
+	#include <Ksl/Chart.h>
+	#include <Ksl/Csv.h>
+	#include <Ksl/MultiLineRegr.h>
+	using namespace Ksl;
 
-    int main(int argc, char *argv[]) {
-        QApplication app(argc, argv);
-        ChartWindow chart("Linear Regression");
 
-        // emulate noisy data
-        auto vx = linspace(0.0, 100.0);
-        auto vy = vx * 2.3;
-        vy += 20.0;
-        for (auto &y : vy)
-            y += -25.0 + 50.0*double(rand())/RAND_MAX;
+	int main(int argc, char *argv[])
+	{
+		QApplication app(argc, argv);
 
-        // create solver and perform regression
-        LinRegr regr(vx, vy);
-        regr.solve();
+		Chart chart;
+		chart.scale()->axis(XYScale::LeftAxis)
+			->setName("BUILDING VALUES");
+		chart.scale()->axis(XYScale::BottomAxis)
+			->setName("SAMPLE ORDER");
 
-        // plot data and fitting line
-        chart.xyPlot("Data", vx, vy, XYPlot::Circles, QPen(Qt::black), QBrush(Qt::green));
-        // plot fitting line
-        chart.line("Fitted line", regr.result()[0], regr.result()[1], QPen(Qt::red));
-        // plot a fancy text label
-        chart.textLabel("KSL Rocks!", QPointF(30,150), Qt::red, 32.0);
 
-        chart.show();
-        return app.exec();
-    }
+		// Open file containing data
+		Csv csv("housing.data");
+		if (csv.empty()) {
+			cout << "CSV file not found";
+			return -1;
+		}
 
-It gives you
+		// Perform regression
+		MultiLineRegr regr(csv, linspace<int>(0, 12), 13);
+
+		// create series of predicted values
+		Array<1> y_data = csv.array(13);
+		Array<1> y_model(y_data.size());
+
+		for (int k=0; k<y_model.size(); k++)
+			y_model[k] = regr.model(k);
+
+		// plot comparison
+		auto x = linspace(0.0, double(y_data.size()));
+		chart.plot("value", x, y_data, "bl");
+		chart.plot("fit value", x, y_model, "rl");
+
+		chart.show();
+		return app.exec();
+	}
+
+The result is the following:
 
  ![](https://github.com/elvismt/Ksl/blob/master/tests/regression.png)
-
-# VISUALIZE SCIENTIFIC DATA
-
-The following is a plot of an X-Ray diffraction experiment.
-
-![](https://github.com/elvismt/Ksl/blob/master/tests/diffraction.png)
-
-Code:
-
-    #include <QApplication>
-    #include <Ksl/ChartWindow.h>
-    #include <QFile>
-    #include <QTextStream>
-
-    using namespace Ksl;
-
-
-    int main(int argc, char *argv[]) {
-        QApplication app(argc, argv);
-        ChartWindow chart("X-Ray Diffraction Data");
-
-        QFile file("diffraction.dat");
-        QTextStream stream(&file);
-        Array<1> x(8501), y(8501);
-
-        file.open(QIODevice::Text|QIODevice::ReadOnly);
-        for (uint k=0; k<x.size(); ++k)
-            stream >> x[k] >> y[k];
-        file.close();
-
-        // normalize to y_max = 1.0
-        y /= max(y);
-
-        // In Qt4 use always QString::fromUtf8() for strings with non ASCII characters like Θ
-        chart.xyScale()->axis(XYScale::BottomAxis)->setName(QString::fromUtf8("2Θ (degrees)"));
-        chart.xyScale()->axis(XYScale::LeftAxis)->setName("Intensity (normalized)");
-        chart.xyPlot("X-Ray diffraction", x, y);
-        chart.show();
-
-        return app.exec();
-    }
 
 If you are looking for a C/Gtk solution for 2D visualization. Take a look
 at [slope](https://github.com/elvismt/slope)
