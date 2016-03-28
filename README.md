@@ -41,7 +41,7 @@ The following minimal code
 
 produces a chart similar to the following
 
- ![](https://github.com/elvismt/Ksl/blob/master/tests/chart1.png)
+ ![](https://github.com/elvismt/Ksl/blob/master/tests/chart.png)
 
 
 # REGRESSION
