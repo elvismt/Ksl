@@ -27,8 +27,9 @@
 namespace Ksl {
 
 // forward
-class FigureScale;
 class FigureItem;
+class FigureScale;
+class FigureLegend;
 
 
 class KSL_EXPORT Figure
@@ -44,6 +45,10 @@ public:
     QString name() const;
 
     QFont font() const;
+
+    FigureScale* mainScale() const;
+
+    FigureLegend* legend() const;
 
     virtual void add(FigureScale *scale);
 
@@ -84,6 +89,7 @@ public slots:
 signals:
 
     void changed(Figure *self);
+
     void errorOccured(Figure *self);
 
 

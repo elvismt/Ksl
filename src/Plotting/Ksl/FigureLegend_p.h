@@ -29,40 +29,33 @@
 // We mean it.
 //
 
-#ifndef KSL_FIGURE_P_H
-#define KSL_FIGURE_P_H
+#ifndef KSL_FIGURELEGEND_P_H
+#define KSL_FIGURELEGEND_P_H
 
-#include <Ksl/Figure.h>
+#include <Ksl/FigureLegend.h>
+#include <Ksl/FigureItem_p.h>
 
 namespace Ksl {
 
-class FigurePrivate
-    : public Ksl::ObjectPrivate
+class FigureLegendPrivate
+    : public FigureItemPrivate
 {
 public:
 
-    FigurePrivate(Figure *publ)
-        : Ksl::ObjectPrivate(publ)
-        , fillBack(true)
-        , onError(false)
-        , backBrush(QColor(210,210,210))
-        , mainScale(nullptr)
-        , legend(nullptr)
+    FigureLegendPrivate(FigureLegend *publ)
+        : FigureItemPrivate(publ)
+        , pen(Qt::black)
+        , brush(Qt::white)
+        , positionPolicy(FigureLegend::TopLeftInside)
     { }
 
-    ~FigurePrivate();
 
-
-    bool fillBack;
-    bool onError;
-    QBrush backBrush;
-    FigureScale *mainScale;
-    FigureLegend *legend;
-    QFont font;
-    QString name;
-    QList<FigureScale*> scaleList;
+    QPen pen;
+    QBrush brush;
+    FigureLegend::PositionPolicy positionPolicy;
+    QPointF position;
 };
 
 } // namespace Ksl
 
-#endif // KSL_FIGURE_P_H
+#endif // KSL_FIGURELEGEND_P_H

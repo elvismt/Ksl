@@ -69,10 +69,12 @@ HEADERS += \
     src/Plotting/Ksl/BasePlot.h \
     src/Plotting/Ksl/BasePlot_p.h \
     src/Plotting/Ksl/Plot.h \
-    src/Plotting/Ksl/Plot_p.h
+    src/Plotting/Ksl/Plot_p.h \
+    src/Plotting/Ksl/FigureLegend.h \
+    src/Plotting/Ksl/FigureLegend_p.h
 
 SOURCES += \
-    tests/chart.cpp \
+    tests/devtest.cpp \
     src/Core/Ksl/MemoryPool.cpp \
     src/Core/Ksl/Csv.cpp \
     src/Plotting/Ksl/CanvasWindow.cpp \
@@ -90,7 +92,8 @@ SOURCES += \
     src/Regression/Ksl/LineRegr.cpp \
     src/Regression/Ksl/MultiLineRegr.cpp \
     src/Plotting/Ksl/BasePlot.cpp \
-    src/Plotting/Ksl/Plot.cpp
+    src/Plotting/Ksl/Plot.cpp \
+    src/Plotting/Ksl/FigureLegend.cpp
 
 RESOURCES += \
     src/QRC/Icons.qrc

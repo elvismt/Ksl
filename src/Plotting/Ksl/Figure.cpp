@@ -20,7 +20,7 @@
 
 #include <Ksl/Figure_p.h>
 #include <Ksl/FigureScale.h>
-#include <Ksl/FigureItem.h>
+#include <Ksl/FigureLegend.h>
 
 namespace Ksl {
 
@@ -33,9 +33,23 @@ Figure::Figure(Ksl::ObjectPrivate *priv,
     m->name = name;
 }
 
+FigurePrivate::~FigurePrivate() {
+    if (legend) delete legend;
+}
+
 Figure::Figure(const QString &name, QObject *parent)
     : Figure(new FigurePrivate(this), name, parent)
 { }
+
+FigureScale* Figure::mainScale() const {
+    KSL_PUBLIC(const Figure);
+    return m->mainScale;
+}
+
+FigureLegend* Figure::legend() const {
+    KSL_PUBLIC(const Figure);
+    return m->legend;
+}
 
 void Figure::add(FigureScale *scale) {
     KSL_PUBLIC(Figure);
@@ -44,6 +58,12 @@ void Figure::add(FigureScale *scale) {
     if (!m->scaleList.contains(scale)) {
         m->scaleList.append(scale);
         scale->setFigure(this);
+        if (!m->mainScale) {
+            m->mainScale = scale;
+            if (!m->legend)
+                m->legend = new FigureLegend(this);
+            m->legend->setScale(scale);
+        }
         emit changed(this);
     }
 }
@@ -105,12 +125,21 @@ void Figure::paint(const QRect &rect, QPainter *painter) {
 
     if (m->fillBack)
         painter->fillRect(rect, m->backBrush);
+
+    // Paint main data objects
     for (auto scale : m->scaleList) {
         if (scale->visible())
             scale->paint(rect, painter);
         if (m->onError)
             break;
     }
+
+    // Paint legend if required
+    if (!m->onError && m->mainScale != nullptr)
+        if (m->legend->visible())
+            m->legend->paint(painter);
+
+    // If on an error state only prints a message
     if (m->onError) {
         painter->setPen(Qt::red);
         painter->drawText(
@@ -182,4 +211,4 @@ void Figure::informError() {
     emit errorOccured(this);
 }
 
-} // namespace Ksl 
+} // namespace Ksl
