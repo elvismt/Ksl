@@ -16,7 +16,9 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     Chart chart;
-    chart.scale()->axisLabels("BUILDING VALUES", "SAMPLE ORDER");
+    chart.scale()->axisLabels(
+        "Building Values",
+        "Sample Order");
 
     // Open file containing data
     Csv csv("housing.data");
@@ -37,8 +39,8 @@ int main(int argc, char *argv[])
 
     // plot comparison
     auto x = linspace(0.0, double(y_data.size()));
-    chart.plot("value", x, y_data, "bl");
-    chart.plot("fit value", x, y_model, "rl");
+    chart.plot("training set", x, y_data, "bl");
+    chart.plot("predicted value", x, y_model, "rl");
 
     chart.show();
     return app.exec();

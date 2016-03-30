@@ -29,6 +29,7 @@ namespace Ksl {
 
 // forward
 class Figure;
+class FigureLegend;
 class FigureScale;
 
 
@@ -49,6 +50,8 @@ public:
     bool visible() const;
 
     bool rescalable() const;
+
+    bool hasThumb() const;
 
     virtual QRectF dataRect() const;
 
@@ -76,10 +79,13 @@ signals:
 protected:
 
     friend class FigureScale;
+    friend class FigureLegend;
 
     virtual void setScale(FigureScale *scale);
 
     virtual void paint(QPainter *painter) = 0;
+
+    virtual void paintThumb(const QPoint &pos, QPainter *painter);
 
     FigureItem(Ksl::ObjectPrivate *priv,
                const QString &name, QObject *parent);

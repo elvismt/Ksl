@@ -24,6 +24,7 @@
 #include <QWidget>
 #include <Ksl/FigureWidget.h>
 #include <Ksl/XYScale.h>
+#include <Ksl/FigureLegend.h>
 #include <Ksl/Plot.h>
 #include <Ksl/TextPlot.h>
 #include <Ksl/LinePlot.h>

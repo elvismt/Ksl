@@ -27,7 +27,10 @@ namespace Ksl {
 BasePlot::BasePlot(Ksl::ObjectPrivate *priv,
                    const QString &name, QObject *parent)
     : FigureItem(priv, name, parent)
-{ }
+{
+    KSL_PUBLIC(BasePlot);
+    m->hasThumb = true;
+}
 
 
 QRectF BasePlot::dataRect() const {
@@ -198,6 +201,31 @@ void BasePlotPrivate::paintLineSquares(FigureScale *scale,
     }
     p1 = scale->map(QPointF(x[pointCount-1], y[pointCount-1]));
     painter->drawEllipse(p1.x()-halfEdge, p1.y()-halfEdge, edge, edge);
+}
+
+
+void BasePlot::paintThumb(const QPoint &pos,
+                          QPainter *painter)
+{
+    KSL_PUBLIC(BasePlot);
+    int rad = 3;
+    int twoRad = 2*rad;
+    painter->setPen(m->pen);
+    painter->setBrush(m->brush);
+    painter->setRenderHint(QPainter::Antialiasing, false);
+
+    if (m->symbol == Line) {
+        painter->drawLine(pos.x()-12, pos.y(), pos.x()+12, pos.y());
+    }
+    if (m->symbol == Circles) {
+        painter->drawEllipse(pos.x()-rad, pos.y()-rad, twoRad, twoRad);
+    }
+    if (m->symbol == (Line|Circles)) {
+        painter->drawLine(pos.x()-12, pos.y(), pos.x()+12, pos.y());
+        painter->setRenderHint(QPainter::Antialiasing, true);
+        painter->drawEllipse(pos.x()-rad, pos.y()-rad, twoRad, twoRad);
+        painter->setRenderHint(QPainter::Antialiasing, false);
+    }
 }
 
 

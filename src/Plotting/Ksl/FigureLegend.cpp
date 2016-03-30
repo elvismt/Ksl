@@ -19,6 +19,8 @@
  */
 
 #include <Ksl/FigureLegend_p.h>
+#include <Ksl/Figure.h>
+#include <Ksl/FigureScale.h>
 
 namespace Ksl {
 
@@ -48,6 +50,51 @@ void FigureLegend::setPosition(const QPointF &pos) {
 }
 
 
+void FigureLegendPrivate::evalRect(const QFontMetrics &fm) {
+    QRect scaleRect = scale->figureRect();
+    int width = 0;
+    int height = 0;
+    int txtHeight = fm.height();
+    int txtWidth;
+
+    for (auto scale : figure->scaleList()) {
+        for (auto item : scale->itemList()) {
+
+            if (!item->visible() || !item->hasThumb())
+                continue;
+
+            height += txtHeight;
+            txtWidth = fm.width(item->name());
+            if (txtWidth > width)
+                width = txtWidth;
+        }
+    }
+    rect.setWidth(width + 45);
+    rect.setHeight(height + fm.descent() + 2);
+
+    switch (positionPolicy) {
+        case FigureLegend::CustomPosition: {
+            QPoint pos = scale->map(position);
+            rect.setX(pos.x());
+            rect.setY(pos.y());
+            break;
+        }
+        case FigureLegend::BottomLeftInside:
+            rect.setX(scaleRect.right() - width - 55);
+            rect.setY(scaleRect.bottom() - rect.height() - 10);
+            break;
+        case FigureLegend::Below:
+            rect.setX((scaleRect.left() + scaleRect.right() - rect.width()) / 2);
+            rect.setY(scaleRect.bottom() + 3*txtHeight);
+            break;
+        default:
+            rect.setX(scaleRect.right() - width - 55);
+            rect.setY(scaleRect.top() + 10);
+            break;
+    }
+}
+
+
 void FigureLegend::paint(QPainter *painter) {
     KSL_PUBLIC(FigureLegend);
 
@@ -55,6 +102,31 @@ void FigureLegend::paint(QPainter *painter) {
     painter->setPen(m->pen);
     painter->setBrush(m->brush);
 
+    QFontMetrics fm = painter->fontMetrics();
+    m->evalRect(fm);
+    painter->drawRect(m->rect);
+
+    int txtHeight = fm.height();
+    int txtWidth;
+    int x = m->rect.left();
+    int y = m->rect.top() + txtHeight;
+
+    for (auto scale : m->figure->scaleList()) {
+        if (m->rect.height() == 0)
+            break;
+
+        for (auto item : scale->itemList()) {
+            if (!item->visible() || !item->hasThumb())
+                continue;
+
+            item->paintThumb(QPoint(x+20, y-txtHeight/3), painter);
+
+            painter->setPen(m->pen);
+            painter->setBrush(m->brush);
+            painter->drawText(x+40, y, item->name());
+            y += txtHeight;
+        }
+    }
 }
 
 } // namespace Ksl

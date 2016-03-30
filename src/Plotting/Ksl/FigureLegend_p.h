@@ -50,10 +50,13 @@ public:
     { }
 
 
+    void evalRect(const QFontMetrics &fm);
+
     QPen pen;
     QBrush brush;
     FigureLegend::PositionPolicy positionPolicy;
     QPointF position;
+    QRect rect;
 };
 
 } // namespace Ksl

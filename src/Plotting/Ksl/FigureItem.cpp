@@ -48,6 +48,11 @@ QString FigureItem::name() const {
     return m->name;
 }
 
+bool FigureItem::hasThumb() const {
+    KSL_PUBLIC(const FigureItem);
+    return m->hasThumb;
+}
+
 bool FigureItem::visible() const {
     KSL_PUBLIC(const FigureItem);
     return m->visible;
@@ -122,6 +127,15 @@ void FigureItem::setSelected(bool selected) {
         m->selected = selected;
         emit appearenceChanged(this);
     }
+}
+
+
+void FigureItem::paintThumb(const QPoint &pos,
+                            QPainter *painter)
+{
+    // pass
+    Q_UNUSED(pos)
+    Q_UNUSED(painter)
 }
 
 } // namespace Ksl 

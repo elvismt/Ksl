@@ -35,6 +35,7 @@ public:
     enum PositionPolicy {
         CustomPosition,
         TopLeftInside,
+        BottomLeftInside,
         Below
     };
 

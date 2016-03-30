@@ -45,6 +45,7 @@ public:
         : Ksl::ObjectPrivate(publ)
         , visible(true)
         , selected(false)
+        , hasThumb(false)
         , rescalable(true)
         , figure(nullptr)
         , scale(nullptr)
@@ -53,6 +54,7 @@ public:
 
     bool visible;
     bool selected;
+    bool hasThumb;
     bool rescalable;
     Figure *figure;
     FigureScale *scale;

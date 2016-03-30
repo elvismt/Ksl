@@ -73,6 +73,8 @@ protected:
 
 
     void paint(QPainter *painter);
+
+    void paintThumb(const QPoint &pos, QPainter *painter);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(BasePlot::Symbol)
