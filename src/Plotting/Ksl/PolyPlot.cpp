@@ -34,6 +34,7 @@ PolyPlot::PolyPlot(const Array<1> &a, const QColor &color,
     m->a = copy(a);
     m->xMin = xMin;
     m->xMax = xMax;
+    m->updateData();
 }
 
 
@@ -59,7 +60,8 @@ void PolyPlotPrivate::updateData() {
         return;
 
     // create arrays
-    x = linspace(xMin, xMax, (xMax-xMin)/pointCount);
+    double dx = (xMax-xMin)/pointCount;
+    x = linspace(xMin, xMax+dx, dx);
     y = samesize(x);
 
     // calculate functional values
@@ -68,8 +70,6 @@ void PolyPlotPrivate::updateData() {
     }
 
     // set data ranges
-    xMin = xMin;
-    xMax = xMax;
     yMin = y[0];
     yMax = y[0];
     for (uint32_t k=1; k<pointCount; ++k) {
