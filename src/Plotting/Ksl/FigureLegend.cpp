@@ -52,6 +52,7 @@ void FigureLegend::setPosition(const QPointF &pos) {
 
 void FigureLegendPrivate::evalRect(const QFontMetrics &fm) {
     QRect scaleRect = scale->figureRect();
+    int x, y;
     int width = 0;
     int height = 0;
     int txtHeight = fm.height();
@@ -69,29 +70,30 @@ void FigureLegendPrivate::evalRect(const QFontMetrics &fm) {
                 width = txtWidth;
         }
     }
-    rect.setWidth(width + 45);
-    rect.setHeight(height + fm.descent() + 2);
+    width = width + 45;
+    height = height + fm.descent() + 2;
 
     switch (positionPolicy) {
         case FigureLegend::CustomPosition: {
             QPoint pos = scale->map(position);
-            rect.setX(pos.x());
-            rect.setY(pos.y());
+            x = pos.x();
+            y = pos.y();
             break;
         }
         case FigureLegend::BottomLeftInside:
-            rect.setX(scaleRect.right() - width - 55);
-            rect.setY(scaleRect.bottom() - rect.height() - 10);
+            x = scaleRect.right() - width - 55;
+            y = scaleRect.bottom() - rect.height() - 10;
             break;
         case FigureLegend::Below:
-            rect.setX((scaleRect.left() + scaleRect.right() - rect.width()) / 2);
-            rect.setY(scaleRect.bottom() + 3*txtHeight);
+            x = (scaleRect.left() + scaleRect.right() - rect.width()) / 2;
+            y = scaleRect.bottom() + 3*txtHeight;
             break;
         default:
-            rect.setX(scaleRect.right() - width - 55);
-            rect.setY(scaleRect.top() + 10);
+            x = scaleRect.right() - width - 10;
+            y = scaleRect.top() + 10;
             break;
     }
+    rect = QRect(x, y, width, height);
 }
 
 
@@ -107,7 +109,6 @@ void FigureLegend::paint(QPainter *painter) {
     painter->drawRect(m->rect);
 
     int txtHeight = fm.height();
-    int txtWidth;
     int x = m->rect.left();
     int y = m->rect.top() + txtHeight;
 

@@ -60,7 +60,8 @@ void PolyPlotPrivate::updateData() {
         return;
 
     // create arrays
-    x = linspace(xMin, xMax, (xMax-xMin)/pointCount);
+    double dx = (xMax-xMin)/pointCount;
+    x = linspace(xMin, xMax+dx, dx);
     y = samesize(x);
 
     // calculate functional values
@@ -68,7 +69,7 @@ void PolyPlotPrivate::updateData() {
         y[k] = poly(a, x[k]);
     }
 
-    // check data ranges
+    // set data ranges
     yMin = y[0];
     yMax = y[0];
     for (uint32_t k=1; k<pointCount; ++k) {
