@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
 
     chart.plot("data", x, y, "rc");
     chart.line("fit", a[0], a[1], "bl");
+    chart.text(QString("line: %1 + %2 X").arg(a[0]).arg(a[1]), QPointF(8, 20));
 
     chart.show();
     return app.exec();

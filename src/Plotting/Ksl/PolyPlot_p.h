@@ -44,7 +44,7 @@ public:
 
     PolyPlotPrivate(PolyPlot *publ)
         : FigureItemPrivate(publ)
-        , antialias(true)
+        , antialias(false)
         , pointCount(50)
     { }
 

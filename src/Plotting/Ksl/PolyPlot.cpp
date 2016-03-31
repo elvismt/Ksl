@@ -34,6 +34,7 @@ PolyPlot::PolyPlot(const Array<1> &a, const QColor &color,
     m->a = copy(a);
     m->xMin = xMin;
     m->xMax = xMax;
+    m->updateData();
 }
 
 
@@ -67,9 +68,7 @@ void PolyPlotPrivate::updateData() {
         y[k] = poly(a, x[k]);
     }
 
-    // set data ranges
-    xMin = xMin;
-    xMax = xMax;
+    // check data ranges
     yMin = y[0];
     yMax = y[0];
     for (uint32_t k=1; k<pointCount; ++k) {
@@ -87,7 +86,11 @@ QPen PolyPlot::pen() const {
 
 void PolyPlot::setPen(const QPen &pen) {
     KSL_PUBLIC(PolyPlot);
-    m->pen = pen;
+    
+    if (m->pen != pen) {
+        m->pen = pen;
+        emit appearenceChanged(this);
+    }
 }
 
 
