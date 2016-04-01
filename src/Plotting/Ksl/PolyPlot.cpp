@@ -61,7 +61,7 @@ void PolyPlotPrivate::updateData() {
 
     // create arrays
     double dx = (xMax-xMin)/pointCount;
-    x = linspace(xMin, xMax+dx, dx);
+    x = linspace(xMin, xMax, dx);
     y = samesize(x);
 
     // calculate functional values

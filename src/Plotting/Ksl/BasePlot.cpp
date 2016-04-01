@@ -208,11 +208,10 @@ void BasePlot::paintThumb(const QPoint &pos,
                           QPainter *painter)
 {
     KSL_PUBLIC(BasePlot);
-    int rad = 3;
-    int twoRad = 2*rad;
+    const int rad = 2;
+    const int twoRad = 2*rad;
     painter->setPen(m->pen);
     painter->setBrush(m->brush);
-    painter->setRenderHint(QPainter::Antialiasing, false);
 
     if (m->symbol == Line) {
         painter->drawLine(pos.x()-12, pos.y(), pos.x()+12, pos.y());
@@ -222,9 +221,7 @@ void BasePlot::paintThumb(const QPoint &pos,
     }
     if (m->symbol == (Line|Circles)) {
         painter->drawLine(pos.x()-12, pos.y(), pos.x()+12, pos.y());
-        painter->setRenderHint(QPainter::Antialiasing, true);
         painter->drawEllipse(pos.x()-rad, pos.y()-rad, twoRad, twoRad);
-        painter->setRenderHint(QPainter::Antialiasing, false);
     }
 }
 

@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
 
     auto x = linspace(-2*M_PI, 2*M_PI, 0.2);
 
-    chart.plot("Sin(X)", x, sin(x), "bl");
+    chart.plot("Sin(X)", x, sin(x), "blc");
 
     chart.show();
     return app.exec();

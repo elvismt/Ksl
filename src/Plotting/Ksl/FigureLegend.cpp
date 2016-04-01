@@ -71,7 +71,7 @@ void FigureLegendPrivate::evalRect(const QFontMetrics &fm) {
         }
     }
     width = width + 45;
-    height = height + fm.descent() + 2;
+    height = height + fm.descent() + 3;
 
     switch (positionPolicy) {
         case FigureLegend::CustomPosition: {
