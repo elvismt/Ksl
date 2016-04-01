@@ -48,7 +48,7 @@ public:
 
     FigureWidgetPrivate(FigureWidget *publ)
         : Ksl::ObjectPrivate(publ)
-        , mouseRectPen(Qt::red)
+        , mouseRectPen(Qt::black)
         , sizeHint(500,350)
         , mouseOperation(FigureWidget::Zooming)
         , mousePressed(false)
