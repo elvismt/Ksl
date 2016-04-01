@@ -43,7 +43,6 @@ Chart::Chart(Ksl::ObjectPrivate *priv, const QString &title,
 
     // Set up tool bar
     m->toolBar = new QToolBar("toolBar", this);
-    m->toolBar->setMovable(false);
     m->layout->addWidget(m->toolBar);
 
     // Populate tool bar
