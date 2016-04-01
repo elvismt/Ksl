@@ -14,3 +14,4 @@ int main(int argc, char *argv[]) {
     chart.show();
     return app.exec();
 }
+

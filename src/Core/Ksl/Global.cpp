@@ -18,24 +18,12 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_GLOBAL_H
-#define KSL_GLOBAL_H
+#include <Ksl/Global.h>
+#include <cstdio>
 
-#include <QObject>
-#include <QTextStream>
+QTextStream qin(stdin);
+QTextStream qout(stdout);
+QTextStream qerr(stderr);
 
-#define KSL_BEGIN_NAMESPACE namespace Ksl {
-#define KSL_END_NAMESPACE } // namespace Ksl
-#define KSL_BEGIN_MATH_NAMESPACE namespace Ksl { namespace Math {
-#define KSL_END_MATH_NAMESPACE }} // namespace Ksl::Math
-#define KSL_BEGIN_PLOT_NAMESPACE namespace Ksl { namespace Plot {
-#define KSL_END_PLOT_NAMESPACE }} // namespace Ksl::Plot
-
-#define KSL_EXPORT
-
-extern QTextStream qin;
-extern QTextStream qout;
-extern QTextStream qerr;
-
-#endif // KSL_GLOBAL_H
+/* Ksl/Global.h */
 

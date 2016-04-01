@@ -380,11 +380,13 @@ Array<1,T> array1D(const QList<T> &qlst)
 template <typename T> inline
 std::ostream& operator << (std::ostream &out, const Array<1,T> &array)
 {
-    out << "[ ";
-    for (size_t k=0; k<array.size()-1; ++k) {
+    int n = array.size()-1;
+    out << '[';
+    for (int k=0; k<n; ++k) {
         out << array[k] << ", ";
     }
-    out << array[array.size()-1] << " ]";
+    if (n>=0) out << array[n];
+    out << ']';
     return out;
 }
 
@@ -392,11 +394,13 @@ std::ostream& operator << (std::ostream &out, const Array<1,T> &array)
 template <typename T> inline
 QTextStream& operator << (QTextStream &out, const Array<1,T> &array)
 {
-    out << "[ ";
-    for (size_t k=0; k<array.size()-1; ++k) {
+    int n = array.size()-1;
+    out << '[';
+    for (int k=0; k<n; ++k) {
         out << array[k] << ", ";
     }
-    out << array[array.size()-1] << " ]";
+    if (n>=0) out << array[n];
+    out << ']';
     return out;
 }
 
@@ -404,11 +408,13 @@ QTextStream& operator << (QTextStream &out, const Array<1,T> &array)
 template <typename T> inline
 QDebug operator << (QDebug out, const Array<1,T> &array)
 {
-    out << "[ ";
-    for (size_t k=0; k<array.size()-1; ++k) {
+    int n = array.size()-1;
+    out << '[';
+    for (int k=0; k<n; ++k) {
         out << array[k] << ", ";
     }
-    out << array[array.size()-1] << " ]";
+    if (n>=0) out << array[n];
+    out << ']';
     return out;
 }
 
@@ -818,10 +824,12 @@ template <typename T> inline
 std::ostream& operator<< (std::ostream &out, const Array<2,T> &array)
 {
     for (int i=0; i<array.rows(); ++i) {
-        out << "| ";
-        for (int j=0; j<array.cols()-1; ++j)
+        int n = array.cols()-1;
+        out << '[';
+        for (int j=0; j<n; ++j)
             out << array[i][j]  << ", ";
-        out << array[i][array.cols()-1] << " |" << std::endl;
+        if (n >= 0) out << array[i][n];
+        out << ']' << std::endl;
     }
     return out;
 }
@@ -830,10 +838,12 @@ template <typename T> inline
 QTextStream& operator<< (QTextStream &out, const Array<2,T> &array)
 {
     for (int i=0; i<array.rows(); ++i) {
-        out << "| ";
-        for (int j=0; j<array.cols()-1; ++j)
+        int n = array.cols()-1;
+        out << '[';
+        for (int j=0; j<n; ++j)
             out << array[i][j]  << ", ";
-        out << array[i][array.cols()-1] << " |" << std::endl;
+        if (n >= 0) out << array[i][n];
+        out << "]\n";
     }
     return out;
 }
@@ -842,10 +852,12 @@ template <typename T> inline
 QDebug operator<< (QDebug out, const Array<2,T> &array)
 {
     for (int i=0; i<array.rows(); ++i) {
-        out << "| ";
-        for (int j=0; j<array.cols()-1; ++j)
+        int n = array.cols()-1;
+        out << '[';
+        for (int j=0; j<n; ++j)
             out << array[i][j]  << ", ";
-        out << array[i][array.cols()-1] << " |" << '\n';
+        if (n >= 0) out << array[i][n];
+        out << "]\n";
     }
     return out;
 }

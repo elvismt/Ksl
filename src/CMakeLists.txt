@@ -24,6 +24,7 @@ set(Ksl_HDRS
 )
 
 set(Ksl_SRCS
+    Core/Ksl/Global.cpp
     Core/Ksl/Csv.cpp
     Plotting/Ksl/Figure.cpp
     Plotting/Ksl/FigureScale.cpp
