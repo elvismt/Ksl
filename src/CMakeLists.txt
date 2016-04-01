@@ -12,6 +12,7 @@ set(Ksl_HDRS
     Plotting/Ksl/FigureLegend.h
     Plotting/Ksl/XYAxis.h
     Plotting/Ksl/XYAxisSampler.h
+    Plotting/Ksl/FigureLegend.h
     Plotting/Ksl/LinePlot.h
     Plotting/Ksl/TextPlot.h
     Plotting/Ksl/PolyPlot.h
@@ -33,6 +34,7 @@ set(Ksl_SRCS
     Plotting/Ksl/FigureLegend.cpp
     Plotting/Ksl/XYAxis.cpp
     Plotting/Ksl/XYAxisSampler.cpp
+    Plotting/Ksl/FigureLegend.cpp
     Plotting/Ksl/LinePlot.cpp
     Plotting/Ksl/TextPlot.cpp
     Plotting/Ksl/PolyPlot.cpp

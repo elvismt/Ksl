@@ -87,7 +87,11 @@ QPen PolyPlot::pen() const {
 
 void PolyPlot::setPen(const QPen &pen) {
     KSL_PUBLIC(PolyPlot);
-    m->pen = pen;
+    
+    if (m->pen != pen) {
+        m->pen = pen;
+        emit appearenceChanged(this);
+    }
 }
 
 
