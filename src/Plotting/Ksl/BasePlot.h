@@ -42,7 +42,7 @@ public:
     Q_DECLARE_FLAGS(Symbol, SymbolEnum)
 
 
-    virtual void setStyle(const QString &style);
+    virtual void setStyle(const char *style);
 
     virtual QRectF dataRect() const;
 

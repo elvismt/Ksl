@@ -60,9 +60,6 @@ public:
     QVBoxLayout *layout;
     FigureWidget *figureArea;
     QToolBar *toolBar;
-
-    QList<XYScale*> xyScales;
-    QList<Plot*> xyPlots;
 };
 
 } // namespace Ksl

@@ -82,11 +82,9 @@ Chart::Chart(const QString &title,
 
 
 ChartPrivate::~ChartPrivate() {
-    // Clean up
-    for (auto scale : xyScales)
+    for (auto scale : figureArea->figure()->scaleList()) {
         delete scale;
-    for (auto plot : xyPlots)
-        delete plot;
+    }
 }
 
 
@@ -99,35 +97,33 @@ Figure* Chart::figure() const {
 XYScale* Chart::scale(const QString &name) {
     KSL_PUBLIC(Chart);
 
-    // If there is already a scale with this name
-    // return it
-    for (auto scl : m->xyScales)
-        if (scl->name() == name)
-            return scl;
-
-    // Otherwise create a new one
-    auto scl = new XYScale(name);
-    m->xyScales.append(scl);
-    m->figureArea->figure()->add(scl);
-    return scl;
+    auto scale = m->figureArea->figure()->scale(name);
+    if (!scale) {
+        scale = new XYScale(name);
+        m->figureArea->figure()->add(scale);
+    }
+    return static_cast<XYScale*>(scale);
 }
 
 
-Plot* Chart::plot(const QString &name,
-                  const Array<1> &x, const Array<1> &y,
-                  const QString &style,
+Plot* Chart::plot(const Array<1> &x, const Array<1> &y,
+                  const char *style,
+                  const QString &name,
                   const QString &scaleName)
 {
-    KSL_PUBLIC(Chart);
-
-    // If there is already a scale with this name
-    // do nothing
-    for (auto plt : m->xyPlots)
-        if (plt->name() == name)
-            return nullptr;
-
     auto newPlot = new Plot(x, y, style, name, this);
-    m->xyPlots.append(newPlot);
+    scale(scaleName)->add(newPlot);
+    return newPlot;
+}
+
+
+Plot* Chart::plot(const Array<1> &y,
+                  const char *style,
+                  const QString &name,
+                  const QString &scaleName)
+{
+    auto x = linspace(0.0, double(y.size()));
+    auto newPlot = new Plot(x, y, style, name, this);
     scale(scaleName)->add(newPlot);
     return newPlot;
 }
@@ -137,40 +133,30 @@ TextPlot* Chart::text(const QString &text, const QPointF &pos,
                       const QColor &stroke, float rotation,
                       const QString &scaleName)
 {
-    auto item = scale(scaleName)->item(text);
-    if (!item) {
-        item = new TextPlot(text, pos, stroke, rotation, this);
-        scale(scaleName)->add(item);
-        return static_cast<TextPlot*>(item);
-    }
-    return nullptr;
+    auto newText = new TextPlot(text, pos, QPen(stroke), rotation, this);
+    scale(scaleName)->add(newText);
+    return newText;
 }
 
 
-LinePlot* Chart::line(const QString &name, double a, double b,
-                      const QString &style, const QString &scaleName)
+LinePlot* Chart::line(double a, double b,
+                      const QString &style,
+                      const QString &name,
+                      const QString &scaleName)
 {
-    auto item = scale(scaleName)->item(name);
-    if (!item) {
-        item = new LinePlot(a, b, style, name, this);
-        scale(scaleName)->add(item);
-        return static_cast<LinePlot*>(item);
-    }
-    return nullptr;
+    auto newLine = new LinePlot(a, b, style, name, this);
+    scale(scaleName)->add(newLine);
+    return newLine;
 }
 
 
-PolyPlot* Chart::poly(const QString &name,
-                            const Array<1> &a, double xMin, double xMax,
-                            const QColor &stroke, const QString &scaleName)
+PolyPlot* Chart::poly(const Array<1> &a, double xMin, double xMax,
+                      const char *style, const QString &name,
+                      const QString &scaleName)
 {
-    auto item = scale(scaleName)->item(name);
-    if (!item) {
-        item = new PolyPlot(a, stroke, xMin, xMax, name, this);
-        scale(scaleName)->add(item);
-        return static_cast<PolyPlot*>(item);
-    }
-    return nullptr;
+    auto newPoly = new PolyPlot(a, xMin, xMax, style, name, this);
+    scale(scaleName)->add(newPoly);
+    return newPoly;
 }
 
 

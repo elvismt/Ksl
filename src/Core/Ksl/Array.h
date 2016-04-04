@@ -295,7 +295,7 @@ Array<1,T>& Array<1,T>::operator= (Array<1,T> &&that)
  *******************************************/
 
 
-template <typename T> inline
+template <typename T=double> inline
 Array<1,T> linspace(T min, T max, T step=T(1))
 {
     Array<1,T> ret(int((max-min)/step)+1);
@@ -308,7 +308,7 @@ Array<1,T> linspace(T min, T max, T step=T(1))
 }
 
 
-template <typename T> inline
+template <typename T=double> inline
 Array<1,T> randspace(size_t size, T max=T(1))
 {
     Array<1,T> ret(size);
@@ -319,21 +319,21 @@ Array<1,T> randspace(size_t size, T max=T(1))
 }
 
 
-template <typename T>
+template <typename T=double>
 Array<1,T> samesize(const Array<1,T> &array)
 {
     return std::move(Array<1,T>(array.size()));
 }
 
 
-template <typename T>
+template <typename T=double>
 Array<1,T> minsize(const Array<1,T> &a1, const Array<1,T> &a2)
 {
     return std::move(Array<1,T>(qMin(a1.size(), a2.size())));
 }
 
 
-template <typename T>
+template <typename T=double>
 Array<1,T> maxsize(const Array<1,T> &a1, const Array<1,T> &a2)
 {
     return std::move(Array<1,T>(qMax(a1.size(), a2.size())));

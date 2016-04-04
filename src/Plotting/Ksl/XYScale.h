@@ -50,6 +50,8 @@ public:
 
     XYAxis* axis(Axis axis);
 
+    FigureLegend* legend() const;
+
     void axisLabels(const QString &xTitle, const QString &yTitle);
 
     void showAxis(Axis axis);

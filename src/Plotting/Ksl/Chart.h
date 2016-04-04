@@ -29,6 +29,7 @@
 #include <Ksl/TextPlot.h>
 #include <Ksl/LinePlot.h>
 #include <Ksl/PolyPlot.h>
+#include <Ksl/FeaturePlot.h>
 
 namespace Ksl {
 
@@ -46,25 +47,30 @@ public:
 
     Figure* figure() const;
 
-    XYScale* scale(const QString &name="default-scale");
+    XYScale* scale(const QString &name="xy-scale");
 
-    Plot* plot(const QString &name,
-               const Array<1> &x, const Array<1> &y,
-               const QString &style,
-               const QString &scaleName="default-scale");
+    Plot* plot(const Array<1> &x, const Array<1> &y,
+               const char *style="kor",
+               const QString &name="plot",
+               const QString &scaleName="xy-scale");
+
+    Plot* plot(const Array<1> &y,
+               const char *style="kor",
+               const QString &name="plot",
+               const QString &scaleName="xy-scale");
 
     TextPlot* text(const QString &text, const QPointF &pos,
                    const QColor &stroke=Qt::blue, float rotation=0.0,
-                   const QString &scaleName="default-scale");
+                   const QString &scaleName="xy-scale");
 
-    LinePlot* line(const QString &name, double a, double b,
-                   const QString &style="b",
-                   const QString &scaleName="default-scale");
+    LinePlot* line(double a, double b,
+                   const QString &style="b", const QString &name="line",
+                   const QString &scaleName="xy-scale");
 
-    PolyPlot* poly(const QString &name,
-                   const Array<1> &a, double xMin, double xMax,
-                   const QColor &stroke=Qt::blue,
-                   const QString &scaleName="default-scale");
+    PolyPlot* poly(const Array<1> &a, double xMin=-2.0, double xMax=2.0,
+                   const char *style="kor",
+                   const QString &name="polynomial",
+                   const QString &scaleName="xy-scale");
 
 
 public slots:

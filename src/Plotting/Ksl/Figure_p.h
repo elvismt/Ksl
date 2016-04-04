@@ -48,7 +48,14 @@ public:
         , backBrush(QColor(210,210,210))
         , mainScale(nullptr)
         , legend(nullptr)
-    { }
+#ifdef Q_OS_LINUX
+        , font("Sans", 9)
+#endif
+    {
+#ifdef Q_OS_LINUX
+        font.setHintingPreference(QFont::PreferNoHinting);
+#endif
+    }
 
     ~FigurePrivate();
 

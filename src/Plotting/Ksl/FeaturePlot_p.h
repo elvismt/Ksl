@@ -18,25 +18,33 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KSL_PLOT_P_H
-#define KSL_PLOT_P_H
+#ifndef KSL_FEATUREPLOT_P_H
+#define KSL_FEATUREPLOT_P_H
 
-#include <Ksl/Plot.h>
-#include <Ksl/BasePlot_p.h>
+#include <Ksl/FeaturePlot.h>
+#include <Ksl/FigureItem_p.h>
 
 namespace Ksl {
 
-class PlotPrivate
-    : public BasePlotPrivate
+class FeaturePlotPrivate
+    : public FigureItemPrivate
 {
 public:
 
-    PlotPrivate(BasePlot *publ)
-        : BasePlotPrivate(publ)
+    FeaturePlotPrivate(FeaturePlot *publ)
+        : FigureItemPrivate(publ)
     { }
 
+
+    void paintErrorsBars(QPainter *painter);
+
+    QList<PlotSample> samples;
+
+    double xMin, xMax;
+    double yMin, yMax;
+    int pointCount;
 };
 
 } // namespace Ksl
 
-#endif // KSL_PLOT_P_H
+#endif // KSL_FEATUREPLOT_P_H

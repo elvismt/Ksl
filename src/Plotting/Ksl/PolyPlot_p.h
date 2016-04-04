@@ -33,35 +33,24 @@
 #define KSL_POLYPLOT_P_H
 
 #include <Ksl/PolyPlot.h>
-#include <Ksl/FigureItem_p.h>
+#include <Ksl/BasePlot_p.h>
 
 namespace Ksl {
 
 class PolyPlotPrivate
-    : public FigureItemPrivate
+    : public BasePlotPrivate
 {
 public:
 
     PolyPlotPrivate(PolyPlot *publ)
-        : FigureItemPrivate(publ)
-        , antialias(false)
-        , pointCount(60)
-    { }
+        : BasePlotPrivate(publ)
+    {
+        pointCount = 50;
+    }
 
 
     void updateData();
-
-
-    bool antialias;
-    uint32_t pointCount;
-
-    QPen pen;
-
     Array<1> a;
-    Array<1> x, y;
-
-    double xMin, xMax;
-    double yMin, yMax;
 };
 
 } // namespace Ksl

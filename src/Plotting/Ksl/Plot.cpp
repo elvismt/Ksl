@@ -23,7 +23,7 @@
 namespace Ksl {
 
 Plot::Plot(const Array<1> &x, const Array<1> &y,
-           const QString &style, const QString &name,
+           const char *style, const QString &name,
            QObject *parent)
     : BasePlot(new PlotPrivate(this), name, parent)
 {

@@ -23,17 +23,18 @@
 
 namespace Ksl {
 
-PolyPlot::PolyPlot(const Array<1> &a, const QColor &color,
+PolyPlot::PolyPlot(const Array<1> &a,
                    double xMin, double xMax,
-                   const QString &name, QObject *parent)
-    : FigureItem(new PolyPlotPrivate(this), name, parent)
+                   const char *style,
+                   const QString &name,
+                   QObject *parent)
+    : BasePlot(new PolyPlotPrivate(this), name, parent)
 {
     KSL_PUBLIC(PolyPlot);
-
-    m->pen.setColor(color);
     m->a = copy(a);
     m->xMin = xMin;
     m->xMax = xMax;
+    setStyle(style);
     m->updateData();
 }
 
@@ -65,54 +66,16 @@ void PolyPlotPrivate::updateData() {
     y = samesize(x);
 
     // calculate functional values
-    for (uint32_t k=0; k<pointCount; ++k) {
+    for (int k=0; k<pointCount; ++k) {
         y[k] = poly(a, x[k]);
     }
 
     // set data ranges
     yMin = y[0];
     yMax = y[0];
-    for (uint32_t k=1; k<pointCount; ++k) {
+    for (int k=1; k<pointCount; ++k) {
         if (y[k] < yMin) yMin = y[k];
         if (y[k] > yMax) yMax = y[k];
-    }
-}
-
-
-QPen PolyPlot::pen() const {
-    KSL_PUBLIC(const PolyPlot);
-    return m->pen;
-}
-
-
-void PolyPlot::setPen(const QPen &pen) {
-    KSL_PUBLIC(PolyPlot);
-    
-    if (m->pen != pen) {
-        m->pen = pen;
-        emit appearenceChanged(this);
-    }
-}
-
-
-QRectF PolyPlot::dataRect() const {
-    KSL_PUBLIC(const PolyPlot);
-    return QRectF(m->xMin, m->yMin,
-                  m->xMax - m->xMin,
-                  m->yMax - m->yMin);
-}
-
-
-void PolyPlot::paint(QPainter *painter) {
-    KSL_PUBLIC(PolyPlot);
-    painter->setRenderHint(QPainter::Antialiasing, m->antialias);
-    painter->setPen(m->pen);
-
-    QPoint p1 = m->scale->map(QPointF(m->x[0], m->y[0]));
-    for (uint32_t k=1; k<m->pointCount; ++k) {
-        QPoint p2 = m->scale->map(QPointF(m->x[k], m->y[k]));
-        painter->drawLine(p1, p2);
-        p1 = p2;
     }
 }
 

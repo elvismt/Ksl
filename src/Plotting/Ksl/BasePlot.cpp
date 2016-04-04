@@ -226,69 +226,72 @@ void BasePlot::paintThumb(const QPoint &pos,
 }
 
 
-void BasePlot::setStyle(const QString &style) {
+void BasePlot::setStyle(const char *style) {
     KSL_PUBLIC(BasePlot);
     Symbol symbol = Line;
-    QPen pen(Qt::blue);
-    QBrush brush(Qt::green);
-    bool antialias = false;
+    QPen pen(Qt::black);
+    QBrush brush(Qt::red);
+    bool antialias = true;
+    float width = 1.0;
     int idx = 0;
 
-    // Color
-    if (style.size() > idx) {
-        switch (style.at(idx).toLatin1()) {
-            case 'k': pen.setColor(Qt::black); break;
-            case 'w': pen.setColor(Qt::white); break;
-            case 'r': pen.setColor(Qt::red); break;
-            case 'g': pen.setColor(Qt::green); break;
-            case 'b': pen.setColor(Qt::blue); break;
-            case 'y': pen.setColor(Qt::yellow); break;
-            default: break;
+    // Parse color
+    if (style != nullptr && style[idx] != '\0') {
+        switch (style[idx]) {
+            case 'k': { pen.setColor(Qt::black); brush.setColor(Qt::black); } break;
+            case 'w': { pen.setColor(Qt::white); brush.setColor(Qt::white); } break;
+            case 'r': { pen.setColor(Qt::red); brush.setColor(Qt::red); } break;
+            case 'g': { pen.setColor(Qt::green); brush.setColor(Qt::green); } break;
+            case 'b': { pen.setColor(Qt::blue); brush.setColor(Qt::blue); } break;
+            case 'y': { pen.setColor(Qt::yellow); brush.setColor(Qt::yellow); } break;
+            case 'c': { pen.setColor(Qt::cyan); brush.setColor(Qt::cyan); } break;
+            case 'm': { pen.setColor(Qt::magenta); brush.setColor(Qt::magenta); } break;
         }
-        ++idx;
+        idx += 1;
     }
 
-    // Symbol
-    if (style.size() > idx) {
-        switch (style.at(idx).toLatin1()) {
-            case 'c': symbol = Circles; break;
+    // Parse symbol
+    if (style != nullptr && style[idx] != '\0') {
+        switch (style[idx]) {
+            case 'o': symbol = Circles; break;
             case 's': symbol = Squares; break;
-            case 't': symbol = Triangles; break;
-            case 'l': {
+            case '^': symbol = Triangles; break;
+            case '-': {
                 symbol = Line;
-                if (style.size() > idx+1) {
-                    QChar s = style.at(idx+1);
-                    if (QString("cst").contains(s)) {
-                        if (s == 'c') symbol |= Circles;
-                        if (s == 's') symbol |= Squares;
-                        if (s == 't') symbol |= Triangles;
-                        ++idx;
+                if (style[idx+1] != '\0') {
+                    switch (style[idx+1]) {
+                        case 'o': { symbol |= Circles; idx+=1; } break;
+                        case 's': { symbol |= Squares; idx+=1; } break;
+                        case '^': { symbol |= Triangles; idx+=1; } break;
                     }
                 }
                 break;
             }
-            default: break;
+        }
+        idx += 1;
+    }
+
+    // Parse fill color
+    if (style != nullptr && style[idx] != '\0') {
+        switch (style[idx]) {
+            case 'k': { brush.setColor(Qt::black); } break;
+            case 'w': { brush.setColor(Qt::white); } break;
+            case 'r': { brush.setColor(Qt::red); } break;
+            case 'g': { brush.setColor(Qt::green); } break;
+            case 'b': { brush.setColor(Qt::blue); } break;
+            case 'y': { brush.setColor(Qt::yellow); } break;
+            case 'c': { brush.setColor(Qt::cyan); } break;
+            case 'm': { brush.setColor(Qt::magenta); } break;
         }
         ++idx;
     }
 
-    // Line width
-    if (style.size() > idx) {
-        bool ok;
-        int width = QString(style.at(idx)).toInt(&ok);
-        if (ok)
-            pen.setWidth(width);
-        ++idx;
-    }
-
-    // Antialiasing
-    if (style.size() > idx) {
-        if (style.at(idx) == 'a')
-            antialias = true;
+    if (symbol == Line) {
+        width = 1.5;
+        pen.setWidthF(width);
     }
 
     m->pen = pen;
-    brush.setColor(pen.color());
     m->brush = brush;
     m->symbol = symbol;
     m->antialias = antialias;

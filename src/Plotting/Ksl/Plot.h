@@ -33,7 +33,7 @@ class KSL_EXPORT Plot
 public:
 
     Plot(const Array<1> &x, const Array<1> &y,
-         const QString &style, const QString &name="plot",
+         const char *style="kor", const QString &name="plot",
          QObject *parent=0);
 
 
