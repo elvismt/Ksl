@@ -49,7 +49,7 @@ public:
         , mainScale(nullptr)
         , legend(nullptr)
 #ifdef Q_OS_LINUX
-        , font("Sans", 8)
+        , font("Sans", 9)
 #endif // Q_OS_LINUX
     { }
 
