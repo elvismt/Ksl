@@ -107,8 +107,8 @@ void BasePlotPrivate::paintLine(FigureScale *scale,
 void BasePlotPrivate::paintCircles(FigureScale *scale,
                                    QPainter *painter)
 {
-    const int rad = symbolRadius;
-    const int twoRad = 2 * symbolRadius;
+    const float rad = symbolRadius;
+    const float twoRad = 2.0 * symbolRadius;
 
     QPoint p1 = scale->map(QPointF(x[0], y[0]));
     painter->drawEllipse(p1.x() - rad, p1.y() - rad, twoRad, twoRad);
@@ -131,8 +131,8 @@ void BasePlotPrivate::paintCircles(FigureScale *scale,
 void BasePlotPrivate::paintLineCircles(FigureScale *scale,
                                        QPainter *painter)
 {
-    const int rad = symbolRadius;
-    const int twoRad = 2 * symbolRadius;
+    const float rad = symbolRadius;
+    const float twoRad = 2.0 * symbolRadius;
 
     QPoint p1 = scale->map(QPointF(x[0], y[0]));
 
@@ -158,8 +158,8 @@ void BasePlotPrivate::paintLineCircles(FigureScale *scale,
 void BasePlotPrivate::paintSquares(FigureScale *scale,
                                    QPainter *painter)
 {
-    const int edge = symbolRadius + 1;
-    const int halfEdge = edge / 2;
+    const float edge = symbolRadius - 1.0;
+    const float halfEdge = edge / 2.0;
 
     QPoint p1 = scale->map(QPointF(x[0], y[0]));
     painter->drawRect(p1.x()-halfEdge, p1.y()-halfEdge, edge, edge);
@@ -181,8 +181,8 @@ void BasePlotPrivate::paintSquares(FigureScale *scale,
 void BasePlotPrivate::paintLineSquares(FigureScale *scale,
                                        QPainter *painter)
 {
-    const int edge = symbolRadius + 1;
-    const int halfEdge = edge / 2;
+    const float edge = symbolRadius - 1.0;
+    const float halfEdge = edge / 2.0;
 
     QPoint p1 = scale->map(QPointF(x[0], y[0]));
 

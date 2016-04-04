@@ -46,7 +46,7 @@ public:
         : FigureItemPrivate(publ)
         , symbol(BasePlot::Line)
         , antialias(false)
-        , symbolRadius(3)
+        , symbolRadius(2.5)
     { }
 
 
@@ -62,7 +62,7 @@ public:
 
     BasePlot::Symbol symbol;
     bool antialias;
-    int symbolRadius;
+    float symbolRadius;
     QPen pen;
     QBrush brush;
 

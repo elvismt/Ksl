@@ -49,13 +49,9 @@ public:
         , mainScale(nullptr)
         , legend(nullptr)
 #ifdef Q_OS_LINUX
-        , font("Sans", 9)
-#endif
-    {
-#ifdef Q_OS_LINUX
-        font.setHintingPreference(QFont::PreferNoHinting);
-#endif
-    }
+        , font("Sans", 8)
+#endif // Q_OS_LINUX
+    { }
 
     ~FigurePrivate();
 
