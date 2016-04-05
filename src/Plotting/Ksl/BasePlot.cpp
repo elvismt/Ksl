@@ -231,7 +231,7 @@ void BasePlot::setStyle(const char *style) {
     Symbol symbol = Line;
     QPen pen(Qt::black);
     QBrush brush(Qt::red);
-    bool antialias = false;
+    bool antialias = true;
     float width = 1.0;
     int idx = 0;
 
@@ -286,12 +286,10 @@ void BasePlot::setStyle(const char *style) {
         ++idx;
     }
 
-    /*
     if (symbol == Line) {
         width = 1.5;
         pen.setWidthF(width);
     }
-    */
 
     m->pen = pen;
     m->brush = brush;

@@ -7,7 +7,8 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     Chart chart;
 
-    chart.plot(randspace(5000), "kor");
+    chart.plot(randspace(100), "kor");
+    chart.plot(randspace(100), "b-");
 
     chart.show();
     return app.exec();
