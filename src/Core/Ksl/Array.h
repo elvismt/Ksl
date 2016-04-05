@@ -112,11 +112,15 @@ private:
 template <typename T> inline
 void Array<1,T>::_alloc(size_type size)
 {
-    m_data = (SharedData*) std::malloc(sizeof(SharedData));
-    m_data->data = (pointer) std::malloc(size * sizeof(data_type));
-    m_data->size = size;
-    m_data->maxsize = size;
-    m_data->refc = 1;
+    if (size > 0) {
+        m_data = (SharedData*) std::malloc(sizeof(SharedData));
+        m_data->data = (pointer) std::malloc(size * sizeof(data_type));
+        m_data->size = size;
+        m_data->maxsize = size;
+        m_data->refc = 1;
+    } else {
+        m_data = nullptr;
+    }
 }
 
 
@@ -162,7 +166,7 @@ void Array<1,T>::reserve(size_type maxsize) {
         m_data->size = 0;
     }
     else if (maxsize > m_data->maxsize) {
-        m_data->data = (pointer) realloc(
+        m_data->data = (pointer) std::realloc(
             m_data->data, maxsize * sizeof(data_type));
         m_data->maxsize = maxsize;
     }
@@ -171,13 +175,11 @@ void Array<1,T>::reserve(size_type maxsize) {
 
 template <typename T> inline
 void Array<1,T>::append(const data_type &value) {
-    if (!m_data)
-        reserve(10);
+    if (!m_data || m_data->maxsize < 12) {
+        reserve(12);
+    }
     else if (m_data->maxsize == m_data->size) {
-        if (m_data->maxsize < 12)
-            reserve(12);
-        else
-            reserve(4*m_data->size/3);
+        reserve(4*m_data->size/3);
     }
     m_data->data[m_data->size] = value;
     m_data->size += 1;
@@ -189,7 +191,7 @@ void Array<1,T>::squeeze() {
     if (!m_data)
         return;
     if (m_data->maxsize > m_data->size) {
-        m_data->data = (pointer) realloc(
+        m_data->data = (pointer) std::realloc(
             m_data->data, m_data->size * sizeof(data_type));
         m_data->maxsize = m_data->size;
     }
@@ -325,7 +327,7 @@ Array<1,T> randspace(int size, T max=T(1))
 {
     Array<1,T> ret(size);
     for (auto &elem : ret) {
-        elem = max * T(rand())/RAND_MAX;
+        elem = T(double(max) * double(rand())/RAND_MAX);
     }
     return std::move(ret);
 }
@@ -479,6 +481,9 @@ public:
     iterator end() { return m_data ? m_data->data[0] + (m_data->rows*m_data->cols) : nullptr; }
     const_iterator begin() const { return m_data ? m_data->data[0] : nullptr; }
     const_iterator end() const { return m_data ? m_data->data[0] + (m_data->rows*m_data->cols) : nullptr; }
+    
+    pointer c_ptr() { return m_data ? m_data->data[0] : nullptr; }
+    const_pointer c_ptr() const { return m_data ? m_data->data[0] + (m_data->rows*m_data->cols) : nullptr; }
 
     void setcol(size_type j, const data_type &value);
     void setcol(size_type j, const Array<1> &array);
@@ -511,14 +516,19 @@ private:
 template <typename T> inline
 void Array<2,T>::_alloc(size_type m, size_type n)
 {
-    m_data = new SharedData();
-    m_data->data = new pointer[m];
-    m_data->data[0] = new data_type[m*n];
-    m_data->rows = m;
-    m_data->cols = n;
-    m_data->refc = 1;
-    for (size_type k=1; k<m; ++k)
-        m_data->data[k] = m_data->data[k-1] + n;
+    if (m > 0 && n > 0) {
+        m_data = (SharedData*) std::malloc((std::size_t) sizeof(SharedData));
+        m_data->data = (pointer_pointer) std::malloc((std::size_t) m*sizeof(pointer));
+        m_data->data[0] = (pointer) std::malloc((std::size_t) m*n*sizeof(data_type));
+        m_data->rows = m;
+        m_data->cols = n;
+        m_data->refc = 1;
+        for (size_type k=1; k<m; ++k) {
+            m_data->data[k] = m_data->data[k-1] + n;
+        }
+    } else {
+        m_data = nullptr;
+    }
 }
 
 
@@ -528,9 +538,9 @@ void Array<2,T>::_free()
     if (m_data) {
         m_data->refc -= 1;
         if (m_data->refc == 0) {
-            delete[] m_data->data[0];
-            delete[] m_data->data;
-            delete m_data;
+            std::free(m_data->data[0]);
+            std::free(m_data->data);
+            std::free(m_data);
         }
         m_data = nullptr;
     }
