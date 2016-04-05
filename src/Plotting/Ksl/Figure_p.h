@@ -45,7 +45,7 @@ public:
         : Ksl::ObjectPrivate(publ)
         , fillBack(true)
         , onError(false)
-        , backBrush(QColor(210,210,210))
+        , backBrush(QColor(200,200,200))
         , mainScale(nullptr)
         , legend(nullptr)
 #ifdef Q_OS_LINUX

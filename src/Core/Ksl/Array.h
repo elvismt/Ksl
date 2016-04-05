@@ -36,20 +36,20 @@ namespace Ksl {
 /*****************************************************
  * All array types in Ksl are specializations
  * this class template
- ****************************************************/
-template <size_t D, typename T=double> class Array{};
+ *****************************************************/
+template <int D, typename T=double> class Array{};
 
 
 /*****************************************************
  * This is the 1D (Vector) Array type
- ****************************************************/
+ *****************************************************/
 template <typename T>
 class Array<1,T>
 {
 public:
 
     typedef T data_type;
-    typedef size_t size_type;
+    typedef int size_type;
     typedef T* pointer;
     typedef const T* const_pointer;
     typedef T& reference;
@@ -112,8 +112,8 @@ private:
 template <typename T> inline
 void Array<1,T>::_alloc(size_type size)
 {
-    m_data = (SharedData*) malloc(sizeof(SharedData));
-    m_data->data = (pointer) malloc(size * sizeof(data_type));
+    m_data = (SharedData*) std::malloc(sizeof(SharedData));
+    m_data->data = (pointer) std::malloc(size * sizeof(data_type));
     m_data->size = size;
     m_data->maxsize = size;
     m_data->refc = 1;
@@ -126,8 +126,8 @@ void Array<1,T>::_free()
     if (m_data) {
         m_data->refc -= 1;
         if (m_data->refc == 0) {
-            free(m_data->data);
-            free(m_data);
+            std::free(m_data->data);
+            std::free(m_data);
         }
         m_data = nullptr;
     }
@@ -136,6 +136,9 @@ void Array<1,T>::_free()
 
 template <typename T> inline
 void Array<1,T>::resize(size_type newsize) {
+    if (newsize <= 0)
+        return;
+
     if (!m_data) {
         _alloc(newsize);
     }
@@ -151,11 +154,14 @@ void Array<1,T>::resize(size_type newsize) {
 
 template <typename T> inline
 void Array<1,T>::reserve(size_type maxsize) {
+    if (maxsize <= 0)
+        return;
+
     if (!m_data) {
         _alloc(maxsize);
         m_data->size = 0;
     }
-    else if (maxsize > 0 && maxsize > m_data->maxsize) {
+    else if (maxsize > m_data->maxsize) {
         m_data->data = (pointer) realloc(
             m_data->data, maxsize * sizeof(data_type));
         m_data->maxsize = maxsize;
@@ -171,7 +177,7 @@ void Array<1,T>::append(const data_type &value) {
         if (m_data->maxsize < 12)
             reserve(12);
         else
-            reserve( 4 * m_data->size / 3 );
+            reserve(4*m_data->size/3);
     }
     m_data->data[m_data->size] = value;
     m_data->size += 1;
@@ -193,10 +199,11 @@ void Array<1,T>::squeeze() {
 template <typename T>
 Array<1,T>::Array(size_type n)
 {
-    if (n <= 0)
-        m_data = nullptr;
-    else
+    if (n > 0) {
         _alloc(n);
+    } else {
+        m_data = nullptr;
+    }
 }
 
 
@@ -208,8 +215,9 @@ Array<1,T>::Array(size_type n, const data_type &value)
         for (auto &elem : *this)
             elem = value;
     }
-    else
+    else {
         m_data = nullptr;
+    }
 }
 
 
@@ -218,8 +226,9 @@ Array<1,T>::Array(const Array &that)
 {
     if (that.m_data) {
         m_data = that.m_data;
-        if (m_data)
+        if (m_data) {
             m_data->refc += 1;
+        }
     }
     else {
         m_data = nullptr;
@@ -232,8 +241,9 @@ Array<1,T>::Array(Array &&that)
 {
     if (that.m_data) {
         m_data = that.m_data;
-        if (m_data)
+        if (m_data) {
             m_data->refc += 1;
+        }
     }
     else {
         m_data = nullptr;
@@ -270,8 +280,9 @@ Array<1,T>& Array<1,T>::operator= (const Array<1,T> &that)
     if (m_data != that.m_data) {
         _free();
         m_data = that.m_data;
-        if (m_data)
+        if (m_data) {
             m_data->refc += 1;
+        }
     }
     return *this;
 }
@@ -283,8 +294,9 @@ Array<1,T>& Array<1,T>::operator= (Array<1,T> &&that)
     if (m_data != that.m_data) {
         _free();
         m_data = that.m_data;
-        if (m_data)
+        if (m_data) {
             m_data->refc += 1;
+        }
     }
     return *this;
 }
@@ -299,7 +311,7 @@ template <typename T=double> inline
 Array<1,T> linspace(T min, T max, T step=T(1))
 {
     Array<1,T> ret(int((max-min)/step)+1);
-    size_t k = 0;
+    int k = 0;
     for (auto &elem : ret) {
         elem = min + k*step;
         ++k;
@@ -309,7 +321,7 @@ Array<1,T> linspace(T min, T max, T step=T(1))
 
 
 template <typename T=double> inline
-Array<1,T> randspace(size_t size, T max=T(1))
+Array<1,T> randspace(int size, T max=T(1))
 {
     Array<1,T> ret(size);
     for (auto &elem : ret) {
@@ -346,7 +358,7 @@ Array<1,T> maxsize(const Array<1,T> &a1, const Array<1,T> &a2)
 
 
 template <typename T, typename Iterator> inline
-Array<1,T> array1D(const Iterator &begin, size_t size)
+Array<1,T> array1D(const Iterator &begin, int size)
 {
     Array<1,T> ret(size);
     Iterator iter = begin;
@@ -428,7 +440,7 @@ class Array<2,T>
 public:
 
     typedef T data_type;
-    typedef size_t size_type;
+    typedef int size_type;
     typedef T* pointer;
     typedef const T* const_pointer;
     typedef T** pointer_pointer;
@@ -528,10 +540,11 @@ void Array<2,T>::_free()
 template <typename T>
 Array<2,T>::Array(size_type m, size_type n)
 {
-    if (m>0 && n>0)
+    if (m>0 && n>0) {
         _alloc(m,n);
-    else
+    } else {
         m_data = 0;
+    }
 }
 
 
@@ -540,11 +553,13 @@ Array<2,T>::Array(size_type m, size_type n, const data_type &value)
 {
     if (m>0 && n>0) {
         _alloc(m,n);
-        for (auto &elem : *this)
+        for (auto &elem : *this) {
             elem = value;
+        }
     }
-    else
+    else {
         m_data = 0;
+    }
 }
 
 
@@ -555,8 +570,9 @@ Array<2,T>::Array(const Array &that)
         m_data = that.m_data;
         m_data->refc += 1;
     }
-    else
+    else {
         m_data = nullptr;
+    }
 }
 
 
@@ -567,8 +583,9 @@ Array<2,T>::Array(Array &&that)
         m_data = that.m_data;
         m_data->refc += 1;
     }
-    else
+    else {
         m_data = nullptr;
+    }
 }
 
 
@@ -614,8 +631,9 @@ Array<2,T>& Array<2,T>::operator= (const Array &that)
     if (m_data != that.m_data) {
         _free();
         m_data = that.m_data;
-        if (m_data)
+        if (m_data) {
             m_data->refc += 1;
+        }
     }
     return *this;
 }
@@ -627,8 +645,9 @@ Array<2,T>& Array<2,T>::operator= (Array &&that)
     if (m_data != that.m_data) {
         _free();
         m_data = that.m_data;
-        if (m_data)
+        if (m_data) {
             m_data->refc += 1;
+        }
     }
     return *this;
 }
@@ -644,7 +663,7 @@ void Array<2,T>::setcol(size_type j, const Array<1> &array) {
 
 template <typename T>
 void Array<2,T>::setcol(size_type j, const T &value) {
-    for (int k=0; k<this->rows(); ++k)
+    for (size_type k=0; k<this->rows(); ++k)
         (*this)[k][j] = value;
 }
 
@@ -713,17 +732,17 @@ Array<2,T> Array<2,T>::submat(int i, int j, int rows, int cols) {
 
 
 template <typename T>
-Array<1,T> getrow(const Array<2,T> &array, size_t k)
+Array<1,T> getrow(const Array<2,T> &array, int k)
 {
     Array<1,T> ret(array.cols());
-    for (size_t j=0; j<array.cols(); ++j)
+    for (int j=0; j<array.cols(); ++j)
         ret[j] = array[k][j];
     return std::move(ret);
 }
 
 
 template <typename T>
-Array<1,T> getcol(const Array<2,T> &array, size_t k)
+Array<1,T> getcol(const Array<2,T> &array, int k)
 {
     Array<1,T> ret(array.rows());
     for (int j=0; j<array.rows(); ++j)
@@ -738,7 +757,7 @@ Array<1,T> getcol(const Array<2,T> &array, size_t k)
 
 
 template <typename T>
-Array<2,T> randmat(size_t rows, size_t cols, T max=T(1))
+Array<2,T> randmat(int rows, int cols, T max=T(1))
 {
     Array<2,T> ret(rows,cols);
     for (auto &elem : ret)
@@ -748,10 +767,10 @@ Array<2,T> randmat(size_t rows, size_t cols, T max=T(1))
 
 
 template <typename T>
-Array<2,T> unitmat(size_t size, const T &factor=T(1))
+Array<2,T> unitmat(int size, const T &factor=T(1))
 {
     Array<2,T> ret(size, size, T(0));
-    for (size_t k=0; k<size; ++k)
+    for (int k=0; k<size; ++k)
         ret[k][k] = factor;
     return std::move(ret);
 }
@@ -785,7 +804,7 @@ Array<2,T> maxsize(const Array<2,T> &a1, const Array<2,T> &a2)
  *************************************/
 
 template <typename T, typename Iterator>
-Array<2,T> array2D(size_t m, size_t n, const Iterator &begin)
+Array<2,T> array2D(int m, int n, const Iterator &begin)
 {
     Array<2,T> ret(m, n);
     Iterator iter = begin;
@@ -795,23 +814,23 @@ Array<2,T> array2D(size_t m, size_t n, const Iterator &begin)
 }
 
 template <typename T>
-Array<2,T> array2D(size_t m, size_t n, const Array<1,T> &array)
+Array<2,T> array2D(int m, int n, const Array<1,T> &array)
 { return std::move(array2D<T>(m, n, array.begin())); }
 
 template <typename T>
-Array<2,T> array2D(size_t m, size_t n, const std::vector<T> &vec)
+Array<2,T> array2D(int m, int n, const std::vector<T> &vec)
 { return std::move(array2D<T>(m, n, vec.begin())); }
 
 template <typename T>
-Array<2,T> array2D(size_t m, size_t n, const std::list<T> &lst)
+Array<2,T> array2D(int m, int n, const std::list<T> &lst)
 { return std::move(array2D<T>(m, n, lst.begin())); }
 
 template <typename T>
-Array<2,T> array2D(size_t m, size_t n, const QVector<T> &qvec)
+Array<2,T> array2D(int m, int n, const QVector<T> &qvec)
 { return std::move(array2D<T>(m, n, qvec.begin())); }
 
 template <typename T>
-Array<2,T> array2D(size_t m, size_t n, const QList<T> &qlst)
+Array<2,T> array2D(int m, int n, const QList<T> &qlst)
 { return std::move(array2D<T>(m, n, qlst.begin())); }
 
 
@@ -868,7 +887,7 @@ QDebug operator<< (QDebug out, const Array<2,T> &array)
  ****************************************************************/
 
 /// @brief Returns true if the elements of the arrays are equal
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 bool operator== (const Array<D,T> &array1,
                  const Array<D,T> &array2)
 {
@@ -885,7 +904,7 @@ bool operator== (const Array<D,T> &array1,
 }
 
 /// @brief Returns false if the elements of the arrays are equal
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 bool operator!= (const Array<D,T> &array1,
                  const Array<D,T> &array2)
 {
@@ -893,7 +912,7 @@ bool operator!= (const Array<D,T> &array1,
 }
 
 /// @brief Returns true if the arrays are references to each other
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 bool same(const Array<D,T> &array1,
           const Array<D,T> &array2)
 {
@@ -901,7 +920,7 @@ bool same(const Array<D,T> &array1,
 }
 
 /// @brief Creates a new hard copy of array
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T> copy(const Array<D,T> &array)
 {
     Array<D,T> ret = samesize(array);
@@ -913,7 +932,7 @@ Array<D,T> copy(const Array<D,T> &array)
 
 
 /// @brief Apply func to each element of array
-template <typename Func, size_t D, typename T> inline
+template <typename Func, int D, typename T> inline
 void apply(Func func, Array<D,T> &array)
 {
     for (auto &elem : array)
@@ -922,7 +941,7 @@ void apply(Func func, Array<D,T> &array)
 
 
 /// @brief Produces a new array as a result of func applied to array
-template <typename Func, size_t D, typename T> inline
+template <typename Func, int D, typename T> inline
 Array<D,T> applied(Func func, const Array<D,T> &array)
 {
     Array<D,T> ret = samesize(array);
@@ -933,7 +952,7 @@ Array<D,T> applied(Func func, const Array<D,T> &array)
 }
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 T min(const Array<D,T> &array) {
     T ret = *array.begin();
     for (const auto &elem : array)
@@ -943,7 +962,7 @@ T min(const Array<D,T> &array) {
 }
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 T max(const Array<D,T> &array) {
     if (array.size() == 0)
         return T(0);
@@ -955,7 +974,7 @@ T max(const Array<D,T> &array) {
 }
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 T mean(const Array<D,T> &array) {
     T ret = T(0);
     for (const auto &elem : array)
@@ -964,16 +983,16 @@ T mean(const Array<D,T> &array) {
 }
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 T median(const Array<D,T> &array) {
-    size_t k = array.size() / 2;
+    int k = array.size() / 2;
     if (array.size() % 2 == 0)
         return (array.begin()[k-1] + array.begin()[k]) / T(2);
     return array.begin()[k];
 }
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 T sum(const Array<D,T> &array) {
     T ret = T(0);
     for (const auto &elem : array)
@@ -982,13 +1001,13 @@ T sum(const Array<D,T> &array) {
 }
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 void sort(const Array<D,T> &array) {
     std::sort(array.begin(), array.end());
 }
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T> sorted(const Array<D,T> &array) {
     auto ret = copy(array);
     std::sort(ret.begin(), ret.end());
@@ -1002,7 +1021,7 @@ Array<D,T> sorted(const Array<D,T> &array) {
 
 
 /// @brief Element-wise sum. Produces copy.
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T> operator+ (const Array<D,T> &a1, const Array<D,T> &a2) {
     auto ret = minsize(a1, a2);
     auto a1iter = a1.begin();
@@ -1014,7 +1033,7 @@ Array<D,T> operator+ (const Array<D,T> &a1, const Array<D,T> &a2) {
 
 
 /// @brief Element-wise subtraction. Produces copy.
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T> operator- (const Array<D,T> &a1, const Array<D,T> &a2) {
     auto ret = minsize(a1, a2);
     auto a1iter = a1.begin();
@@ -1026,7 +1045,7 @@ Array<D,T> operator- (const Array<D,T> &a1, const Array<D,T> &a2) {
 
 
 /// @brief Element-wise multiplication. Produces copy.
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T> operator* (const Array<D,T> &a1, const Array<D,T> &a2) {
     auto ret = minsize(a1, a2);
     auto a1iter = a1.begin();
@@ -1038,7 +1057,7 @@ Array<D,T> operator* (const Array<D,T> &a1, const Array<D,T> &a2) {
 
 
 /// @brief Element-wise division. Produces copy.
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T> operator/ (const Array<D,T> &a1, const Array<D,T> &a2) {
     auto ret = minsize(a1, a2);
     auto a1iter = a1.begin();
@@ -1050,7 +1069,7 @@ Array<D,T> operator/ (const Array<D,T> &a1, const Array<D,T> &a2) {
 
 
 /// @brief Element-wise sum to scalar. Produces copy.
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T> operator+ (const Array<D,T> &array, const T &x) {
     auto ret = copy(array);
     for (auto &elem : ret)
@@ -1060,7 +1079,7 @@ Array<D,T> operator+ (const Array<D,T> &array, const T &x) {
 
 
 /// @brief Element-wise subtraction to scalar. Produces copy.
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T> operator- (const Array<D,T> &array, const T &x) {
     auto ret = copy(array);
     for (auto &elem : ret)
@@ -1070,7 +1089,7 @@ Array<D,T> operator- (const Array<D,T> &array, const T &x) {
 
 
 /// @brief Element-wise multiplication to scalar. Produces copy.
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T> operator* (const Array<D,T> &array, const T &x) {
     auto ret = copy(array);
     for (auto &elem : ret)
@@ -1080,7 +1099,7 @@ Array<D,T> operator* (const Array<D,T> &array, const T &x) {
 
 
 /// @brief Element-wise division to scalar. Produces copy.
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T> operator/ (const Array<D,T> &array, const T &x) {
     auto ret = copy(array);
     for (auto &elem : ret)
@@ -1090,7 +1109,7 @@ Array<D,T> operator/ (const Array<D,T> &array, const T &x) {
 
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T>& operator+= (Array<D,T> &a1, const Array<D,T> &a2) {
     auto a2iter = a2.begin();
     for (auto &elem : a1)
@@ -1100,7 +1119,7 @@ Array<D,T>& operator+= (Array<D,T> &a1, const Array<D,T> &a2) {
 
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T>& operator-= (Array<D,T> &a1, const Array<D,T> &a2) {
     auto a2iter = a2.begin();
     for (auto &elem : a1)
@@ -1110,7 +1129,7 @@ Array<D,T>& operator-= (Array<D,T> &a1, const Array<D,T> &a2) {
 
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T>& operator*= (Array<D,T> &a1, const Array<D,T> &a2) {
     auto a2iter = a2.begin();
     for (auto &elem : a1)
@@ -1120,7 +1139,7 @@ Array<D,T>& operator*= (Array<D,T> &a1, const Array<D,T> &a2) {
 
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T>& operator/= (Array<D,T> &a1, const Array<D,T> &a2) {
     auto a2iter = a2.begin();
     for (auto &elem : a1)
@@ -1130,7 +1149,7 @@ Array<D,T>& operator/= (Array<D,T> &a1, const Array<D,T> &a2) {
 
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T>& operator+= (Array<D,T> &a1, const T&x) {
     for (auto &elem : a1)
         elem += x;
@@ -1139,7 +1158,7 @@ Array<D,T>& operator+= (Array<D,T> &a1, const T&x) {
 
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T>& operator-= (Array<D,T> &a1, const T&x) {
     for (auto &elem : a1)
         elem -= x;
@@ -1148,7 +1167,7 @@ Array<D,T>& operator-= (Array<D,T> &a1, const T&x) {
 
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T>& operator*= (Array<D,T> &a1, const T&x) {
     for (auto &elem : a1)
         elem *= x;
@@ -1157,7 +1176,7 @@ Array<D,T>& operator*= (Array<D,T> &a1, const T&x) {
 
 
 
-template <size_t D, typename T> inline
+template <int D, typename T> inline
 Array<D,T>& operator/= (Array<D,T> &a1, const T&x) {
     for (auto &elem : a1)
         elem /= x;
@@ -1170,47 +1189,47 @@ Array<D,T>& operator/= (Array<D,T> &a1, const T&x) {
  *******************************************/
 
 /// @brief Apply sin() to each element.
-template <size_t D, typename T>
+template <int D, typename T>
 inline Array<D,T> sin(const Array<D,T> &array)
 { return std::move(applied(Math::sin, array)); }
 
 /// @brief Apply cos() to each element.
-template <size_t D, typename T>
+template <int D, typename T>
 inline Array<D,T> cos(const Array<D,T> &array)
 { return std::move(applied(Math::cos, array)); }
 
 /// @brief Apply tan() to each element.
-template <size_t D, typename T>
+template <int D, typename T>
 inline Array<D,T> tan(const Array<D,T> &array)
 { return std::move(applied(Math::tan, array)); }
 
 /// @brief Apply asin() to each element.
-template <size_t D, typename T>
+template <int D, typename T>
 inline Array<D,T> asin(const Array<D,T> &array)
 { return std::move(applied(Math::asin, array)); }
 
 /// @brief Apply acos() to each element.
-template <size_t D, typename T>
+template <int D, typename T>
 inline Array<D,T> acos(const Array<D,T> &array)
 { return std::move(applied(Math::acos, array)); }
 
 /// @brief Apply atan() to each element.
-template <size_t D, typename T>
+template <int D, typename T>
 inline Array<D,T> atan(const Array<D,T> &array)
 { return std::move(applied(Math::atan, array)); }
 
 /// @brief Apply log() to each element.
-template <size_t D, typename T>
+template <int D, typename T>
 inline Array<D,T> log(const Array<D,T> &array)
 { return std::move(applied(Math::log, array)); }
 
 /// @brief Apply log10() to each element.
-template <size_t D, typename T>
+template <int D, typename T>
 inline Array<D,T> log10(const Array<D,T> &array)
 { return std::move(applied(Math::log10, array)); }
 
 /// @brief Apply exp() to each element.
-template <size_t D, typename T>
+template <int D, typename T>
 inline Array<D,T> exp(const Array<D,T> &array)
 { return std::move(applied(Math::exp, array)); }
 
