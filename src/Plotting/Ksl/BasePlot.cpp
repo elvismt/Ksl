@@ -285,7 +285,12 @@ void BasePlot::setStyle(const char *style) {
         }
         ++idx;
     }
+    
+    if (symbol == Line) {
+        antialias = true;
+    }
 
+    pen.setWidthF(width);
     m->pen = pen;
     m->brush = brush;
     m->symbol = symbol;

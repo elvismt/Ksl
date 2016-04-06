@@ -113,8 +113,8 @@ template <typename T> inline
 void Array<1,T>::_alloc(size_type size)
 {
     if (size > 0) {
-        m_data = (SharedData*) std::malloc(sizeof(SharedData));
-        m_data->data = (pointer) std::malloc(size * sizeof(data_type));
+        m_data = (SharedData*) std::malloc((std::size_t) sizeof(SharedData));
+        m_data->data = (pointer) std::malloc((std::size_t) size * sizeof(data_type));
         m_data->size = size;
         m_data->maxsize = size;
         m_data->refc = 1;
@@ -167,7 +167,8 @@ void Array<1,T>::reserve(size_type maxsize) {
     }
     else if (maxsize > m_data->maxsize) {
         m_data->data = (pointer) std::realloc(
-            m_data->data, maxsize * sizeof(data_type));
+            (void*) m_data->data,
+            (std::size_t) maxsize * sizeof(data_type));
         m_data->maxsize = maxsize;
     }
 }
@@ -192,7 +193,8 @@ void Array<1,T>::squeeze() {
         return;
     if (m_data->maxsize > m_data->size) {
         m_data->data = (pointer) std::realloc(
-            m_data->data, m_data->size * sizeof(data_type));
+            (void*) m_data->data,
+            (std::size_t) m_data->size * sizeof(data_type));
         m_data->maxsize = m_data->size;
     }
 }
@@ -201,11 +203,7 @@ void Array<1,T>::squeeze() {
 template <typename T>
 Array<1,T>::Array(size_type n)
 {
-    if (n > 0) {
-        _alloc(n);
-    } else {
-        m_data = nullptr;
-    }
+    _alloc(n);
 }
 
 
@@ -214,8 +212,9 @@ Array<1,T>::Array(size_type n, const data_type &value)
 {
     if (n > 0) {
         _alloc(n);
-        for (auto &elem : *this)
+        for (auto &elem : *this) {
             elem = value;
+        }
     }
     else {
         m_data = nullptr;
@@ -263,8 +262,9 @@ Array<1,T>::Array(std::initializer_list<data_type> initlist)
       for (const auto &elem : initlist)
          *iter++ = elem;
    }
-   else
+   else {
       m_data = nullptr;
+   }
 }
 #endif
 
@@ -307,6 +307,20 @@ Array<1,T>& Array<1,T>::operator= (Array<1,T> &&that)
 /********************************************
  * Utilities for creating 1D number series
  *******************************************/
+
+
+template <typename T=double> inline
+Array<1,T> zeros(int size)
+{
+    return std::move(Array<1,T>(size, T(0)));
+}
+
+
+template <typename T=double> inline
+Array<1,T> ones(int size)
+{
+    return std::move(Array<1,T>(size, T(1)));
+}
 
 
 template <typename T=double> inline
@@ -663,6 +677,47 @@ Array<2,T>& Array<2,T>::operator= (Array &&that)
 }
 
 
+#ifdef Q_COMPILER_INITIALIZER_LISTS
+template <typename T=double>
+Array<2,T> column_stack(std::initializer_list<Array<1,T>> init_list)
+{
+    int rows = 0;
+    for (auto &vec : init_list) {
+        if (vec.size() > rows) {
+            rows = vec.size();
+        }
+    }
+
+    int k = 0;
+    Array<2,T> ret(rows, init_list.size(), T(0));
+    for (auto &vec : init_list) {
+        ret.setcol(k++, vec);
+    }
+
+    return std::move(ret);
+}
+
+template <typename T=double>
+Array<2,T> row_stack(std::initializer_list<Array<1,T>> init_list)
+{
+    int cols = 0;
+    for (auto &vec : init_list) {
+        if (vec.size() > cols) {
+            cols = vec.size();
+        }
+    }
+
+    int k = 0;
+    Array<2,T> ret(init_list.size(), cols, T(0));
+    for (auto &vec : init_list) {
+        ret.setrow(k++, vec);
+    }
+    
+    return std::move(ret);
+}
+#endif
+
+
 template <typename T>
 void Array<2,T>::setcol(size_type j, const Array<1> &array) {
     size_type n = qMin(array.size(), this->rows());
@@ -771,7 +826,7 @@ Array<2,T> randmat(int rows, int cols, T max=T(1))
 {
     Array<2,T> ret(rows,cols);
     for (auto &elem : ret)
-        elem = max * T(rand())/RAND_MAX;
+        elem = T(double(max) * double(rand())/RAND_MAX);
     return std::move(ret);
 }
 
@@ -852,41 +907,55 @@ Array<2,T> array2D(int m, int n, const QList<T> &qlst)
 template <typename T> inline
 std::ostream& operator<< (std::ostream &out, const Array<2,T> &array)
 {
-    for (int i=0; i<array.rows(); ++i) {
+    int rows = array.rows();
+    out << '[';
+    for (int i=0; i<rows; ++i) {
         int n = array.cols()-1;
-        out << '[';
+        if (i==0) out << '[';
+        else out << " [";
         for (int j=0; j<n; ++j)
             out << array[i][j]  << ", ";
         if (n >= 0) out << array[i][n];
-        out << ']' << std::endl;
+        if (i<rows-1) out << ']' << std::endl;
+        else out << "]]" << std::endl;
     }
     return out;
 }
+
 
 template <typename T> inline
 QTextStream& operator<< (QTextStream &out, const Array<2,T> &array)
 {
-    for (int i=0; i<array.rows(); ++i) {
+    int rows = array.rows();
+    out << '[';
+    for (int i=0; i<rows; ++i) {
         int n = array.cols()-1;
-        out << '[';
+        if (i==0) out << '[';
+        else out << " [";
         for (int j=0; j<n; ++j)
             out << array[i][j]  << ", ";
         if (n >= 0) out << array[i][n];
-        out << "]\n";
+        if (i<rows-1) out << ']' << '\n';
+        else out << "]]" << '\n';
     }
     return out;
 }
 
+
 template <typename T> inline
 QDebug operator<< (QDebug out, const Array<2,T> &array)
 {
-    for (int i=0; i<array.rows(); ++i) {
+    int rows = array.rows();
+    out << '[';
+    for (int i=0; i<rows; ++i) {
         int n = array.cols()-1;
-        out << '[';
+        if (i==0) out << '[';
+        else out << " [";
         for (int j=0; j<n; ++j)
             out << array[i][j]  << ", ";
         if (n >= 0) out << array[i][n];
-        out << "]\n";
+        if (i<rows-1) out << ']' << '\n';
+        else out << "]]" << '\n';
     }
     return out;
 }

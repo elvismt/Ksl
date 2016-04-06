@@ -1,15 +1,11 @@
-#include <QApplication>
-#include <Ksl/Chart.h>
+#include <Ksl/Array.h>
 using namespace Ksl;
 
 
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
-    Chart chart;
+int main() {
+    
+    qout << "cols: \n" <<column_stack({ones(4), zeros(4), ones(4)});
+    qout << "rows: \n" <<row_stack({ones(4), zeros(4), ones(4)});
 
-    chart.plot(randspace(100), "kor", "ramdom points");
-    chart.plot(randspace(100), "b-", "ramdom line");
-
-    chart.show();
-    return app.exec();
+    return 0;
 }
