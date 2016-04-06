@@ -832,7 +832,7 @@ Array<2,T> randmat(int rows, int cols, T max=T(1))
 
 
 template <typename T>
-Array<2,T> unitmat(int size, const T &factor=T(1))
+Array<2,T> identity(int size, const T &factor=T(1))
 {
     Array<2,T> ret(size, size, T(0));
     for (int k=0; k<size; ++k)
@@ -904,8 +904,8 @@ Array<2,T> array2D(int m, int n, const QList<T> &qlst)
  ******************************************************/
 
 
-template <typename T> inline
-std::ostream& operator<< (std::ostream &out, const Array<2,T> &array)
+template <typename T> inline std::ostream&
+operator<< (std::ostream &out, const Array<2,T> &array)
 {
     int rows = array.rows();
     out << '[';
