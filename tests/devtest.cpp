@@ -2,15 +2,17 @@
 using namespace Ksl;
 
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 
 int main()
 {
-    auto A = randmat(4, 4);
-    auto v = col(A, 1);
+    Array<1> v;
 
-    cout << A << endl;
+    for (double x=1.0; x<60.0; x+=3.0)
+        v.append(x);
+
     cout << v << endl;
 
     return 0;
