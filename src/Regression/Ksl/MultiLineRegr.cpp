@@ -85,12 +85,12 @@ void MultiLineRegr::fit(const Array<2> &X, const Array<1> &y)
     if (m->workspace)
         gsl_multifit_linear_free(m->workspace);
     m->workspace = gsl_multifit_linear_alloc(m->N, m->P);
-    m->X = gsl_matrix_view_array((double*) X.begin(), X.rows(), X.cols());
+    m->X = gsl_matrix_view_array((double*) X.c_ptr(), X.rows(), X.cols());
     m->cov = Array<2>(m->P, m->P);
-    m->cov_view = gsl_matrix_view_array((double*) m->cov.begin(), m->P, m->P);
+    m->cov_view = gsl_matrix_view_array((double*) m->cov.c_ptr(), m->P, m->P);
     m->y = y;
     m->y_view = gsl_vector_view_array(m->y.c_ptr(), m->y.size());
-    m->a.resize(m->P);
+    m->a = Array<1>(m->P);
     m->a_view = gsl_vector_view_array(m->a.c_ptr(), m->a.size());
 
     gsl_multifit_linear(
@@ -109,12 +109,12 @@ void MultiLineRegr::fit(const Array<2> &X, const Array<1> &y,
     if (m->workspace)
         gsl_multifit_linear_free(m->workspace);
     m->workspace = gsl_multifit_linear_alloc(m->N, m->P);
-    m->X = gsl_matrix_view_array((double*) X.begin(), X.rows(), X.cols());
+    m->X = gsl_matrix_view_array((double*) X.c_ptr(), X.rows(), X.cols());
     m->cov = Array<2>(m->P, m->P);
-    m->cov_view = gsl_matrix_view_array((double*) m->cov.begin(), m->P, m->P);
+    m->cov_view = gsl_matrix_view_array((double*) m->cov.c_ptr(), m->P, m->P);
     m->y = y;
     m->y_view = gsl_vector_view_array(m->y.c_ptr(), m->y.size());
-    m->a.resize(m->P);
+    m->a = Array<1>(m->P);
     m->a_view = gsl_vector_view_array(m->a.c_ptr(), m->a.size());
     m->w = (w.size() == y.size()) ? w : Array<1>(m->N, 1.0);
     m->w_view = gsl_vector_view_array(m->w.c_ptr(), m->w.size());
@@ -128,7 +128,8 @@ void MultiLineRegr::fit(const Array<2> &X, const Array<1> &y,
 void MultiLineRegr::fit(const Csv &csv, const Array<1,int> &columns,
                         const Array<1> &y)
 {
-    // File containing data
+
+    /* File containing data
     auto DATA = csv.matrix();
     int N = DATA.rows();
 
@@ -141,12 +142,13 @@ void MultiLineRegr::fit(const Csv &csv, const Array<1,int> &columns,
 
     // Perform regression
     fit(X, y);
+    */
 }
 
 
 void MultiLineRegr::fit(const Csv &csv, const Array<1,int> &columns, int yCol)
 {
-    // File containing data
+    /* File containing data
     auto DATA = csv.matrix();
     int N = DATA.rows();
     auto Y = getcol(DATA, yCol);
@@ -160,6 +162,7 @@ void MultiLineRegr::fit(const Csv &csv, const Array<1,int> &columns, int yCol)
 
     // Perform regression
     fit(X, Y);
+    */
 }
 
 

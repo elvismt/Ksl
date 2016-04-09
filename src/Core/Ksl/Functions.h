@@ -28,8 +28,8 @@ namespace Ksl {
 inline double poly(const Array<1> &a, double x) {
     double f = 0.0;
     double xn = 1.0;
-    for (auto ai : a) {
-        f += ai * xn;
+    for (int k=0; k<a.size(); ++k) {
+        f += a[k] * xn;
         xn *= x;
     }
     return f;

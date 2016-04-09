@@ -1,11 +1,17 @@
 #include <Ksl/Array.h>
 using namespace Ksl;
 
+#include <iostream>
+using namespace std;
 
-int main() {
-    
-    qout << "cols: \n" <<column_stack({ones(4), zeros(4), ones(4)});
-    qout << "rows: \n" <<row_stack({ones(4), zeros(4), ones(4)});
+
+int main()
+{
+    auto A = randmat(4, 4);
+    auto v = col(A, 1);
+
+    cout << A << endl;
+    cout << v << endl;
 
     return 0;
 }

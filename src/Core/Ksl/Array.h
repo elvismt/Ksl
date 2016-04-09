@@ -41,182 +41,250 @@ template <int D, typename T=double> class Array{};
 
 
 /*****************************************************
+ * This is the Storage base for vectors and matrices
+ *****************************************************/
+template <typename T>
+class Array<0,T>
+{
+private:
+
+    friend class Array<1,T>;
+    friend class Array<2,T>;
+    template <typename H> friend Array<1,H> row(const Array<2,H>&, int);
+    template <typename H> friend Array<1,H> col(const Array<2,H>&, int);
+
+    enum Type {
+        Matrix         = 0x00000001,
+        RowVector      = 0x00000002,
+        ColumnVector   = 0x00000004,
+        IsView         = 0x00000008
+    };
+
+    Array(int rows, int cols, int type);
+
+    int size() const;
+    int rows() const;
+    int cols() const;
+
+    T& vec_at(int k);
+    const T& vec_at(int k) const;
+
+    T* mat_at(int k);
+    const T* mat_at(int k) const;
+
+    T* c_ptr();
+    const T* c_ptr() const;
+
+    void alloc(int rows, int cols, int type);
+    void free();
+    Array<0,T> * ref();
+    void unref();
+
+
+    int m_type;
+    int m_rows;
+    int m_cols;
+    int m_refs;
+    T *m_data;
+};
+
+
+template <typename T>
+Array<0,T>::Array(int rows, int cols, int type)
+{
+    alloc(rows, cols, type);
+}
+
+
+template <typename T>
+int Array<0,T>::size() const
+{
+    if (m_type & Matrix) {
+        return m_rows*m_cols;
+    }
+    if (m_type & ColumnVector) {
+        return m_rows;
+    }
+    return m_cols;
+}
+
+
+template <typename T>
+int Array<0,T>::rows() const
+{
+    return m_rows;
+}
+
+
+template <typename T>
+int Array<0,T>::cols() const
+{
+    return m_cols;
+}
+
+
+template <typename T>
+T& Array<0,T>::vec_at(int k)
+{
+    if (m_type & ColumnVector) {
+        return m_data[k*m_cols];
+    }
+    return m_data[k];
+}
+
+
+template <typename T>
+const T& Array<0,T>::vec_at(int k) const
+{
+    if (m_type & ColumnVector) {
+        return m_data[k*m_cols];
+    }
+    return m_data[k];
+}
+
+
+template <typename T>
+T* Array<0,T>::mat_at(int k)
+{
+    return (m_data + int(k*m_rows));
+}
+
+
+template <typename T>
+const T* Array<0,T>::mat_at(int k) const
+{
+    return (m_data + int(k*m_rows));
+}
+
+
+template <typename T>
+T* Array<0,T>::c_ptr()
+{
+    return m_data;
+}
+
+
+template <typename T>
+const T* Array<0,T>::c_ptr() const
+{
+    return m_data;
+}
+
+
+template <typename T>
+void Array<0,T>::alloc(int rows, int cols, int type)
+{
+    m_type = type;
+    m_rows = rows;
+    m_cols = cols;
+    m_refs = 1;
+
+    if ((type & Matrix) && !(type & IsView)) {
+        m_data = (T*) std::malloc(
+            (std::size_t) rows*cols*sizeof(T));
+    }
+    else if ((type & RowVector) && !(type & IsView)) {
+        m_data = (T*) std::malloc(
+            (std::size_t) cols*sizeof(T));
+    }
+}
+
+
+template <typename T>
+void Array<0,T>::free()
+{
+    if (!(m_type & IsView)) {
+        std::free(m_data);
+    }
+}
+
+
+template <typename T>
+Array<0,T>* Array<0,T>::ref()
+{
+    m_refs += 1;
+    return this;
+}
+
+
+template <typename T>
+void Array<0,T>::unref()
+{
+    m_refs -= 1;
+    if (m_refs == 0) {
+        free();
+    }
+}
+
+
+/*****************************************************
  * This is the 1D (Vector) Array type
  *****************************************************/
+
+
 template <typename T>
 class Array<1,T>
 {
 public:
 
-    typedef T data_type;
-    typedef int size_type;
-    typedef T* pointer;
-    typedef const T* const_pointer;
-    typedef T& reference;
-    typedef const T& const_reference;
-    typedef T* iterator;
-    typedef const T* const_iterator;
+    template <typename H> friend Array<1,H> row(const Array<2,H>&, int);
+    template <typename H> friend Array<1,H> col(const Array<2,H>&, int);
 
 
-    Array(size_type n=0);
-    Array(size_type n, const data_type &value);
+    typedef T Scalar;
+    typedef T* Pointer;
+    typedef const T* ConstPointer;
+    typedef T& Reference;
+    typedef const T& ConstReference;
+
+
+    Array(int size=0);
+    Array(int size, const T &value);
     Array(const Array &that);
     Array(Array &&that);
-#ifdef Q_COMPILER_INITIALIZER_LISTS
-    Array(std::initializer_list<data_type> initlist);
-#endif
 
     ~Array();
 
     Array& operator= (const Array &that);
     Array& operator= (Array &&that);
 
-    int size() const { return m_data ? m_data->size : 0; }
-    int capacity() const { return m_data ? m_data->maxsize : 0; }
+    int size() const { return m_data!=nullptr ? m_data->size() : 0; }
 
-    reference operator[] (size_type index) { return m_data->data[index]; }
-    const_reference operator[] (size_type index) const { return m_data->data[index]; }
+    Reference operator[] (int k) { return m_data->vec_at(k); }
+    ConstReference operator[] (int k) const { return m_data->vec_at(k); }
+    Reference at(int k) { return m_data->vec_at(k); }
+    ConstReference at(int k) const { return m_data->vec_at(k); }
 
-    pointer c_ptr() { return m_data ? m_data->data : nullptr; }
-    const_pointer c_ptr() const { return m_data ? m_data->data : nullptr; }
-
-    iterator begin() { return m_data ? m_data->data : nullptr; }
-    iterator end() { return m_data ? m_data->data + m_data->size : nullptr; }
-    const_iterator begin() const { return m_data ? m_data->data : nullptr; }
-    const_iterator end() const { return m_data ? m_data->data + m_data->size : nullptr; }
-
-
-    inline void resize(size_type newsize);
-    inline void reserve(size_type maxsize);
-    inline void append(const data_type &value);
-    inline Array& operator<< (const data_type &value) { append(value); return *this; }
-
-    inline void squeeze();
+    Pointer c_ptr() { return m_data!=nullptr ? m_data->c_ptr() : nullptr; }
+    ConstPointer c_ptr() const { return m_data!=nullptr ? m_data->c_ptr() : nullptr; }
 
 
 private:
 
-    struct SharedData {
-        pointer data;
-        size_type size;
-        size_type maxsize;
-        size_type refc;
-    };
-
-    SharedData *m_data;
-    inline void _free();
-    inline void _alloc(size_type size);
+    Array<0,T> *m_data;
 };
 
 
-template <typename T> inline
-void Array<1,T>::_alloc(size_type size)
+template <typename T>
+Array<1,T>::Array(int size)
 {
     if (size > 0) {
-        m_data = (SharedData*) std::malloc((std::size_t) sizeof(SharedData));
-        m_data->data = (pointer) std::malloc((std::size_t) size * sizeof(data_type));
-        m_data->size = size;
-        m_data->maxsize = size;
-        m_data->refc = 1;
+        m_data = new Array<0,T>(0, size, Array<0,T>::RowVector);
     } else {
         m_data = nullptr;
     }
 }
 
 
-template <typename T> inline
-void Array<1,T>::_free()
-{
-    if (m_data) {
-        m_data->refc -= 1;
-        if (m_data->refc == 0) {
-            std::free(m_data->data);
-            std::free(m_data);
-        }
-        m_data = nullptr;
-    }
-}
-
-
-template <typename T> inline
-void Array<1,T>::resize(size_type newsize) {
-    if (newsize <= 0)
-        return;
-
-    if (!m_data) {
-        _alloc(newsize);
-    }
-    else if (newsize <= m_data->maxsize) {
-        m_data->size = newsize;
-    }
-    else {
-        reserve(newsize);
-        m_data->size = newsize;
-    }
-}
-
-
-template <typename T> inline
-void Array<1,T>::reserve(size_type maxsize) {
-    if (maxsize <= 0)
-        return;
-
-    if (!m_data) {
-        _alloc(maxsize);
-        m_data->size = 0;
-    }
-    else if (maxsize > m_data->maxsize) {
-        m_data->data = (pointer) std::realloc(
-            (void*) m_data->data,
-            (std::size_t) maxsize * sizeof(data_type));
-        m_data->maxsize = maxsize;
-    }
-}
-
-
-template <typename T> inline
-void Array<1,T>::append(const data_type &value) {
-    if (!m_data || m_data->maxsize < 12) {
-        reserve(12);
-    }
-    else if (m_data->maxsize == m_data->size) {
-        reserve(4*m_data->size/3);
-    }
-    m_data->data[m_data->size] = value;
-    m_data->size += 1;
-}
-
-
-template <typename T> inline
-void Array<1,T>::squeeze() {
-    if (!m_data)
-        return;
-    if (m_data->maxsize > m_data->size) {
-        m_data->data = (pointer) std::realloc(
-            (void*) m_data->data,
-            (std::size_t) m_data->size * sizeof(data_type));
-        m_data->maxsize = m_data->size;
-    }
-}
-
-
 template <typename T>
-Array<1,T>::Array(size_type n)
+Array<1,T>::Array(int size, const T &value)
 {
-    _alloc(n);
-}
-
-
-template <typename T>
-Array<1,T>::Array(size_type n, const data_type &value)
-{
-    if (n > 0) {
-        _alloc(n);
-        for (auto &elem : *this) {
-            elem = value;
+    if (size > 0) {
+        m_data = new Array<0,T>(0, size, Array<0,T>::RowVector);
+        for (int k=0; k<this->size(); ++k) {
+            m_data->vec_at(k) = value;
         }
-    }
-    else {
+    } else {
         m_data = nullptr;
     }
 }
@@ -225,13 +293,9 @@ Array<1,T>::Array(size_type n, const data_type &value)
 template <typename T>
 Array<1,T>::Array(const Array &that)
 {
-    if (that.m_data) {
-        m_data = that.m_data;
-        if (m_data) {
-            m_data->refc += 1;
-        }
-    }
-    else {
+    if (that.m_data !=  nullptr) {
+        m_data = that.m_data->ref();
+    } else {
         m_data = nullptr;
     }
 }
@@ -240,39 +304,20 @@ Array<1,T>::Array(const Array &that)
 template <typename T>
 Array<1,T>::Array(Array &&that)
 {
-    if (that.m_data) {
-        m_data = that.m_data;
-        if (m_data) {
-            m_data->refc += 1;
-        }
-    }
-    else {
+    if (that.m_data !=  nullptr) {
+        m_data = that.m_data->ref();
+    } else {
         m_data = nullptr;
     }
 }
 
 
-#ifdef Q_COMPILER_INITIALIZER_LISTS
-template <typename T>
-Array<1,T>::Array(std::initializer_list<data_type> initlist)
-{
-   if (initlist.size() > 0) {
-      _alloc(initlist.size());
-      auto iter = this->begin();
-      for (const auto &elem : initlist)
-         *iter++ = elem;
-   }
-   else {
-      m_data = nullptr;
-   }
-}
-#endif
-
-
 template <typename T>
 Array<1,T>::~Array()
 {
-    _free();
+    if (m_data) {
+        m_data->unref();
+    }
 }
 
 
@@ -280,10 +325,14 @@ template <typename T>
 Array<1,T>& Array<1,T>::operator= (const Array<1,T> &that)
 {
     if (m_data != that.m_data) {
-        _free();
-        m_data = that.m_data;
         if (m_data) {
-            m_data->refc += 1;
+            m_data->unref();
+        }
+        if (that.m_data) {
+            m_data = that.m_data->ref();
+        }
+        else {
+            m_data = nullptr;
         }
     }
     return *this;
@@ -294,19 +343,37 @@ template <typename T>
 Array<1,T>& Array<1,T>::operator= (Array<1,T> &&that)
 {
     if (m_data != that.m_data) {
-        _free();
-        m_data = that.m_data;
         if (m_data) {
-            m_data->refc += 1;
+            m_data->unref();
+        }
+        if (that.m_data) {
+            m_data = that.m_data->ref();
+        }
+        else {
+            m_data = nullptr;
         }
     }
     return *this;
 }
 
 
-/********************************************
- * Utilities for creating 1D number series
- *******************************************/
+template <typename T> inline std::ostream&
+operator << (std::ostream &out, const Array<1,T> &vec)
+{
+    int n = vec.size() - 1;
+    out << '[';
+    for (int k=0; k<n; ++k) {
+        out << vec[k] << ", ";
+    }
+    if (n>=0) out << vec[n] << ']';
+    else out << ']';
+    return out;
+}
+
+
+/*****************************************************
+ * Functions for vector creation
+ *****************************************************/
 
 
 template <typename T=double> inline
@@ -324,221 +391,123 @@ Array<1,T> ones(int size)
 
 
 template <typename T=double> inline
-Array<1,T> linspace(T min, T max, T step=T(1))
+Array<1,T> base(int size, int k)
 {
-    Array<1,T> ret(int((max-min)/step)+1);
-    int k = 0;
-    for (auto &elem : ret) {
-        elem = min + k*step;
-        ++k;
+    Array<1,T> ret(size, T(0));
+    ret[k] = T(1);
+    return std::move(ret);
+}
+
+
+template <typename T=double> inline
+Array<1,T> linspace(const T &min, const T &max, const T &step=T(1))
+{
+    Array<1,T> ret(int((max-min)/step) + 1);
+    for (int k=0; k<ret.size(); ++k) {
+        ret[k] = min + k*step;
     }
     return std::move(ret);
 }
 
 
 template <typename T=double> inline
-Array<1,T> randspace(int size, T max=T(1))
+Array<1,T> randspace(int size, const T &factor=T(1))
 {
     Array<1,T> ret(size);
-    for (auto &elem : ret) {
-        elem = T(double(max) * double(rand())/RAND_MAX);
+    for (int k=0; k<size; ++k) {
+        ret[k] = T(factor * double(rand())/RAND_MAX);
     }
     return std::move(ret);
 }
 
 
-template <typename T=double>
-Array<1,T> samesize(const Array<1,T> &array)
-{
-    return std::move(Array<1,T>(array.size()));
-}
-
-
-template <typename T=double>
-Array<1,T> minsize(const Array<1,T> &a1, const Array<1,T> &a2)
-{
-    return std::move(Array<1,T>(qMin(a1.size(), a2.size())));
-}
-
-
-template <typename T=double>
-Array<1,T> maxsize(const Array<1,T> &a1, const Array<1,T> &a2)
-{
-    return std::move(Array<1,T>(qMax(a1.size(), a2.size())));
-}
-
-
-/********************************************
- * These copies data from other containers
- ********************************************/
-
-
-template <typename T, typename Iterator> inline
-Array<1,T> array1D(const Iterator &begin, int size)
-{
-    Array<1,T> ret(size);
-    Iterator iter = begin;
-    for (auto &elem : ret)
-        elem = *iter++;
-    return std::move(ret);
-}
-
 template <typename T> inline
-Array<1,T> array1D(const std::vector<T> &vec)
-{ return std::move(array1D<T>(vec.begin(), vec.size())); }
-
-template <typename T> inline
-Array<1,T> array1D(const std::list<T> &lst)
-{ return std::move(array1D<T>(lst.begin(), lst.size())); }
-
-template <typename T> inline
-Array<1,T> array1D(const QVector<T> &qvec)
-{ return std::move(array1D<T>(qvec.begin(), qvec.size())); }
-
-template <typename T> inline
-Array<1,T> array1D(const QList<T> &qlst)
-{ return std::move(array1D<T>(qlst.begin(), qlst.size())); }
-
-
-/*******************************************************
- * Stream operator for easy text output of 1D Arrays
- ******************************************************/
-
-
-template <typename T> inline
-std::ostream& operator << (std::ostream &out, const Array<1,T> &array)
+Array<1,T> samesize(const Array<1,T> &vec)
 {
-    int n = array.size()-1;
-    out << '[';
-    for (int k=0; k<n; ++k) {
-        out << array[k] << ", ";
-    }
-    if (n>=0) out << array[n];
-    out << ']';
-    return out;
+    return std::move(Array<1,T>(vec.size()));
 }
 
 
 template <typename T> inline
-QTextStream& operator << (QTextStream &out, const Array<1,T> &array)
+Array<1,T> minsize(const Array<1,T> &vec1, const Array<1,T> &vec2)
 {
-    int n = array.size()-1;
-    out << '[';
-    for (int k=0; k<n; ++k) {
-        out << array[k] << ", ";
-    }
-    if (n>=0) out << array[n];
-    out << ']';
-    return out;
+    return std::move(Array<1,T>(
+        qMin(vec1.size(), vec2.size())));
 }
 
 
 template <typename T> inline
-QDebug operator << (QDebug out, const Array<1,T> &array)
+Array<1,T> maxsize(const Array<1,T> &vec1, const Array<1,T> &vec2)
 {
-    int n = array.size()-1;
-    out << '[';
-    for (int k=0; k<n; ++k) {
-        out << array[k] << ", ";
-    }
-    if (n>=0) out << array[n];
-    out << ']';
-    return out;
+    return std::move(Array<1,T>(
+        qMax(vec1.size(), vec2.size())));
 }
 
 
-/**********************************************
+/*****************************************************
  * This is the 2D (Matrix) Array type
- **********************************************/
+ *****************************************************/
+
+
 template <typename T>
 class Array<2,T>
 {
 public:
-
-    typedef T data_type;
-    typedef int size_type;
-    typedef T* pointer;
-    typedef const T* const_pointer;
-    typedef T** pointer_pointer;
-    typedef const T** const_pointer_pointer;
-    typedef T& reference;
-    typedef const T& const_reference;
-    typedef T* iterator;
-    typedef const T* const_iterator;
-
-
-    Array(size_type m=0, size_type n=0);
-    Array(size_type m, size_type n, const data_type &value);
+    
+    typedef T Scalar;
+    typedef T* Pointer;
+    typedef const T* ConstPointer;
+    typedef T& Reference;
+    typedef const T& ConstReference;
+    
+    
+    Array(int rows=0, int cols=0);
+    Array(int rows, int cols, const T &value);
     Array(const Array &that);
     Array(Array &&that);
-#ifdef Q_COMPILER_INITIALIZER_LISTS
-    Array(std::initializer_list<
-             std::initializer_list<data_type> >  initlist);
-#endif
 
     ~Array();
-
 
     Array& operator= (const Array &that);
     Array& operator= (Array &&that);
 
+    int size() const { return m_data!=nullptr ? m_data->size() : 0; }
+    int rows() const { return m_data!=nullptr ? m_data->rows() : 0; }
+    int cols() const { return m_data!=nullptr ? m_data->cols() : 0; }
 
-    int rows() const { return m_data ? m_data->rows : 0; }
-    int cols() const { return m_data ? m_data->cols : 0; }
-    int size() const { return m_data ? m_data->rows*m_data->cols : 0; }
+    Pointer operator[] (int k) { return m_data->mat_at(k); }
+    ConstPointer operator[] (int k) const { return m_data->mat_at(k); }
+    Reference at(int k) { return m_data->vec_at(k); }
+    ConstReference at(int k) const { return m_data->vec_at(k); }
 
-
-    pointer operator[] (size_type index) { return m_data->data[index]; }
-    const_pointer operator[] (size_type index) const { return m_data->data[index]; }
-
-    iterator begin() { return m_data ? m_data->data[0] : nullptr; }
-    iterator end() { return m_data ? m_data->data[0] + (m_data->rows*m_data->cols) : nullptr; }
-    const_iterator begin() const { return m_data ? m_data->data[0] : nullptr; }
-    const_iterator end() const { return m_data ? m_data->data[0] + (m_data->rows*m_data->cols) : nullptr; }
-    
-    pointer c_ptr() { return m_data ? m_data->data[0] : nullptr; }
-    const_pointer c_ptr() const { return m_data ? m_data->data[0] + (m_data->rows*m_data->cols) : nullptr; }
-
-    void setcol(size_type j, const data_type &value);
-    void setcol(size_type j, const Array<1> &array);
-    void coltocol(size_type j, const Array<2> &array, size_type aj);
-    void rowtocol(size_type j, const Array<2> &array, size_type aj);
-
-    void setrow(size_type j, const data_type &value);
-    void setrow(size_type j, const Array<1> &array);
-    void coltorow(size_type j, const Array<2> &array, size_type aj);
-    void rowtorow(size_type j, const Array<2> &array, size_type aj);
-
-    Array submat(int i, int j, int rows, int cols);
+    Pointer c_ptr() { return m_data!=nullptr ? m_data->c_ptr() : nullptr; }
+    ConstPointer c_ptr() const { return m_data!=nullptr ? m_data->c_ptr() : nullptr; }
 
 
 private:
-
-    struct SharedData {
-        pointer_pointer data;
-        size_type rows;
-        size_type cols;
-        size_type refc;
-    };
-
-    SharedData *m_data;
-    inline void _free();
-    inline void _alloc(size_type m, size_type n);
+    
+    Array<0,T> *m_data;
 };
 
 
-template <typename T> inline
-void Array<2,T>::_alloc(size_type m, size_type n)
+template <typename T>
+Array<2,T>::Array(int rows, int cols)
 {
-    if (m > 0 && n > 0) {
-        m_data = (SharedData*) std::malloc((std::size_t) sizeof(SharedData));
-        m_data->data = (pointer_pointer) std::malloc((std::size_t) m*sizeof(pointer));
-        m_data->data[0] = (pointer) std::malloc((std::size_t) m*n*sizeof(data_type));
-        m_data->rows = m;
-        m_data->cols = n;
-        m_data->refc = 1;
-        for (size_type k=1; k<m; ++k) {
-            m_data->data[k] = m_data->data[k-1] + n;
+    if (rows > 0 && cols > 0) {
+        m_data = new Array<0,T>(rows, cols, Array<0,T>::Matrix);
+    } else {
+        m_data = nullptr;
+    }
+}
+
+
+template <typename T>
+Array<2,T>::Array(int rows, int cols, const T &value)
+{
+    if (rows > 0 && cols > 0) {
+        m_data = new Array<0,T>(rows, cols, Array<0,T>::Matrix);
+        for (int k=0; k<this->size(); ++k) {
+            m_data->vec_at(k) = value;
         }
     } else {
         m_data = nullptr;
@@ -546,117 +515,49 @@ void Array<2,T>::_alloc(size_type m, size_type n)
 }
 
 
-template <typename T> inline
-void Array<2,T>::_free()
-{
-    if (m_data) {
-        m_data->refc -= 1;
-        if (m_data->refc == 0) {
-            std::free(m_data->data[0]);
-            std::free(m_data->data);
-            std::free(m_data);
-        }
-        m_data = nullptr;
-    }
-}
-
-
 template <typename T>
-Array<2,T>::Array(size_type m, size_type n)
+Array<2,T>::Array(const Array<2,T> &that)
 {
-    if (m>0 && n>0) {
-        _alloc(m,n);
+    if (that.m_data !=  nullptr) {
+        m_data = that.m_data->ref();
     } else {
-        m_data = 0;
-    }
-}
-
-
-template <typename T>
-Array<2,T>::Array(size_type m, size_type n, const data_type &value)
-{
-    if (m>0 && n>0) {
-        _alloc(m,n);
-        for (auto &elem : *this) {
-            elem = value;
-        }
-    }
-    else {
-        m_data = 0;
-    }
-}
-
-
-template <typename T>
-Array<2,T>::Array(const Array &that)
-{
-    if (that.m_data) {
-        m_data = that.m_data;
-        m_data->refc += 1;
-    }
-    else {
         m_data = nullptr;
     }
 }
 
 
 template <typename T>
-Array<2,T>::Array(Array &&that)
+Array<2,T>::Array(Array<2,T> &&that)
 {
-    if (that.m_data) {
-        m_data = that.m_data;
-        m_data->refc += 1;
-    }
-    else {
+    if (that.m_data !=  nullptr) {
+        m_data = that.m_data->ref();
+    } else {
         m_data = nullptr;
     }
 }
-
-
-#ifdef Q_COMPILER_INITIALIZER_LISTS
-template <typename T>
-Array<2,T>::Array(std::initializer_list<
-                     std::initializer_list<data_type> > initlist)
-{
-    // find biggest row provided
-    size_type bigrow = 0;
-    for (const auto &row : initlist)
-        if (row.size() > bigrow) bigrow = row.size();
-    // fill matrix with provided rows
-    // and padd remaining entries with zeros
-    if (initlist.size() > 0 && bigrow > 0) {
-        _alloc(initlist.size(), bigrow);
-        size_type j = 0;
-        for (const auto &row : initlist) {
-           size_type k = 0;
-           for (const auto &elem : row)
-               (*this)[j][k++] = elem;
-           for ( ; k<bigrow; ++k)
-               (*this)[j][k] = data_type(0);
-           ++j;
-        }
-    }
-    else
-       m_data = nullptr;
-}
-#endif
 
 
 template <typename T>
 Array<2,T>::~Array()
 {
-    _free();
+    if (m_data) {
+        m_data->unref();
+    }
 }
 
 
 template <typename T>
-Array<2,T>& Array<2,T>::operator= (const Array &that)
+Array<2,T>& Array<2,T>::operator= (const Array<2,T> &that)
 {
     if (m_data != that.m_data) {
-        _free();
-        m_data = that.m_data;
         if (m_data) {
-            m_data->refc += 1;
+            m_data->unref();
+        }
+        if (that.m_data) {
+            m_data = that.m_data->ref();
+        }
+        else {
+            m_data = nullptr;
         }
     }
     return *this;
@@ -664,603 +565,164 @@ Array<2,T>& Array<2,T>::operator= (const Array &that)
 
 
 template <typename T>
-Array<2,T>& Array<2,T>::operator= (Array &&that)
+Array<2,T>& Array<2,T>::operator= (Array<2,T> &&that)
 {
     if (m_data != that.m_data) {
-        _free();
-        m_data = that.m_data;
         if (m_data) {
-            m_data->refc += 1;
+            m_data->unref();
+        }
+        if (that.m_data) {
+            m_data = that.m_data->ref();
+        }
+        else {
+            m_data = nullptr;
         }
     }
     return *this;
 }
-
-
-#ifdef Q_COMPILER_INITIALIZER_LISTS
-template <typename T=double>
-Array<2,T> column_stack(std::initializer_list<Array<1,T>> init_list)
-{
-    int rows = 0;
-    for (auto &vec : init_list) {
-        if (vec.size() > rows) {
-            rows = vec.size();
-        }
-    }
-
-    int k = 0;
-    Array<2,T> ret(rows, init_list.size(), T(0));
-    for (auto &vec : init_list) {
-        ret.setcol(k++, vec);
-    }
-
-    return std::move(ret);
-}
-
-template <typename T=double>
-Array<2,T> row_stack(std::initializer_list<Array<1,T>> init_list)
-{
-    int cols = 0;
-    for (auto &vec : init_list) {
-        if (vec.size() > cols) {
-            cols = vec.size();
-        }
-    }
-
-    int k = 0;
-    Array<2,T> ret(init_list.size(), cols, T(0));
-    for (auto &vec : init_list) {
-        ret.setrow(k++, vec);
-    }
-    
-    return std::move(ret);
-}
-#endif
-
-
-template <typename T>
-void Array<2,T>::setcol(size_type j, const Array<1> &array) {
-    size_type n = qMin(array.size(), this->rows());
-    for (size_type k=0; k<n; ++k)
-        (*this)[k][j] = array[k];
-}
-
-
-template <typename T>
-void Array<2,T>::setcol(size_type j, const T &value) {
-    for (size_type k=0; k<this->rows(); ++k)
-        (*this)[k][j] = value;
-}
-
-
-template <typename T>
-void Array<2,T>::coltocol(size_type j, const Array<2> &array, size_type aj) {
-    size_type n = qMin(array.rows(), this->rows());
-
-    for (size_type k=0; k<n; ++k)
-        (*this)[k][j] = array[k][aj];
-}
-
-
-template <typename T>
-void Array<2,T>::rowtocol(size_type j, const Array<2> &array, size_type aj) {
-    size_type n = qMin(array.cols(), this->rows());
-    for (size_type k=0; k<n; ++k)
-        (*this)[k][j] = array[aj][k];
-}
-
-
-template <typename T>
-void Array<2,T>::setrow(size_type j, const Array<1> &array) {
-    size_type n = qMin(array.size(), this->cols());
-    for (size_type k=0; k<n; ++k)
-        (*this)[j][k] = array[k];
-}
-
-
-template <typename T>
-void Array<2,T>::setrow(size_type j, const T &value) {
-    for (size_type k=0; k<this->cols(); ++k)
-        (*this)[j][k] = value;
-}
-
-
-template <typename T>
-void Array<2,T>::coltorow(size_type j, const Array<2> &array, size_type aj) {
-    size_type n = qMin(array.rows(), this->cols());
-    for (size_type k=0; k<n; ++k)
-        (*this)[j][k] = array[k][aj];
-}
-
-
-template <typename T>
-void Array<2,T>::rowtorow(size_type j, const Array<2> &array, size_type aj) {
-    size_type n = qMin(array.cols(), this->cols());
-    for (size_type k=0; k<n; ++k)
-        (*this)[j][k] = array[aj][k];
-}
-
-
-template <typename T>
-Array<2,T> Array<2,T>::submat(int i, int j, int rows, int cols) {
-    Array<2,T> ret(rows, cols);
-    for (int l=0; l<rows; l++)
-        for (int m=0; m<cols; m++)
-            ret[l][m] = (*this)[l+i][m+j];
-    return std::move(ret);
-}
-
-
-/*********************************************************
- * These copy rows or columns of a matrix to an 1D array
- ********************************************************/
-
-
-template <typename T>
-Array<1,T> getrow(const Array<2,T> &array, int k)
-{
-    Array<1,T> ret(array.cols());
-    for (int j=0; j<array.cols(); ++j)
-        ret[j] = array[k][j];
-    return std::move(ret);
-}
-
-
-template <typename T>
-Array<1,T> getcol(const Array<2,T> &array, int k)
-{
-    Array<1,T> ret(array.rows());
-    for (int j=0; j<array.rows(); ++j)
-        ret[j] = array[j][k];
-    return std::move(ret);
-}
-
-
-/********************************************
- * Utilities for creating 2D number series
- *******************************************/
-
-
-template <typename T>
-Array<2,T> randmat(int rows, int cols, T max=T(1))
-{
-    Array<2,T> ret(rows,cols);
-    for (auto &elem : ret)
-        elem = T(double(max) * double(rand())/RAND_MAX);
-    return std::move(ret);
-}
-
-
-template <typename T>
-Array<2,T> identity(int size, const T &factor=T(1))
-{
-    Array<2,T> ret(size, size, T(0));
-    for (int k=0; k<size; ++k)
-        ret[k][k] = factor;
-    return std::move(ret);
-}
-
-
-template <typename T>
-Array<2,T> samesize(const Array<2,T> &array)
-{
-    return std::move(Array<2,T>(array.rows(), array.cols()));
-}
-
-
-template <typename T>
-Array<2,T> minsize(const Array<2,T> &a1, const Array<2,T> &a2)
-{
-    return std::move(Array<2,T>(qMin(a1.rows(), a2.rows()),
-                                qMin(a1.cols(), a2.cols()) ));
-}
-
-
-template <typename T>
-Array<2,T> maxsize(const Array<2,T> &a1, const Array<2,T> &a2)
-{
-    return std::move(Array<2,T>(qMax(a1.rows(), a2.rows()),
-                                qMax(a1.cols(), a2.cols()) ));
-}
-
-
-/**************************************
- * Copies data from other containers
- *************************************/
-
-template <typename T, typename Iterator>
-Array<2,T> array2D(int m, int n, const Iterator &begin)
-{
-    Array<2,T> ret(m, n);
-    Iterator iter = begin;
-    for (auto &elem : ret)
-        elem = *iter++;
-    return std::move(ret);
-}
-
-template <typename T>
-Array<2,T> array2D(int m, int n, const Array<1,T> &array)
-{ return std::move(array2D<T>(m, n, array.begin())); }
-
-template <typename T>
-Array<2,T> array2D(int m, int n, const std::vector<T> &vec)
-{ return std::move(array2D<T>(m, n, vec.begin())); }
-
-template <typename T>
-Array<2,T> array2D(int m, int n, const std::list<T> &lst)
-{ return std::move(array2D<T>(m, n, lst.begin())); }
-
-template <typename T>
-Array<2,T> array2D(int m, int n, const QVector<T> &qvec)
-{ return std::move(array2D<T>(m, n, qvec.begin())); }
-
-template <typename T>
-Array<2,T> array2D(int m, int n, const QList<T> &qlst)
-{ return std::move(array2D<T>(m, n, qlst.begin())); }
-
-
-/*******************************************************
- * Stream operator for easy text output of 2D Arrays
- ******************************************************/
 
 
 template <typename T> inline std::ostream&
-operator<< (std::ostream &out, const Array<2,T> &array)
+operator << (std::ostream &out, const Array<2,T> &mat)
 {
-    int rows = array.rows();
-    out << '[';
-    for (int i=0; i<rows; ++i) {
-        int n = array.cols()-1;
-        if (i==0) out << '[';
-        else out << " [";
-        for (int j=0; j<n; ++j)
-            out << array[i][j]  << ", ";
-        if (n >= 0) out << array[i][n];
-        if (i<rows-1) out << ']' << std::endl;
-        else out << "]]" << std::endl;
+    int m = mat.rows();
+    int n = mat.cols() - 1;
+
+    out << "[[";
+    if (n >= 0) {
+        for (int i=0; i<m; ++i) {
+            if (i > 0) out << " [";
+            for (int j=0; j<n; ++j) {
+                out << mat[i][j] << ", ";
+            }
+            if (i < m-1) out << mat[i][n] << ']' << std::endl;
+            else out << mat[i][n];
+        }
     }
+    out << "]]";
     return out;
+}
+
+
+/*****************************************************
+ * Functions for matrix creation
+ *****************************************************/
+
+
+template <typename T=double> inline
+Array<2,T> zeros(int rows, int cols)
+{
+    return std::move(Array<2,T>(rows, cols, T(0)));
+}
+
+
+template <typename T=double> inline
+Array<2,T> ones(int rows, int cols)
+{
+    return std::move(Array<2,T>(rows, cols, T(1)));
+}
+
+
+template <typename T=double> inline
+Array<2,T> randmat(int rows, int cols, const T &factor=T(1))
+{
+    Array<2,T> ret(rows, cols);
+    for (int k=0; k<ret.size(); ++k) {
+        ret.at(k) = T(factor * double(rand())/RAND_MAX);
+    }
+    return ret;
 }
 
 
 template <typename T> inline
-QTextStream& operator<< (QTextStream &out, const Array<2,T> &array)
+Array<2,T> samesize(const Array<2,T> &mat)
 {
-    int rows = array.rows();
-    out << '[';
-    for (int i=0; i<rows; ++i) {
-        int n = array.cols()-1;
-        if (i==0) out << '[';
-        else out << " [";
-        for (int j=0; j<n; ++j)
-            out << array[i][j]  << ", ";
-        if (n >= 0) out << array[i][n];
-        if (i<rows-1) out << ']' << '\n';
-        else out << "]]" << '\n';
-    }
-    return out;
+    return std::move(Array<2,T>(mat.rows(), mat.cols()));
 }
 
 
 template <typename T> inline
-QDebug operator<< (QDebug out, const Array<2,T> &array)
+Array<2,T> minsize(const Array<2,T> &mat1, const Array<2,T> &mat2)
 {
-    int rows = array.rows();
-    out << '[';
-    for (int i=0; i<rows; ++i) {
-        int n = array.cols()-1;
-        if (i==0) out << '[';
-        else out << " [";
-        for (int j=0; j<n; ++j)
-            out << array[i][j]  << ", ";
-        if (n >= 0) out << array[i][n];
-        if (i<rows-1) out << ']' << '\n';
-        else out << "]]" << '\n';
-    }
-    return out;
+    return std::move(Array<2,T>(
+        qMin(mat1.rows(), mat2.rows()),
+        qMin(mat1.cols(), mat2.cols())));
 }
 
 
-/****************************************************************
- * Operations that can be generalized to arrays of any dimension
- ****************************************************************/
-
-/// @brief Returns true if the elements of the arrays are equal
-template <int D, typename T> inline
-bool operator== (const Array<D,T> &array1,
-                 const Array<D,T> &array2)
+template <typename T> inline
+Array<2,T> maxsize(const Array<2,T> &mat1, const Array<2,T> &mat2)
 {
-    if (array1.size() != array2.size())
-        return false;
-    if (same(array1,array2))
-        return true;
-
-    auto iter = array2.begin();
-    for (auto &elem : array1)
-        if (elem != (*iter++))
-            return false;
-    return true;
+    return std::move(Array<2,T>(
+        qMax(mat1.rows(), mat2.rows()),
+        qMax(mat1.cols(), mat2.cols())));
 }
 
-/// @brief Returns false if the elements of the arrays are equal
-template <int D, typename T> inline
-bool operator!= (const Array<D,T> &array1,
-                 const Array<D,T> &array2)
-{
-    return ! (array1 == array2);
-}
 
-/// @brief Returns true if the arrays are references to each other
-template <int D, typename T> inline
-bool same(const Array<D,T> &array1,
-          const Array<D,T> &array2)
-{
-    return array1.begin() == array2.begin();
-}
+/*****************************************************
+ * Get array-like views of rows and columns
+ *****************************************************/
 
-/// @brief Creates a new hard copy of array
-template <int D, typename T> inline
-Array<D,T> copy(const Array<D,T> &array)
+
+template <typename T> inline
+Array<1,T> row(const Array<2,T> &mat, int k)
 {
-    Array<D,T> ret = samesize(array);
-    auto iter = array.begin();
-    for (auto &elem : ret)
-        elem = *iter++;
+    Array<1,T> ret;
+    ret.m_data = new Array<0,T>(
+        mat.rows(), mat.cols(),
+        Array<0,T>::RowVector|Array<0,T>::IsView);
+    ret.m_data->m_data = (T*) mat.c_ptr() + k*mat.rows();
     return std::move(ret);
 }
 
 
-/// @brief Apply func to each element of array
-template <typename Func, int D, typename T> inline
-void apply(Func func, Array<D,T> &array)
+template <typename T> inline
+Array<1,T> col(const Array<2,T> &mat, int k)
 {
-    for (auto &elem : array)
-        elem = func(elem);
+    Array<1,T> ret;
+    ret.m_data = new Array<0,T>(
+        mat.rows(), mat.cols(),
+        Array<0,T>::ColumnVector|Array<0,T>::IsView);
+    ret.m_data->m_data = (T*) mat.c_ptr() + k;
+    return std::move(ret);
 }
 
 
-/// @brief Produces a new array as a result of func applied to array
+/*****************************************************
+ * Functions that apply to arrays of any size
+ *****************************************************/
+
+
+template <typename Func, int D, typename T> inline
+void apply(Func func, Array<D,T> &array)
+{
+    for (int k=0; k<array.size(); ++k) {
+        array.at(k) = func(array.at(k));
+    }
+}
+
+
 template <typename Func, int D, typename T> inline
 Array<D,T> applied(Func func, const Array<D,T> &array)
 {
     Array<D,T> ret = samesize(array);
-    auto iter = array.begin();
-    for (auto &elem : ret)
-        elem = func(*iter++);
+    for (int k=0; k<ret.size(); ++k) {
+        ret.at(k) = func(array.at(k));
+    }
     return std::move(ret);
 }
 
 
 template <int D, typename T> inline
-T min(const Array<D,T> &array) {
-    T ret = *array.begin();
-    for (const auto &elem : array)
-        if (elem < ret)
-            ret = elem;
-    return ret;
-}
-
-
-template <int D, typename T> inline
-T max(const Array<D,T> &array) {
-    if (array.size() == 0)
-        return T(0);
-    T ret = *array.begin();
-    for (const auto &elem : array)
-        if (elem > ret)
-            ret = elem;
-    return ret;
-}
-
-
-template <int D, typename T> inline
-T mean(const Array<D,T> &array) {
-    T ret = T(0);
-    for (const auto &elem : array)
-        ret += elem;
-    return ret / array.size();
-}
-
-
-template <int D, typename T> inline
-T median(const Array<D,T> &array) {
-    int k = array.size() / 2;
-    if (array.size() % 2 == 0)
-        return (array.begin()[k-1] + array.begin()[k]) / T(2);
-    return array.begin()[k];
-}
-
-
-template <int D, typename T> inline
-T sum(const Array<D,T> &array) {
-    T ret = T(0);
-    for (const auto &elem : array)
-        ret += elem;
-    return ret;
-}
-
-
-template <int D, typename T> inline
-void sort(const Array<D,T> &array) {
-    std::sort(array.begin(), array.end());
-}
-
-
-template <int D, typename T> inline
-Array<D,T> sorted(const Array<D,T> &array) {
-    auto ret = copy(array);
-    std::sort(ret.begin(), ret.end());
+Array<D,T> copy(const Array<D,T> &arr)
+{
+    Array<D,T> ret = samesize(arr);
+    for (int k=0; k<ret.size(); ++k) {
+        ret.at(k) = arr.at(k);
+    }
     return std::move(ret);
 }
 
-
-/**********************************
- * Element-wise arithmetics
- **********************************/
-
-
-/// @brief Element-wise sum. Produces copy.
-template <int D, typename T> inline
-Array<D,T> operator+ (const Array<D,T> &a1, const Array<D,T> &a2) {
-    auto ret = minsize(a1, a2);
-    auto a1iter = a1.begin();
-    auto a2iter = a2.begin();
-    for (auto &elem : ret)
-        elem = (*a1iter++) + (*a2iter++);
-    return std::move(ret);
-}
-
-
-/// @brief Element-wise subtraction. Produces copy.
-template <int D, typename T> inline
-Array<D,T> operator- (const Array<D,T> &a1, const Array<D,T> &a2) {
-    auto ret = minsize(a1, a2);
-    auto a1iter = a1.begin();
-    auto a2iter = a2.begin();
-    for (auto &elem : ret)
-        elem = (*a1iter++) - (*a2iter++);
-    return std::move(ret);
-}
-
-
-/// @brief Element-wise multiplication. Produces copy.
-template <int D, typename T> inline
-Array<D,T> operator* (const Array<D,T> &a1, const Array<D,T> &a2) {
-    auto ret = minsize(a1, a2);
-    auto a1iter = a1.begin();
-    auto a2iter = a2.begin();
-    for (auto &elem : ret)
-        elem = (*a1iter++) * (*a2iter++);
-    return std::move(ret);
-}
-
-
-/// @brief Element-wise division. Produces copy.
-template <int D, typename T> inline
-Array<D,T> operator/ (const Array<D,T> &a1, const Array<D,T> &a2) {
-    auto ret = minsize(a1, a2);
-    auto a1iter = a1.begin();
-    auto a2iter = a2.begin();
-    for (auto &elem : ret)
-        elem = (*a1iter++) / (*a2iter++);
-    return std::move(ret);
-}
-
-
-/// @brief Element-wise sum to scalar. Produces copy.
-template <int D, typename T> inline
-Array<D,T> operator+ (const Array<D,T> &array, const T &x) {
-    auto ret = copy(array);
-    for (auto &elem : ret)
-        elem += x;
-    return std::move(ret);
-}
-
-
-/// @brief Element-wise subtraction to scalar. Produces copy.
-template <int D, typename T> inline
-Array<D,T> operator- (const Array<D,T> &array, const T &x) {
-    auto ret = copy(array);
-    for (auto &elem : ret)
-        elem -= x;
-    return std::move(ret);
-}
-
-
-/// @brief Element-wise multiplication to scalar. Produces copy.
-template <int D, typename T> inline
-Array<D,T> operator* (const Array<D,T> &array, const T &x) {
-    auto ret = copy(array);
-    for (auto &elem : ret)
-        elem *= x;
-    return std::move(ret);
-}
-
-
-/// @brief Element-wise division to scalar. Produces copy.
-template <int D, typename T> inline
-Array<D,T> operator/ (const Array<D,T> &array, const T &x) {
-    auto ret = copy(array);
-    for (auto &elem : ret)
-        elem /= x;
-    return std::move(ret);
-}
-
-
-
-template <int D, typename T> inline
-Array<D,T>& operator+= (Array<D,T> &a1, const Array<D,T> &a2) {
-    auto a2iter = a2.begin();
-    for (auto &elem : a1)
-        elem += (*a2iter++);
-    return a1;
-}
-
-
-
-template <int D, typename T> inline
-Array<D,T>& operator-= (Array<D,T> &a1, const Array<D,T> &a2) {
-    auto a2iter = a2.begin();
-    for (auto &elem : a1)
-        elem -= (*a2iter++);
-    return a1;
-}
-
-
-
-template <int D, typename T> inline
-Array<D,T>& operator*= (Array<D,T> &a1, const Array<D,T> &a2) {
-    auto a2iter = a2.begin();
-    for (auto &elem : a1)
-        elem *= (*a2iter++);
-    return a1;
-}
-
-
-
-template <int D, typename T> inline
-Array<D,T>& operator/= (Array<D,T> &a1, const Array<D,T> &a2) {
-    auto a2iter = a2.begin();
-    for (auto &elem : a1)
-        elem /= (*a2iter++);
-    return a1;
-}
-
-
-
-template <int D, typename T> inline
-Array<D,T>& operator+= (Array<D,T> &a1, const T&x) {
-    for (auto &elem : a1)
-        elem += x;
-    return a1;
-}
-
-
-
-template <int D, typename T> inline
-Array<D,T>& operator-= (Array<D,T> &a1, const T&x) {
-    for (auto &elem : a1)
-        elem -= x;
-    return a1;
-}
-
-
-
-template <int D, typename T> inline
-Array<D,T>& operator*= (Array<D,T> &a1, const T&x) {
-    for (auto &elem : a1)
-        elem *= x;
-    return a1;
-}
-
-
-
-template <int D, typename T> inline
-Array<D,T>& operator/= (Array<D,T> &a1, const T&x) {
-    for (auto &elem : a1)
-        elem /= x;
-    return a1;
-}
 
 
 /********************************************
@@ -1312,6 +774,6 @@ template <int D, typename T>
 inline Array<D,T> exp(const Array<D,T> &array)
 { return std::move(applied(Math::exp, array)); }
 
-} // namespace Ksl 
+} // namespace Ksl
 
 #endif // KSL_ARRAY_H

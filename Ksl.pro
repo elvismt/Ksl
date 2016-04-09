@@ -76,7 +76,7 @@ HEADERS += \
     src/Plotting/Ksl/FeaturePlot_p.h
 
 SOURCES += \
-    tests/devtest.cpp \
+    tests/chart.cpp \
     src/Core/Ksl/MemoryPool.cpp \
     src/Core/Ksl/Csv.cpp \
     src/Plotting/Ksl/CanvasWindow.cpp \
