@@ -15,5 +15,9 @@ int main()
 
     cout << v << endl;
 
+    auto A = column_stack({ zeros(5), ones(5), randspace(5)});
+
+    cout << A << endl;
+
     return 0;
 }

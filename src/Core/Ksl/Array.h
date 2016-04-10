@@ -408,7 +408,7 @@ public:
     typedef T& Reference;
     typedef const T& ConstReference;
     typedef ArrayIterator<T> Iterator;
-    typedef ArrayIterator<const T> ConstIterator;
+    typedef const ArrayIterator<T> ConstIterator;
 
 
     Array(int size=0);
@@ -849,6 +849,56 @@ Array<2,T> maxsize(const Array<2,T> &mat1, const Array<2,T> &mat2)
     return std::move(Array<2,T>(
         qMax(mat1.rows(), mat2.rows()),
         qMax(mat1.cols(), mat2.cols())));
+}
+
+
+template <typename T> inline
+Array<2,T> row_stack(std::initializer_list<Array<1,T>> init_list)
+{
+    int cols = 0;
+    for (auto &row : init_list) {
+        if (row.size() > cols) {
+            cols = row.size();
+        }
+    }
+
+    Array<2,T> ret(init_list.size(), cols, T(0));
+    int rows = 0;
+    cols = 0;
+    for (auto &row : init_list) {
+        for (auto &x : row) {
+            ret[rows][cols] = x;
+            cols += 1;
+        }
+        rows += 1;
+        cols = 0;
+    }
+    return std::move(ret);
+}
+
+
+template <typename T> inline
+Array<2,T> column_stack(std::initializer_list<Array<1,T>> init_list)
+{
+    int rows = 0;
+    for (auto &col : init_list) {
+        if (col.size() > rows) {
+            rows = col.size();
+        }
+    }
+
+    Array<2,T> ret(rows, init_list.size(), T(0));
+    rows = 0;
+    int cols = 0;
+    for (auto &col : init_list) {
+        for (auto &x : col) {
+            ret[rows][cols] = x;
+            rows += 1;
+        }
+        cols += 1;
+        rows = 0;
+    }
+    return std::move(ret);
 }
 
 
