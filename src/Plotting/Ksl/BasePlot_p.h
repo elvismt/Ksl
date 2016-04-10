@@ -46,7 +46,7 @@ public:
         : FigureItemPrivate(publ)
         , symbol(BasePlot::Line)
         , antialias(false)
-        , symbolRadius(2.5)
+        , symbolRadius(2.0)
     { }
 
 
