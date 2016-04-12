@@ -39,8 +39,10 @@ int main(int argc, char *argv[])
 
     // plot comparison
     auto x = linspace(0.0, double(y_data.size()));
-    chart.plot(x, y_data, "b-", "training set");
-    chart.plot(x, y_model, "r-", "predicted value");
+    //chart.plot(x, y_data, "b-", "training set");
+    //chart.plot(x, y_model, "r-", "predicted value");
+    chart.plot(x, y_data, "b-");
+    chart.plot(x, y_model, "r-");
 
     chart.show();
     return app.exec();

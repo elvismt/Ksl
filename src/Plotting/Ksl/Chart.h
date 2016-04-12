@@ -51,12 +51,12 @@ public:
 
     Plot* plot(const Array<1> &x, const Array<1> &y,
                const char *style="kor",
-               const QString &name="plot",
+               const QString &name="",
                const QString &scaleName="xy-scale");
 
     Plot* plot(const Array<1> &y,
                const char *style="kor",
-               const QString &name="plot",
+               const QString &name="",
                const QString &scaleName="xy-scale");
 
     TextPlot* text(const QString &text, const QPointF &pos,
@@ -64,12 +64,12 @@ public:
                    const QString &scaleName="xy-scale");
 
     LinePlot* line(double a, double b,
-                   const QString &style="b", const QString &name="line",
+                   const QString &style="b", const QString &name="",
                    const QString &scaleName="xy-scale");
 
     PolyPlot* poly(const Array<1> &a, double xMin=-2.0, double xMax=2.0,
                    const char *style="kor",
-                   const QString &name="polynomial",
+                   const QString &name="",
                    const QString &scaleName="xy-scale");
 
 

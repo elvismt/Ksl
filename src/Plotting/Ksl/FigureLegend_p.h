@@ -57,6 +57,7 @@ public:
     FigureLegend::PositionPolicy positionPolicy;
     QPointF position;
     QRect rect;
+    bool hasEntries;
 };
 
 } // namespace Ksl

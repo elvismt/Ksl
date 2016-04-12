@@ -129,40 +129,38 @@ void MultiLineRegr::fit(const Csv &csv, const Array<1,int> &columns,
                         const Array<1> &y)
 {
 
-    /* File containing data
+    // File containing data
     auto DATA = csv.matrix();
     int N = DATA.rows();
 
     // fill matrix with params
     Array<2> X(N, columns.size()+1);
-    X.setcol(0, 1.0);
+    X.setCol(0, 1.0);
     for (int j=0; j<columns.size(); ++j) {
-        X.coltocol(j+1, DATA, columns[j]);
+        X.colToCol(j+1, DATA, columns[j]);
     }
 
     // Perform regression
     fit(X, y);
-    */
 }
 
 
 void MultiLineRegr::fit(const Csv &csv, const Array<1,int> &columns, int yCol)
 {
-    /* File containing data
+    // File containing data
     auto DATA = csv.matrix();
     int N = DATA.rows();
-    auto Y = getcol(DATA, yCol);
+    auto Y = col(DATA, yCol);
 
     // fill matrix with params
     Array<2> X(N, columns.size()+1);
-    X.setcol(0, 1.0);
+    X.setCol(0, 1.0);
     for (int j=0; j<columns.size(); ++j) {
-        X.coltocol(j+1, DATA, columns[j]);
+        X.colToCol(j+1, DATA, columns[j]);
     }
 
     // Perform regression
     fit(X, Y);
-    */
 }
 
 

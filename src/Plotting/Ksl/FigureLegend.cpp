@@ -61,8 +61,10 @@ void FigureLegendPrivate::evalRect(const QFontMetrics &fm) {
     for (auto scale : figure->scaleList()) {
         for (auto item : scale->itemList()) {
 
-            if (!item->visible() || !item->hasThumb())
-                continue;
+            if (!item->visible() ||
+                !item->hasThumb() ||
+                item->name().isEmpty())
+                    continue;
 
             height += txtHeight;
             txtWidth = fm.width(item->name());
@@ -70,6 +72,14 @@ void FigureLegendPrivate::evalRect(const QFontMetrics &fm) {
                 width = txtWidth;
         }
     }
+
+    if (height == 0) {
+        hasEntries = false;
+        return;
+    } else {
+        hasEntries = true;
+    }
+
     width = width + 45;
     height = height + fm.descent() + 3;
 
@@ -106,6 +116,10 @@ void FigureLegend::paint(QPainter *painter) {
 
     QFontMetrics fm = painter->fontMetrics();
     m->evalRect(fm);
+    if (m->hasEntries == false) {
+        return;
+    }
+
     painter->drawRect(m->rect);
 
     int txtHeight = fm.height();
@@ -116,9 +130,12 @@ void FigureLegend::paint(QPainter *painter) {
         if (m->rect.height() == 0)
             break;
 
-        for (auto item : scale->itemList()) {
-            if (!item->visible() || !item->hasThumb())
-                continue;
+        for (auto item : scale->itemList())
+        {
+            if (!item->visible() ||
+                !item->hasThumb() ||
+                item->name().isEmpty())
+                    continue;
 
             item->paintThumb(QPoint(x+20, y-txtHeight/3), painter);
 
