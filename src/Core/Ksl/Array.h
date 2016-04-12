@@ -38,7 +38,6 @@ namespace Ksl {
 * this class template
 ****************************************************/
 template <int D, typename T=double> class Array{};
-template <typename T> class ArrayView;
 
 
 /***************************************************
@@ -51,34 +50,32 @@ private:
    
    friend class Array<1,T>;
    friend class Array<2,T>;
-   friend class ArrayView<T>;
    
    enum Type {
-      RowVector     = 0x00000001,
-      ColumnVector     = 0x00000002,
-      Matrix         = 0x00000004,
-      IsView        = 0x00000008
+      ROW_VECTOR     = 0x00000001,
+      COL_VECTOR     = 0x00000002,
+      MATRIX         = 0x00000004,
+      IS_VIEW        = 0x00000008
    };
    
    
-   Array(int rows, int cols, int type);
+   inline Array(int rows, int cols, int type);
+   
+   inline int size() const { return m_rows*m_cols; }
+   
+   inline T& vec_at(int idx);
+   inline const T& vec_at(int idx) const;
+   
+   inline T* mat_at(int idx);
+   inline const T* mat_at(int idx) const;
    
    
-   int size() const { return m_rows*m_cols; }
-   
-   T& vec_at(int idx);
-   const T& vec_at(int idx) const;
-   
-   T* mat_at(int idx);
-   const T* mat_at(int idx) const;
-   
-   
-   void resize(int rows, int cols);
-   void reserve(int nalloc);
-   void append(const T &value);
-   void free();
-   Array* ref();
-   bool unref();
+   inline void resize(int rows, int cols);
+   inline void reserve(int nalloc);
+   inline void append(const T &value);
+   inline void free();
+   inline Array* ref();
+   inline bool unref();
    
    
    int m_type;
@@ -90,7 +87,7 @@ private:
 };
 
 
-template <typename T>
+template <typename T> inline
 Array<0,T>::Array(int rows, int cols, int type)
 {
    m_type = type;
@@ -102,38 +99,38 @@ Array<0,T>::Array(int rows, int cols, int type)
 }
 
 
-template <typename T>
+template <typename T> inline
 T& Array<0,T>::vec_at(int idx)
 {
    return m_data[idx];
 }
 
 
-template <typename T>
+template <typename T> inline
 const T& Array<0,T>::vec_at(int idx) const
 {
    return m_data[idx];
 }
 
 
-template <typename T>
+template <typename T> inline
 T* Array<0,T>::mat_at(int idx)
 {
    return m_data + idx*m_cols;
 }
 
 
-template <typename T>
+template <typename T> inline
 const T* Array<0,T>::mat_at(int idx) const
 {
    return m_data + idx*m_cols;
 }
 
 
-template <typename T>
+template <typename T> inline
 void Array<0,T>::resize(int rows, int cols)
 {
-   if (m_type & IsView) {
+   if (m_type & IS_VIEW) {
       return;
    }
    if (rows != m_rows || cols != m_cols) {
@@ -155,10 +152,10 @@ void Array<0,T>::resize(int rows, int cols)
 }
 
 
-template <typename T>
+template <typename T> inline
 void Array<0,T>::reserve(int nalloc)
 {
-   if (m_type & IsView) {
+   if (m_type & IS_VIEW) {
       return;
    }
    if (nalloc > 0 && nalloc > m_nalloc) {
@@ -174,28 +171,26 @@ void Array<0,T>::reserve(int nalloc)
 }
 
 
-template <typename T>
+template <typename T> inline
 void Array<0,T>::append(const T &value)
 {
-   if (m_type & IsView) {
+   if (m_type & IS_VIEW || m_type & COL_VECTOR) {
       return;
    }
-   if (m_type & RowVector) {
-      if (m_nalloc < 12) {
-         reserve(12);
-      } else if (m_nalloc == m_cols) {
-         reserve(4*m_cols/3);
-      }
-      m_data[m_cols] = value;
-      m_cols += 1;
+   if (m_nalloc < 12) {
+      reserve(12);
+   } else if (m_nalloc == m_cols) {
+      reserve(4*m_cols/3);
    }
+   m_data[m_cols] = value;
+   m_cols += 1;
 }
 
 
 template <typename T>
-void Array<0,T>::free()
+inline void Array<0,T>::free()
 {
-   if (m_type & IsView) {
+   if (m_type & IS_VIEW) {
       return;
    }
    if (m_data != nullptr) {
@@ -206,7 +201,7 @@ void Array<0,T>::free()
 
 
 template <typename T>
-Array<0,T>* Array<0,T>::ref()
+inline Array<0,T>* Array<0,T>::ref()
 {
    m_refs += 1;
    return this;
@@ -214,7 +209,7 @@ Array<0,T>* Array<0,T>::ref()
 
 
 template <typename T>
-bool Array<0,T>::unref()
+inline bool Array<0,T>::unref()
 {
    m_refs -= 1;
    if (m_refs == 0) {
@@ -237,32 +232,36 @@ class Array<1,T>
 public:
    
    
-   Array(int size=0);
-   Array(int size, const T &value);
-   Array(const Array &that);
-   Array(Array &&that);
+   inline Array(int size=0);
+   inline Array(int size, const T &value);
+   inline Array(const Array &that);
+   inline Array(Array &&that);
    
-   ~Array();
+   inline ~Array();
    
-   Array& operator= (const Array &that);
-   Array& operator= (Array &&that);
+   inline Array& operator= (const Array &that);
+   inline Array& operator= (Array &&that);
    
    
-   int size() const { return m_data!=nullptr ? m_data->size() : 0; }
+   inline int size() const { return m_data!=nullptr ? m_data->size() : 0; }
    
-   T& operator[] (int idx) { return m_data->vec_at(idx); }
-   const T& operator[] (int idx) const { return m_data->vec_at(idx); }
+   inline T& operator[] (int idx) { return m_data->vec_at(idx); }
+   inline const T& operator[] (int idx) const { return m_data->vec_at(idx); }
    
-   T& at(int idx) { return m_data->vec_at(idx); }
-   const T& at(int idx) const { return m_data->vec_at(idx); }
+   inline T& at(int idx) { return m_data->vec_at(idx); }
+   inline const T& at(int idx) const { return m_data->vec_at(idx); }
    
-   T* begin() { return m_data!=nullptr ? m_data->m_data : nullptr; }
-   const T* begin() const { return m_data!=nullptr ? m_data->m_data : nullptr; }
+   inline T* begin() { return m_data!=nullptr ? m_data->m_data : nullptr; }
+   inline const T* begin() const { return m_data!=nullptr ? m_data->m_data : nullptr; }
    
-   T* end() { return m_data!=nullptr ? m_data->m_data+m_data->size() : nullptr; }
-   const T* end() const { return m_data!=nullptr ? m_data->m_data+m_data->size() : nullptr; }
+   inline T* end() { return m_data!=nullptr ? m_data->m_data+m_data->size() : nullptr; }
+   inline const T* end() const { return m_data!=nullptr ? m_data->m_data+m_data->size() : nullptr; }
    
-   void append(const T &value);
+   inline T* c_ptr() { return m_data!=nullptr ? m_data->m_data : nullptr; }
+   inline const T* c_ptr() const { return m_data!=nullptr ? m_data->m_data : nullptr; }
+   
+   
+   inline void append(const T &value);
    
    
 private:
@@ -271,24 +270,24 @@ private:
 };
 
 
-template <typename T>
+template <typename T> inline
 Array<1,T>::Array(int size)
 {
    if (size > 0) {
-      m_data = new Array<0,T>(1, size, Array<0,T>::RowVector);
+      m_data = new Array<0,T>(1, size, Array<0,T>::ROW_VECTOR);
    } else {
       m_data = nullptr;
    }
 }
 
 
-template <typename T>
+template <typename T> inline
 Array<1,T>::Array(int size, const T &value)
 {
    if (size > 0) {
-      m_data = new Array<0,T>(1, size, Array<0,T>::RowVector);
-      for (auto &x : *this) {
-         x = value;
+      m_data = new Array<0,T>(1, size, Array<0,T>::ROW_VECTOR);
+      for (int k=0; k<size; ++k) {
+         at(k) = value;
       }
    } else {
       m_data = nullptr;
@@ -296,7 +295,7 @@ Array<1,T>::Array(int size, const T &value)
 }
 
 
-template <typename T>
+template <typename T> inline
 Array<1,T>::Array(const Array<1,T> &that)
 {
    if (that.m_data != nullptr) {
@@ -307,18 +306,7 @@ Array<1,T>::Array(const Array<1,T> &that)
 }
 
 
-template <typename T>
-Array<1,T>::~Array()
-{
-   if (m_data != nullptr) {
-      if (m_data->unref()) {
-         delete m_data;
-      }
-   }
-}
-
-
-template <typename T>
+template <typename T> inline
 Array<1,T>::Array(Array<1,T> &&that)
 {
    if (that.m_data != nullptr) {
@@ -330,6 +318,17 @@ Array<1,T>::Array(Array<1,T> &&that)
 
 
 template <typename T>
+inline Array<1,T>::~Array()
+{
+   if (m_data != nullptr) {
+      if (m_data->unref()) {
+         delete m_data;
+      }
+   }
+}
+
+
+template <typename T> inline
 Array<1,T>& Array<1,T>::operator= (const Array<1,T> &that)
 {
    if (m_data != that.m_data) {
@@ -348,7 +347,7 @@ Array<1,T>& Array<1,T>::operator= (const Array<1,T> &that)
 }
 
 
-template <typename T>
+template <typename T> inline
 Array<1,T>& Array<1,T>::operator= (Array<1,T> &&that)
 {
    if (m_data != that.m_data) {
@@ -381,11 +380,25 @@ operator<< (std::ostream &out, const Array<1,T> &v)
 }
 
 
-template <typename T>
+template <typename T> inline QDebug
+operator<< (QDebug out, const Array<1,T> &v)
+{
+   int n = v.size() - 1;
+   out << '[';
+   for (int k=0; k<n; ++k) {
+      out << v[k] << ", ";
+   }
+   if (n >= 0) out << v[n];
+   out << ']';
+   return out;
+}
+
+
+template <typename T> inline
 void Array<1,T>::append(const T &value)
 {
    if (m_data == nullptr) {
-      m_data = new Array<0,T>(1, 1, Array<0,T>::RowVector);
+      m_data = new Array<0,T>(1, 1, Array<0,T>::ROW_VECTOR);
       m_data->m_data[0] = value;
    } else {
       m_data->append(value);
@@ -393,7 +406,7 @@ void Array<1,T>::append(const T &value)
 }
 
 
-template <typename T=double>
+template <typename T=double> inline
 Array<1,T> zeros(int size)
 {
    Array<1,T> ret(size, T(0));
@@ -401,7 +414,7 @@ Array<1,T> zeros(int size)
 }
 
 
-template <typename T=double>
+template <typename T=double> inline
 Array<1,T> ones(int size)
 {
    Array<1,T> ret(size, T(1));
@@ -409,7 +422,7 @@ Array<1,T> ones(int size)
 }
 
 
-template <typename T=double>
+template <typename T=double> inline
 Array<1,T> linspace(const T &min, const T &max, const T &step=T(1))
 {
    Array<1,T> ret(int((max-min)/step) + 1);
@@ -420,7 +433,7 @@ Array<1,T> linspace(const T &min, const T &max, const T &step=T(1))
 }
 
 
-template <typename T=double>
+template <typename T=double> inline
 Array<1,T> randspace(int size, const T &factor=T(1))
 {
    Array<1,T> ret(size);
@@ -431,7 +444,7 @@ Array<1,T> randspace(int size, const T &factor=T(1))
 }
 
 
-template <typename T>
+template <typename T> inline
 Array<1,T> samesize(const Array<1,T> &v)
 {
    Array<1,T> ret(v.size());
@@ -449,32 +462,35 @@ class Array<2,T>
 {
 public:
    
-   Array(int rows=0, int cols=0);
-   Array(int rows, int cols, const T &value);
-   Array(const Array<2,T> &that);
-   Array(Array<2,T> &&that);
+   inline Array(int rows=0, int cols=0);
+   inline Array(int rows, int cols, const T &value);
+   inline Array(const Array<2,T> &that);
+   inline Array(Array<2,T> &&that);
    
-   ~Array();
+   inline ~Array();
    
-   Array& operator= (const Array<2,T> &that);
-   Array& operator= (Array<2,T> &&that);
+   inline Array& operator= (const Array<2,T> &that);
+   inline Array& operator= (Array<2,T> &&that);
    
    
-   int size() const { return m_data!=nullptr ? m_data->size() : 0; }
-   int rows() const { return m_data!=nullptr ? m_data->m_rows : 0; }
-   int cols() const { return m_data!=nullptr ? m_data->m_cols : 0; }
+   inline int size() const { return m_data!=nullptr ? m_data->size() : 0; }
+   inline int rows() const { return m_data!=nullptr ? m_data->m_rows : 0; }
+   inline int cols() const { return m_data!=nullptr ? m_data->m_cols : 0; }
    
-   T* operator[] (int idx) { return m_data->mat_at(idx); }
-   const T* operator[] (int idx) const { return m_data->mat_at(idx); }
+   inline T* operator[] (int idx) { return m_data->mat_at(idx); }
+   inline const T* operator[] (int idx) const { return m_data->mat_at(idx); }
    
-   T& at(int idx) { return m_data->vec_at(idx); }
-   const T& at(int idx) const { return m_data->vec_at(idx); }
+   inline T& at(int idx) { return m_data->vec_at(idx); }
+   inline const T& at(int idx) const { return m_data->vec_at(idx); }
    
-   T* begin() { return m_data!=nullptr ? m_data->m_data : nullptr; }
-   const T* begin() const { return m_data!=nullptr ? m_data->m_data : nullptr; }
+   inline T* begin() { return m_data!=nullptr ? m_data->m_data : nullptr; }
+   inline const T* begin() const { return m_data!=nullptr ? m_data->m_data : nullptr; }
    
-   T* end() { return m_data!=nullptr ? m_data->m_data+m_data->size() : nullptr; }
-   const T* end() const { return m_data!=nullptr ? m_data->m_data+m_data->size() : nullptr; }
+   inline T* end() { return m_data!=nullptr ? m_data->m_data+m_data->size() : nullptr; }
+   inline const T* end() const { return m_data!=nullptr ? m_data->m_data+m_data->size() : nullptr; }
+   
+   inline T* c_ptr() { return m_data!=nullptr ? m_data->m_data : nullptr; }
+   inline const T* c_ptr() const { return m_data!=nullptr ? m_data->m_data : nullptr; }
    
    
 private:
@@ -483,24 +499,24 @@ private:
 };
 
 
-template <typename T>
+template <typename T> inline
 Array<2,T>::Array(int rows, int cols)
 {
    if (rows > 0 && cols > 0) {
-      m_data = new Array<0,T>(rows, cols, Array<0,T>::Matrix);
+      m_data = new Array<0,T>(rows, cols, Array<0,T>::MATRIX);
    } else {
       m_data = nullptr;
    }
 }
 
 
-template <typename T>
+template <typename T> inline
 Array<2,T>::Array(int rows, int cols, const T &value)
 {
    if (rows > 0 && cols > 0) {
-      m_data = new Array<0,T>(rows, cols, Array<0,T>::Matrix);
-      for (auto &x : *this) {
-         x = value;
+      m_data = new Array<0,T>(rows, cols, Array<0,T>::MATRIX);
+      for (int k=0; k<size(); ++k) {
+         at(k) = value;
       }
    } else {
       m_data = nullptr;
@@ -508,7 +524,7 @@ Array<2,T>::Array(int rows, int cols, const T &value)
 }
 
 
-template <typename T>
+template <typename T> inline
 Array<2,T>::Array(const Array<2,T> &that)
 {
    if (that.m_data != nullptr) {
@@ -519,7 +535,7 @@ Array<2,T>::Array(const Array<2,T> &that)
 }
 
 
-template <typename T>
+template <typename T> inline
 Array<2,T>::Array(Array<2,T> &&that)
 {
    if (that.m_data != nullptr) {
@@ -531,7 +547,7 @@ Array<2,T>::Array(Array<2,T> &&that)
 
 
 template <typename T>
-Array<2,T>::~Array()
+inline Array<2,T>::~Array()
 {
    if (m_data != nullptr) {
       if (m_data->unref()) {
@@ -541,7 +557,7 @@ Array<2,T>::~Array()
 }
 
 
-template <typename T>
+template <typename T> inline
 Array<2,T>& Array<2,T>::operator= (const Array<2,T> &that)
 {
    if (m_data != that.m_data) {
@@ -560,7 +576,7 @@ Array<2,T>& Array<2,T>::operator= (const Array<2,T> &that)
 }
 
 
-template <typename T>
+template <typename T> inline
 Array<2,T>& Array<2,T>::operator= (Array<2,T> &&that)
 {
    if (m_data != that.m_data) {
@@ -603,7 +619,31 @@ operator<< (std::ostream &out, const Array<2,T> &v)
 }
 
 
-template <typename T=double>
+template <typename T> inline QDebug
+operator<< (QDebug out, const Array<2,T> &v)
+{
+   int m = v.rows();
+   int n = v.cols() - 1;
+   
+   if (m <= 0 || n < 0) {
+      out << "[[]]";
+      return out;
+   }
+   
+   for (int i=0; i<m; ++i) {
+      if (i == 0) out << "[[";
+      else out << '[';
+      for (int j=0; j<n; ++j) {
+         out << v[i][j] << ", ";
+      }
+      if (i == m-1) out << v[i][n] << "]]";
+      else out << v[i][n] << ']' << '\n';
+   }
+   return out;
+}
+
+
+template <typename T=double> inline
 Array<2,T> zeros(int rows, int cols)
 {
    Array<2,T> ret(rows, cols, T(0));
@@ -611,7 +651,7 @@ Array<2,T> zeros(int rows, int cols)
 }
 
 
-template <typename T=double>
+template <typename T=double> inline
 Array<2,T> ones(int rows, int cols)
 {
    Array<2,T> ret(rows, cols, T(1));
@@ -619,7 +659,7 @@ Array<2,T> ones(int rows, int cols)
 }
 
 
-template <typename T=double>
+template <typename T=double> inline
 Array<2,T> identity(int size, const T &factor=T(1))
 {
    Array<2,T> ret(size, size);
@@ -632,7 +672,7 @@ Array<2,T> identity(int size, const T &factor=T(1))
 }
 
 
-template <typename T>
+template <typename T> inline
 Array<2,T> samesize(const Array<2,T> &v)
 {
    Array<2,T> ret(v.rows(), v.cols());
@@ -640,7 +680,7 @@ Array<2,T> samesize(const Array<2,T> &v)
 }
 
 
-template <typename T=double>
+template <typename T=double> inline
 Array<2,T> row_stack(std::initializer_list<Array<1,T>> init_list)
 {
    int k = 0;
@@ -664,7 +704,7 @@ Array<2,T> row_stack(std::initializer_list<Array<1,T>> init_list)
 }
 
 
-template <typename T=double>
+template <typename T=double> inline
 Array<2,T> column_stack(std::initializer_list<Array<1,T>> init_list)
 {
    int k = 0;
@@ -683,6 +723,33 @@ Array<2,T> column_stack(std::initializer_list<Array<1,T>> init_list)
          j += 1;
       }
       k += 1;
+   }
+   return std::move(ret);
+}
+
+
+/********************************************************
+* Functions to copy rows and columns from matrices
+*******************************************************/
+
+
+template <typename T> inline
+Array<1,T> row(const Array<2,T> &A, int j)
+{
+   Array<1,T> ret(A.cols());
+   for (int k=0; k<ret.size(); ++k) {
+      ret.at(k) = A[j][k];
+   }
+   return std::move(ret);
+}
+
+
+template <typename T> inline
+Array<1,T> col(const Array<2,T> &A, int j)
+{
+   Array<1,T> ret(A.rows());
+   for (int k=0; k<ret.size(); ++k) {
+      ret.at(k) = A[k][j];
    }
    return std::move(ret);
 }
@@ -708,7 +775,7 @@ template <typename Func, int D, typename T>
 inline void apply(Func func, const Array<D,T> &v)
 {
    for (int k=0; k<v.size(); ++k) {
-      v[k] = func(v[k]);
+      v.at(k) = func(v.at(k));
    }
 }
 
@@ -718,7 +785,7 @@ inline Array<D,T> applied(Func func, const Array<D,T> &v)
 {
    auto y = samesize(v);
    for (int k=0; k<v.size(); ++k) {
-      y[k] = func(v[k]);
+      y.at(k) = func(v.at(k));
    }
    return std::move(y);
 }

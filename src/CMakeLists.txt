@@ -19,8 +19,8 @@ set(Ksl_HDRS
     Plotting/Ksl/CanvasWindow.h
     Plotting/Ksl/FigureWidget.h
     Plotting/Ksl/Chart.h
-#    Regression/Ksl/LineRegr.h
-#    Regression/Ksl/MultiLineRegr.h
+    Regression/Ksl/LineRegr.h
+    Regression/Ksl/MultiLineRegr.h
 )
 
 set(Ksl_SRCS
@@ -42,8 +42,8 @@ set(Ksl_SRCS
     Plotting/Ksl/CanvasWindow.cpp
     Plotting/Ksl/FigureWidget.cpp
     Plotting/Ksl/Chart.cpp
-#    Regression/Ksl/LineRegr.cpp
-#    Regression/Ksl/MultiLineRegr.cpp
+    Regression/Ksl/LineRegr.cpp
+    Regression/Ksl/MultiLineRegr.cpp
 )
 
 qt4_add_resources(Ksl_QRC_SRCS

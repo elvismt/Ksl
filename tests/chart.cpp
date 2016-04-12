@@ -21,9 +21,9 @@ int main(int argc, char *argv[]) {
         yi += double(rand())/RAND_MAX *0.3;
 
 
-    chart.plot(x_model, sin(x_model), "b-", "Sin(X)");
-    chart.plot(x_data1, y_data1, "ro", "Data1");
-    chart.plot(x_data2, y_data2, "ko", "Data2");
+    chart.plot(x_model, sin(x_model), "b-");
+    chart.plot(x_data1, y_data1, "ro");
+    chart.plot(x_data2, y_data2, "ko");
 
     chart.show();
     return app.exec();
