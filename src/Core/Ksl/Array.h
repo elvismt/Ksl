@@ -399,7 +399,7 @@ void Array<1,T>::append(const T &value)
 {
    if (m_data == nullptr) {
       m_data = new Array<0,T>(1, 1, Array<0,T>::ROW_VECTOR);
-      m_data->m_data[0] = value;
+      at(0) = value;
    } else {
       m_data->append(value);
    }
@@ -491,6 +491,10 @@ public:
    
    inline T* c_ptr() { return m_data!=nullptr ? m_data->m_data : nullptr; }
    inline const T* c_ptr() const { return m_data!=nullptr ? m_data->m_data : nullptr; }
+
+   inline void append(const T &value);
+
+   inline void reshape(int rows, int cols);
 
    inline void set_col(int k, const T &value);
    inline void set_col(int k, const Array<1,T> &vec);
@@ -602,6 +606,34 @@ Array<2,T>& Array<2,T>::operator= (Array<2,T> &&that)
       }
    }
    return *this;
+}
+
+
+template <typename T> inline
+void Array<2,T>::append(const T &value)
+{
+   if (m_data == nullptr) {
+      m_data = new Array<0,T>(1, 1, Array<0,T>::MATRIX);
+      at(0) = value;
+   } else {
+      if (m_data->m_rows > 1) {
+          return;
+      }
+      m_data->append(value);
+   }
+}
+
+
+template <typename T> inline
+void Array<2,T>::reshape(int rows, int cols)
+{
+    if (m_data != nullptr) {
+        if (rows*cols != m_data->size()) {
+            return;
+        }
+        m_data->m_rows = rows;
+        m_data->m_cols = cols;
+    }
 }
 
 
