@@ -492,15 +492,15 @@ public:
    inline T* c_ptr() { return m_data!=nullptr ? m_data->m_data : nullptr; }
    inline const T* c_ptr() const { return m_data!=nullptr ? m_data->m_data : nullptr; }
 
-   inline void setCol(int k, const T &value);
-   inline void setCol(int k, const Array<1,T> &vec);
-   inline void setRow(int k, const T &value);
-   inline void setRow(int k, const Array<1,T> &vec);
-
-   inline void rowToRow(int k, const Array<2,T> &mat, int j);
-   inline void colToRow(int k, const Array<2,T> &mat, int j);
-   inline void rowToCol(int k, const Array<2,T> &mat, int j);
-   inline void colToCol(int k, const Array<2,T> &mat, int j);
+   inline void set_col(int k, const T &value);
+   inline void set_col(int k, const Array<1,T> &vec);
+   inline void set_row(int k, const T &value);
+   inline void set_row(int k, const Array<1,T> &vec);
+   
+   inline void row_to_row(int k, const Array<2,T> &mat, int j);
+   inline void col_to_row(int k, const Array<2,T> &mat, int j);
+   inline void row_to_col(int k, const Array<2,T> &mat, int j);
+   inline void col_to_col(int k, const Array<2,T> &mat, int j);
 
 
 private:
@@ -654,80 +654,80 @@ operator<< (QDebug out, const Array<2,T> &v)
 
 
 template <typename T> inline
-void Array<2,T>::setCol(int k, const T &value)
+void Array<2,T>::set_col(int k, const T &value)
 {
-    for (int j=0; j<rows(); ++j) {
-        (*this)[j][k] = value;
-    }
+   for (int j=0; j<rows(); ++j) {
+      (*this)[j][k] = value;
+   }
 }
 
 
 template <typename T> inline
-void Array<2,T>::setCol(int k, const Array<1,T> &vec)
+void Array<2,T>::set_col(int k, const Array<1,T> &vec)
 {
-    int minsize = qMin(rows(), vec.size());
-    for (int j=0; j<minsize; ++j) {
-        (*this)[j][k] = vec[j];
-    }
+   int minsize = qMin(rows(), vec.size());
+   for (int j=0; j<minsize; ++j) {
+      (*this)[j][k] = vec[j];
+   }
 }
 
 
 template <typename T> inline
-void Array<2,T>::setRow(int k, const T &value)
+void Array<2,T>::set_row(int k, const T &value)
 {
-    for (int j=0; j<cols(); ++j) {
-        (*this)[k][j] = value;
-    }
+   for (int j=0; j<cols(); ++j) {
+      (*this)[k][j] = value;
+   }
 }
 
 
 template <typename T> inline
-void Array<2,T>::setRow(int k, const Array<1,T> &vec)
+void Array<2,T>::set_row(int k, const Array<1,T> &vec)
 {
-    int minsize = qMin(cols(), vec.size());
-    for (int j=0; j<minsize; ++j) {
-        (*this)[k][j] = vec[j];
-    }
+   int minsize = qMin(cols(), vec.size());
+   for (int j=0; j<minsize; ++j) {
+      (*this)[k][j] = vec[j];
+   }
 }
 
 
 template <typename T> inline
-void Array<2,T>::rowToRow(int k, const Array<2,T> &mat, int p)
+void Array<2,T>::row_to_row(int k, const Array<2,T> &mat, int p)
 {
-    int minsize = qMin(cols(), mat.cols());
-    for (int j=0; j<minsize; ++j) {
-        (*this)[k][j] = mat[p][j];
-    }
+   int minsize = qMin(cols(), mat.cols());
+   for (int j=0; j<minsize; ++j) {
+      (*this)[k][j] = mat[p][j];
+   }
 }
 
 
 template <typename T> inline
-void Array<2,T>::colToRow(int k, const Array<2,T> &mat, int p)
+void Array<2,T>::col_to_row(int k, const Array<2,T> &mat, int p)
 {
-    int minsize = qMin(cols(), mat.rows());
-    for (int j=0; j<minsize; ++j) {
-        (*this)[k][j] = mat[j][p];
-    }
+   int minsize = qMin(cols(), mat.rows());
+   for (int j=0; j<minsize; ++j) {
+      (*this)[k][j] = mat[j][p];
+   }
 }
 
 
 template <typename T> inline
-void Array<2,T>::rowToCol(int k, const Array<2,T> &mat, int p)
+void Array<2,T>::row_to_col(int k, const Array<2,T> &mat, int p)
 {
-    int minsize = qMin(rows(), mat.cols());
-    for (int j=0; j<minsize; ++j) {
-        (*this)[j][k] = mat[p][j];
-    }
+   int minsize = qMin(rows(), mat.cols());
+   for (int j=0; j<minsize; ++j) {
+      (*this)[j][k] = mat[p][j];
+   }
 }
 
 
 template <typename T> inline
-void Array<2,T>::colToCol(int k, const Array<2,T> &mat, int p)
+void Array<2,T>::col_to_col(int k, const Array<2,T> &mat, int p)
 {
-    int minsize = qMin(rows(), mat.rows());
-    for (int j=0; j<minsize; ++j) {
-        (*this)[j][k] = mat[j][p];
-    }
+   int minsize = qMin(rows(), mat.rows());
+   for (int j=0; j<minsize; ++j) {
+      (*this)[j][k] = mat[j][p];
+   }
 }
 
 

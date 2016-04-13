@@ -135,9 +135,9 @@ void MultiLineRegr::fit(const Csv &csv, const Array<1,int> &columns,
 
     // fill matrix with params
     Array<2> X(N, columns.size()+1);
-    X.setCol(0, 1.0);
+    X.set_col(0, 1.0);
     for (int j=0; j<columns.size(); ++j) {
-        X.colToCol(j+1, DATA, columns[j]);
+        X.col_to_col(j+1, DATA, columns[j]);
     }
 
     // Perform regression
@@ -154,9 +154,9 @@ void MultiLineRegr::fit(const Csv &csv, const Array<1,int> &columns, int yCol)
 
     // fill matrix with params
     Array<2> X(N, columns.size()+1);
-    X.setCol(0, 1.0);
+    X.set_col(0, 1.0);
     for (int j=0; j<columns.size(); ++j) {
-        X.colToCol(j+1, DATA, columns[j]);
+        X.col_to_col(j+1, DATA, columns[j]);
     }
 
     // Perform regression
