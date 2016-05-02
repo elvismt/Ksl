@@ -219,7 +219,7 @@ void XYAxisPrivate::setUpPaint() {
             QPoint p1 = scale->map(QPointF(min, anchor));
             QPoint p2 = scale->map(QPointF(max, anchor));
             sampler->autoSampleDecimal(
-                min, max, double(p2.x()-p1.x())/60.0);
+                min, max, double(p2.x()-p1.x())/80.0);
         }
     }
     else { // orientation == Qt::Vertical

@@ -11,6 +11,7 @@ lessThan(QT_MAJOR_VERSION, 5) {
 }
 
 LIBS += -lgsl -lgslcblas
+DEFINES += KSL_DEBUG_MODE
 
 
 # Input
@@ -76,7 +77,7 @@ HEADERS += \
     src/Plotting/Ksl/FeaturePlot_p.h
 
 SOURCES += \
-    tests/multifit.cpp \
+    tests/chart.cpp \
     src/Core/Ksl/MemoryPool.cpp \
     src/Core/Ksl/Csv.cpp \
     src/Plotting/Ksl/CanvasWindow.cpp \
@@ -91,8 +92,8 @@ SOURCES += \
     src/Plotting/Ksl/TextPlot.cpp \
     src/Plotting/Ksl/LinePlot.cpp \
     src/Plotting/Ksl/PolyPlot.cpp \
-    src/Regression/Ksl/LineRegr.cpp \
-    src/Regression/Ksl/MultiLineRegr.cpp \
+#    src/Regression/Ksl/LineRegr.cpp \
+#    src/Regression/Ksl/MultiLineRegr.cpp \
     src/Plotting/Ksl/BasePlot.cpp \
     src/Plotting/Ksl/Plot.cpp \
     src/Plotting/Ksl/FigureLegend.cpp \

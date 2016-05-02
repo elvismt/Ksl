@@ -122,7 +122,7 @@ Plot* Chart::plot(const Array<1> &y,
                   const QString &name,
                   const QString &scaleName)
 {
-    auto x = linspace(0.0, double(y.size()));
+    auto x = arange(0.0, double(y.size()));
     auto newPlot = new Plot(x, y, style, name, this);
     scale(scaleName)->add(newPlot);
     return newPlot;
