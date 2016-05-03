@@ -66,9 +66,9 @@ void BasePlot::paint(QPainter *painter) {
 
 void BasePlotPrivate::checkRanges() {
     pointCount = qMin(x.size(), y.size());
-    if (pointCount == 0)
+    if (pointCount == 0) {
         return;
-
+    }
     xMin = xMax = x[0];
     yMin = yMax = y[0];
     for (int k=1; k<pointCount; ++k) {
@@ -95,7 +95,7 @@ void BasePlotPrivate::paintLine(FigureScale *scale,
         int dy = p2.y() - p1.y();
         int d2 = dx*dx + dy*dy;
 
-        if (d2 >= 9) {
+        if (d2 >= 16) {
             path.lineTo(p2);
             p1 = p2;
         }
@@ -110,20 +110,9 @@ void BasePlotPrivate::paintCircles(FigureScale *scale,
     const float rad = symbolRadius;
     const float twoRad = 2.0 * symbolRadius;
 
-    QPoint p1 = scale->map(QPointF(x[0], y[0]));
-    painter->drawEllipse(p1.x() - rad, p1.y() - rad, twoRad, twoRad);
-
-    for (int k=1; k<pointCount; ++k) {
-        QPoint p2 = scale->map(QPointF(x[k], y[k]));
-
-        int dx = p2.x() - p1.x();
-        int dy = p2.y() - p1.y();
-        int d2 = dx*dx + dy*dy;
-
-        if (d2 >= 4) {
-            painter->drawEllipse(p2.x() - rad, p2.y() - rad, twoRad, twoRad);
-            p1 = p2;
-        }
+    for (int k=0; k<pointCount; ++k) {
+        QPoint p = scale->map(QPointF(x[k], y[k]));
+        painter->drawEllipse(p.x() - rad, p.y() - rad, twoRad, twoRad);
     }
 }
 
@@ -143,7 +132,7 @@ void BasePlotPrivate::paintLineCircles(FigureScale *scale,
         int dy = p2.y() - p1.y();
         int d2 = dx*dx + dy*dy;
 
-        if (d2 >= 4) {
+        if (d2 >= 16) {
             painter->drawLine(p1, p2);
             painter->drawEllipse(p1.x() - rad, p1.y() - rad, twoRad, twoRad);
             p1 = p2;
@@ -161,19 +150,9 @@ void BasePlotPrivate::paintSquares(FigureScale *scale,
     const float edge = symbolRadius - 1.0;
     const float halfEdge = edge / 2.0;
 
-    QPoint p1 = scale->map(QPointF(x[0], y[0]));
-    painter->drawRect(p1.x()-halfEdge, p1.y()-halfEdge, edge, edge);
-
     for (int k=1; k<pointCount; ++k) {
-        QPoint p2 = scale->map(QPointF(x[k], y[k]));
-
-        int dx = p2.x() - p1.x();
-        int dy = p2.y() - p1.y();
-        int d2 = dx*dx + dy*dy;
-
-        if (d2 >= 4) {
-            painter->drawRect(p2.x()-halfEdge, p2.y()-halfEdge, edge, edge);
-        }
+        QPoint p = scale->map(QPointF(x[k], y[k]));
+        painter->drawRect(p.x()-halfEdge, p.y()-halfEdge, edge, edge);
     }
 }
 
@@ -193,7 +172,7 @@ void BasePlotPrivate::paintLineSquares(FigureScale *scale,
         int dy = p2.y() - p1.y();
         int d2 = dx*dx + dy*dy;
 
-        if (d2 >= 4) {
+        if (d2 >= 16) {
             painter->drawLine(p1, p2);
             painter->drawRect(p1.x()-halfEdge, p1.y()-halfEdge, edge, edge);
             p1 = p2;

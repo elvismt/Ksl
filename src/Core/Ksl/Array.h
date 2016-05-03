@@ -223,7 +223,7 @@ public:
     Array& operator= (const Array &that);
     Array& operator= (Array &&that);
     
-    int size() const { return m_data ? m_data->size() : 0; }
+    int size() const { return m_data ? m_data->cols() : 0; }
     int capacity() const { return m_data ? m_data->capacity() : 0; }
     
     Tp& operator[] (int idx) { return m_data->valueAt(idx); }
@@ -413,7 +413,7 @@ Array<1,Tp> arange(const Tp &start, const Tp &stop, const Tp &step=Tp(1)) {
 
 
 template <typename Tp=double> inline
-Array<1,Tp> randspace(int size, const Tp &max) {
+Array<1,Tp> randspace(int size, const Tp &max=Tp(1)) {
     Array<1,Tp> ret(size);
     for (int k=0; k<size; ++k) {
         ret[k] = Tp(max * double(std::rand())/RAND_MAX);
@@ -605,6 +605,188 @@ inline Array<2,Tp> identity(int rows, const Tp &factor) {
 template <typename Tp>
 inline Array<2,Tp> samesize(const Array<2,Tp> &other) {
     return std::move(Array<2,Tp>(other.rows(), other.cols()));
+}
+
+
+/****************************************************
+ * This array view is used by visualization tools to
+ * hold a reference to the data they must show
+ ****************************************************/
+template <typename Tp>
+class ArrayView
+{
+public:
+
+    enum Type {
+        RowView,
+        ColumnView
+    };
+
+
+    ArrayView();
+    ArrayView(const ArrayView &that);
+    ArrayView(const Array<1,Tp> &rowVector);
+    ArrayView(const Array<0,Tp> *storage, int type, int rowOrCol);
+
+    ArrayView& operator= (const Array<1,Tp> &rowVector);
+    ArrayView& operator= (const ArrayView<Tp> &that);
+
+    ~ArrayView();
+
+    int size() const;
+
+    const Tp& operator[] (int idx) const;
+
+
+private:
+
+    Array<0,Tp> *m_storage;
+    int m_type;
+    int m_rowOrCol;
+};
+
+
+template <typename Tp>
+ArrayView<Tp>::ArrayView() {
+    m_storage = nullptr;
+}
+
+
+template <typename Tp>
+ArrayView<Tp>::ArrayView(const ArrayView<Tp> &that) {
+    if (that.m_storage) {
+        m_storage = const_cast<Array<0,Tp>*>
+            (that.m_storage)->ref();
+    } else {
+        m_storage = nullptr;
+    }
+    m_type = that.m_type;
+    m_rowOrCol = that.m_rowOrCol;
+}
+
+
+template <typename Tp>
+ArrayView<Tp>::ArrayView(const Array<1,Tp> &rowVector) {
+    if (rowVector.storage()) {
+        m_storage = const_cast<Array<0,Tp>*>
+            (rowVector.storage())->ref();
+    } else {
+        m_storage = nullptr;
+    }
+    m_type = RowView;
+    m_rowOrCol = 0;
+}
+
+
+template <typename Tp>
+ArrayView<Tp>::ArrayView(const Array<0,Tp> *storage,
+                         int type, int rowOrCol)
+{
+    if (storage) {
+        m_storage = const_cast<Array<0,Tp>*>
+            (storage)->ref();
+    } else {
+        m_storage = nullptr;
+    }
+    m_type = type;
+    m_rowOrCol = rowOrCol;
+}
+
+
+template <typename Tp>
+ArrayView<Tp>& ArrayView<Tp>::operator= (const Array<1,Tp> &rowVector) {
+    if (m_storage != rowVector.storage()) {
+        if (m_storage) {
+            if (const_cast<Array<0,Tp>*>
+                (m_storage)->unref())
+            {
+                delete m_storage;
+            }
+        }
+        if (rowVector.storage()) {
+            m_storage = const_cast<Array<0,Tp>*>
+                (rowVector.storage())->ref();
+        } else {
+            m_storage = nullptr;
+        }
+        m_type = RowView;
+        m_rowOrCol = 0;
+    }
+    return *this;
+}
+
+
+template <typename Tp>
+ArrayView<Tp>& ArrayView<Tp>::operator= (const ArrayView<Tp> &that) {
+    if (m_storage != that.m_storage) {
+        if (m_storage) {
+            if (const_cast<Array<0,Tp>*>
+                (m_storage)->unref())
+            {
+                delete m_storage;
+            }
+        }
+        if (that.m_storage) {
+            m_storage = const_cast<Array<0,Tp>*>
+                (that.m_storage)->ref();
+        } else {
+            m_storage = nullptr;
+        }
+        m_type = that.m_type;
+        m_rowOrCol = that.m_rowOrCol;
+    }
+    return *this;
+}
+
+
+template <typename Tp>
+ArrayView<Tp>::~ArrayView() {
+    if (m_storage) {
+        if (const_cast<Array<0,Tp>*>
+            (m_storage)->unref())
+        {
+            delete m_storage;
+        }
+    }
+}
+
+
+template <typename Tp>
+int ArrayView<Tp>::size() const {
+    if (!m_storage) {
+        return 0;
+    }
+    if (m_type == RowView) {
+        return m_storage->cols();
+    } // else: m_type == ColumnView
+    return m_storage->rows();
+}
+
+
+template <typename Tp>
+const Tp& ArrayView<Tp>::operator[] (int idx) const {
+    if (m_type == RowView) {
+        return m_storage->valueAt(m_rowOrCol*m_storage->cols() + idx);
+    } // else: m_type == ColumnView
+    return m_storage->valueAt(m_rowOrCol + idx*m_storage->cols());
+}
+
+
+template <typename Tp> inline
+ArrayView<Tp> row(const Array<2,Tp> &matrix, int idx) {
+    return ArrayView<Tp>(
+        matrix.storage(),
+        ArrayView<Tp>::RowView,
+        idx);
+}
+
+
+template <typename Tp> inline
+ArrayView<Tp> col(const Array<2,Tp> &matrix, int idx) {
+    return ArrayView<Tp>(
+        matrix.storage(),
+        ArrayView<Tp>::ColumnView,
+        idx);
 }
 
 

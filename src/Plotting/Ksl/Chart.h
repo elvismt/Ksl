@@ -49,7 +49,7 @@ public:
 
     XYScale* scale(const QString &name="xy-scale");
 
-    Plot* plot(const Array<1> &x, const Array<1> &y,
+    Plot* plot(const ArrayView<double> &x, const ArrayView<double> &y,
                const char *style="kor",
                const QString &name="",
                const QString &scaleName="xy-scale");

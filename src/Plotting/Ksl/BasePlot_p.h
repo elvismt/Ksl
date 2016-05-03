@@ -66,7 +66,7 @@ public:
     QPen pen;
     QBrush brush;
 
-    Array<1> x, y;
+    ArrayView<double> x, y;
     int pointCount;
     double xMin, xMax;
     double yMin, yMax;

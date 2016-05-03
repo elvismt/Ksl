@@ -22,7 +22,7 @@
 
 namespace Ksl {
 
-Plot::Plot(const Array<1> &x, const Array<1> &y,
+Plot::Plot(const ArrayView<double> &x, const ArrayView<double> &y,
            const char *style, const QString &name,
            QObject *parent)
     : BasePlot(new PlotPrivate(this), name, parent)
@@ -32,7 +32,7 @@ Plot::Plot(const Array<1> &x, const Array<1> &y,
 }
 
 
-void Plot::setData(const Array<1> &x, const Array<1> &y) {
+void Plot::setData(const ArrayView<double> &x, const ArrayView<double> &y) {
     KSL_PUBLIC(Plot);
     m->x = x;
     m->y = y;

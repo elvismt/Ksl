@@ -106,7 +106,8 @@ XYScale* Chart::scale(const QString &name) {
 }
 
 
-Plot* Chart::plot(const Array<1> &x, const Array<1> &y,
+Plot* Chart::plot(const ArrayView<double> &x,
+                  const ArrayView<double> &y,
                   const char *style,
                   const QString &name,
                   const QString &scaleName)
