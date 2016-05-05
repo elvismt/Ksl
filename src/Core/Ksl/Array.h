@@ -22,8 +22,9 @@
 #define KSL_ARRAY_H
 
 #include <Ksl/Math.h>
-#include <cstdlib>
 #include <ostream>
+#include <initializer_list>
+#include <cstdlib>
 
 namespace Ksl {
 
@@ -218,6 +219,7 @@ public:
     Array(int size, const Tp &initValue);
     Array(const Array &that);
     Array(Array &&that);
+    Array(std::initializer_list<Tp> initList);
     ~Array();
 
     Array& operator= (const Array &that);
@@ -285,6 +287,20 @@ template <typename Tp>
 Array<1,Tp>::Array(Array<1,Tp> &&that) {
     if (that.m_data) {
         m_data = that.m_data->ref();
+    } else {
+        m_data = nullptr;
+    }
+}
+
+
+template <typename Tp>
+Array<1,Tp>::Array(std::initializer_list<Tp> initList) {
+    if (initList.size() > 0) {
+        m_data = new Array<0,Tp>(1, initList.size());
+        auto iter = begin();
+        for (auto &x : initList) {
+            *iter++ = x;
+        }
     } else {
         m_data = nullptr;
     }
@@ -605,6 +621,46 @@ inline Array<2,Tp> identity(int rows, const Tp &factor) {
 template <typename Tp>
 inline Array<2,Tp> samesize(const Array<2,Tp> &other) {
     return std::move(Array<2,Tp>(other.rows(), other.cols()));
+}
+
+
+template <typename Tp=double> inline
+Array<2,Tp> row_stack(std::initializer_list<Array<1,Tp>> initList) {
+    int k = 0;
+    for (auto &row : initList) {
+        if (row.size() > k) {
+            k = row.size();
+        }
+    }
+    Array<2,Tp> ret(initList.size(), k, Tp(0));
+    k = 0;
+    for (auto &row : initList) {
+        for (int i=0; i<row.size(); ++i) {
+            ret[k][i] = row[i];
+        }
+        k += 1;
+    }
+    return std::move(ret);
+}
+
+
+template <typename Tp=double> inline
+Array<2,Tp> column_stack(std::initializer_list<Array<1,Tp>> initList) {
+    int k = 0;
+    for (auto &column : initList) {
+        if (column.size() > k) {
+            k = column.size();
+        }
+    }
+    Array<2,Tp> ret(k, initList.size(), Tp(0));
+    k = 0;
+    for (auto &column : initList) {
+        for (int i=0; i<column.size(); ++i) {
+            ret[i][k] = column[i];
+        }
+        k += 1;
+    }
+    return std::move(ret);
 }
 
 
