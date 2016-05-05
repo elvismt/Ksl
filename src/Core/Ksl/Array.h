@@ -390,8 +390,8 @@ inline Array<1,Tp> ones(int size) {
 }
 
 
-template <typename Tp=double> inline
-Array<1,Tp> linspace(const Tp &start, const Tp &stop, int num) {
+template <typename Tp=double> inline Array<1,Tp>
+linspace(const Tp &start, const Tp &stop, int num) {
     Array<1,Tp> ret(num);
     auto step = (stop-start) / num;
     for (int k=0; k<num; ++k) {
@@ -401,8 +401,8 @@ Array<1,Tp> linspace(const Tp &start, const Tp &stop, int num) {
 }
 
 
-template <typename Tp=double> inline
-Array<1,Tp> arange(const Tp &start, const Tp &stop, const Tp &step=Tp(1)) {
+template <typename Tp=double> inline Array<1,Tp>
+arange(const Tp &start, const Tp &stop, const Tp &step=Tp(1)) {
     int num = int((stop - start) / step) + 1;
     Array<1,Tp> ret(num);
     for (int k=0; k<num; ++k) {
@@ -422,8 +422,8 @@ Array<1,Tp> randspace(int size, const Tp &max=Tp(1)) {
 }
 
 
-template <typename Tp>
-inline Array<1,Tp> samesize(const Array<1,Tp> &other) {
+template <typename Tp> inline
+Array<1,Tp> samesize(const Array<1,Tp> &other) {
     return std::move(Array<1,Tp>(other.size()));
 }
 
