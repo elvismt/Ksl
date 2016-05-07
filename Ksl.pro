@@ -74,7 +74,9 @@ HEADERS += \
     src/Plotting/Ksl/FigureLegend.h \
     src/Plotting/Ksl/FigureLegend_p.h \
     src/Plotting/Ksl/FeaturePlot.h \
-    src/Plotting/Ksl/FeaturePlot_p.h
+    src/Plotting/Ksl/FeaturePlot_p.h \
+    src/Plotting/Ksl/ImagePlot.h \
+    src/Plotting/Ksl/ImagePlot_p.h
 
 SOURCES += \
     tests/chart.cpp \
@@ -97,7 +99,8 @@ SOURCES += \
     src/Plotting/Ksl/BasePlot.cpp \
     src/Plotting/Ksl/Plot.cpp \
     src/Plotting/Ksl/FigureLegend.cpp \
-    src/Plotting/Ksl/FeaturePlot.cpp
+    src/Plotting/Ksl/FeaturePlot.cpp \
+    src/Plotting/Ksl/ImagePlot.cpp
 
 RESOURCES += \
     src/QRC/Icons.qrc
