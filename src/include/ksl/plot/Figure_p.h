@@ -32,7 +32,7 @@ public:
 
     FigurePrivate(Figure *publ)
         : ksl::ObjectPrivate(publ)
-        , backBrush(Qt::white)
+        , backBrush(QColor(230,230,230))
         , font("Sans", 10)
     {}
 

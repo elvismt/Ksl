@@ -19,6 +19,8 @@
  */
 
 #include <ksl/plot/FigureScale_p.h>
+#include <ksl/plot/FigureItem.h>
+#include <ksl/plot/Figure.h>
 #include <QtGui>
 
 namespace ksl {
@@ -39,7 +41,10 @@ void FigureScale::addItem(FigureItem *item) {
         // allow no duplicates
         m->itemList.removeAll(item);
         m->itemList.append(item);
-        // TODO
+        item->setScale(this);
+        if (m->figure != nullptr) {
+            m->figure->notifyError();
+        }
     }
 }
 
@@ -55,7 +60,13 @@ const QList<FigureItem*>& FigureScale::itemList() const {
 
 FigureItem* FigureScale::item(const QString &title) const {
     KSL_PUBLIC(FigureScale);
-    return m->itemList[0]; // TODO
+    for (auto item : m->itemList) {
+        if (item->title() == title) {
+            return item;
+        }
+    }
+    // not found
+    return nullptr;
 }
 
 QString FigureScale::title() const {
@@ -90,16 +101,14 @@ void FigureScale::setLayoutRect(const QRectF &rect) {
 
 void FigureScale::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(FigureScale);
-
-    painter->save();
-    painter->setClipRect(rect);
     if (m->backBrush != Qt::NoBrush) {
         painter->fillRect(rect, m->backBrush);
     }
-
-    // TODO
-
-    painter->restore();
+    for (auto item : m->itemList) {
+        if (item->visible()) {
+            item->paint(painter);
+        }
+    }
 }
 
 void FigureScale::setFigure(Figure *figure) {

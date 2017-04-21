@@ -19,34 +19,31 @@
  */
 
 #pragma once
-#include <QWidget>
-#include <ksl/plot/Figure.h>
 #include <ksl/plot/LinearScale.h>
+#include <ksl/plot/FigureScale_p.h>
 
 namespace ksl {
 namespace plot {
 
-class FigureView:
-    public QWidget,
-    public ksl::Object
+class LinearScalePrivate: public FigureScalePrivate
 {
-    Q_OBJECT
-
 public:
 
-    FigureView(const QString &title="Ksl", int width=500,
-               int height=350, QWidget *parent=nullptr);
+    LinearScalePrivate(LinearScale *publ)
+        : FigureScalePrivate(publ)
+        , leftPadding(20), rightPadding(20)
+        , topPadding(20), bottomPadding(20)
+    {}
 
-    FigureView(Figure *figure, QWidget *parent);
+    int leftPadding, rightPadding;
+    int topPadding, bottomPadding;
 
-    Figure* figure() const;
+    int xMin, xMax;
+    int yMin, yMax;
+    int width, height;
 
-
-protected:
-
-    virtual void paintEvent(QPaintEvent *event) override;
-
-    FigureView(ksl::ObjectPrivate *priv, Figure *figure,
-               QWidget *parent=nullptr);
+    double dataXmin, dataXmax;
+    double dataYmin, dataYmax;
+    double dataWidth, dataHeight;
 };
 }}

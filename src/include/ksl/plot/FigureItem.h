@@ -20,6 +20,7 @@
 
 #pragma once
 #include <ksl/plot/Object.h>
+#include <QObject>
 #include <QRect>
 
 // Qt forward declarations
@@ -32,24 +33,20 @@ namespace plot {
 
 // forward declarations
 class Figure;
-class FigureItem;
+class FigureScale;
 class FigureView;
 
-class FigureScale: public ksl::Object
+class FigureItem
+        : public QObject
+        , public ksl::Object
 {
+    Q_OBJECT
+
 public:
 
+    FigureScale* scale() const;
+
     Figure* figure() const;
-
-    virtual void addItem(FigureItem *item);
-
-    QList<FigureItem*>& itemList();
-
-    const QList<FigureItem*>& itemList() const;
-
-    FigureItem* item(const QString &title) const;
-
-    virtual void rescale() = 0;
 
     virtual QRect figureRect() const = 0;
 
@@ -67,19 +64,22 @@ public:
 
     void setVisible(bool visible);
 
-    QRectF layoutRect() const;
 
-    void setLayoutRect(const QRectF &rect);
+signals:
+
+    void dataChanged(FigureItem *self);
+
+    void appearenceChanged(FigureItem *self);
 
 
 protected:
 
-    friend class Figure;
+    friend class FigureScale;
 
-    FigureScale(ksl::ObjectPrivate *priv);
+    FigureItem(ksl::ObjectPrivate *priv, QObject *parent=nullptr);
 
-    virtual void paint(const QRect &rect, QPainter *painter);
+    virtual void paint(QPainter *painter) = 0;
 
-    virtual void setFigure(Figure *figure);
+    virtual void setScale(FigureScale *scale);
 };
 }}

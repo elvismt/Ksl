@@ -19,6 +19,7 @@
  */
 
 #include <ksl/plot/Figure_p.h>
+#include <ksl/plot/FigureItem.h>
 #include <ksl/plot/FigureScale.h>
 #include <QPainter>
 
@@ -73,17 +74,37 @@ void Figure::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(Figure);
 
     Q_ASSERT(!rect.isEmpty() && painter!=nullptr);
-    m->activeError = true;
+    m->activeError = false;
     painter->save();
     painter->setClipRect(rect);
     painter->setFont(m->font);
     if (m->backBrush != Qt::NoBrush) {
         painter->fillRect(rect, m->backBrush);
     }
-
+    double cellWidth = rect.width() / m->layoutWidth;
+    double cellHeight = rect.height() / m->layoutHeight;
+    for (auto scale : m->scaleList) {
+        if (m->activeError == true) {
+            break;
+        }
+        if (scale->visible()) {
+            QRectF scaleRect = scale->layoutRect();
+            QRect targetRect(
+                rect.x() + scaleRect.x() * cellWidth,
+                rect.y() + scaleRect.y() * cellHeight,
+                scaleRect.width() * cellWidth,
+                scaleRect.height() * cellHeight
+            );
+            scale->paint(targetRect, painter);
+        }
+    }
     if (m->activeError == true) {
+        QFont errorFont("Monospace", 10);
+        errorFont.setBold(true);
+        painter->setFont(errorFont);
         painter->setPen(QPen(Qt::red));
-        painter->drawText(30, 40, "An error ocurred while painting the figure");
+        painter->drawText(30, 40,
+            "An error ocurred while painting the figure");
     }
     painter->restore();
 }
@@ -116,10 +137,12 @@ void Figure::notifyError() {
 }
 
 void Figure::onDataChange(FigureItem *item) {
-    // TODO
+    item->scale()->rescale();
+    emit changeOccured();
 }
 
 void Figure::onAppearenceChange(FigureItem *item) {
-    // TODO
+    Q_UNUSED(item)
+    emit changeOccured();
 }
 }}

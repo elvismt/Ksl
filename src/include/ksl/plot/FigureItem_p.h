@@ -19,34 +19,25 @@
  */
 
 #pragma once
-#include <QWidget>
-#include <ksl/plot/Figure.h>
-#include <ksl/plot/LinearScale.h>
+#include <ksl/plot/FigureItem.h>
 
 namespace ksl {
 namespace plot {
 
-class FigureView:
-    public QWidget,
-    public ksl::Object
+class FigureItemPrivate: public ksl::ObjectPrivate
 {
-    Q_OBJECT
-
 public:
 
-    FigureView(const QString &title="Ksl", int width=500,
-               int height=350, QWidget *parent=nullptr);
+    FigureItemPrivate(FigureItem *publ)
+        : ksl::ObjectPrivate(publ)
+        , visible(true)
+        , figure(nullptr)
+        , scale(nullptr)
+    {}
 
-    FigureView(Figure *figure, QWidget *parent);
-
-    Figure* figure() const;
-
-
-protected:
-
-    virtual void paintEvent(QPaintEvent *event) override;
-
-    FigureView(ksl::ObjectPrivate *priv, Figure *figure,
-               QWidget *parent=nullptr);
+    bool visible;
+    Figure *figure;
+    FigureScale *scale;
+    QString title;
 };
 }}
