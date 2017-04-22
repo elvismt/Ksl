@@ -18,34 +18,17 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
-#include <ksl/plot/Figure.h>
-#include <QBrush>
-#include <QFont>
+#include <ksl/random/Normal_p.h>
 
 namespace ksl {
-namespace plot {
+namespace random {
 
-class FigurePrivate: public ksl::ObjectPrivate
-{
-public:
+Normal::Normal(double mean, double stddev)
+    : Distribution(new NormalPrivate(this, mean, stddev))
+{}
 
-    FigurePrivate(Figure *publ)
-        : ksl::ObjectPrivate(publ)
-        , backBrush(QColor(230,230,230))
-        , font("Sans", 10)
-        , view(nullptr)
-    {}
-
-    void updateLayout();
-
-    QBrush backBrush;
-    QFont font;
-    FigureView* view;
-    QString title;
-    QList<FigureScale*> scaleList;
-    double layoutWidth;
-    double layoutHeight;
-    bool activeError;
-};
+double Normal::generate() const {
+    KSL_PUBLIC(Normal);
+    return m->c_distribution(m->c_generator);
+}
 }}

@@ -47,6 +47,7 @@ void FigureScale::addItem(FigureItem *item) {
         m->itemList.removeAll(item);
         m->itemList.append(item);
         item->setScale(this);
+        rescale();
         if (m->figure != nullptr) {
             m->figure->notifyError();
         }

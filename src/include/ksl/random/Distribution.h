@@ -19,33 +19,25 @@
  */
 
 #pragma once
-#include "ksl/plot/Object_h.h"
-
-#define  KSL_GET_PRIVATE(Class,Instance) \
-    static_cast<Class##Private*>((Instance)->__private__())
-
-#define  KSL_PUBLIC(Class) \
-    auto m = KSL_GET_PRIVATE(Class,this)
+#include <ksl/Object.h>
+#include <QVector>
 
 namespace ksl {
+namespace random {
 
-class Object
+class Distribution: public ksl::Object
 {
 public:
 
-    virtual ~Object() {
-        delete __privateInstance__;
-    }
+    virtual double generate() const = 0;
 
-    ObjectPrivate* __private__() const {
-        return __privateInstance__;
+    inline double operator() () const {
+        return generate();
     }
 
 protected:
 
-    Object(ObjectPrivate *priv)
-        : __privateInstance__(priv) {}
-
-    ObjectPrivate *const __privateInstance__;
+    Distribution(ksl::ObjectPrivate *priv)
+        : ksl::Object(priv) {}
 };
-}
+}}

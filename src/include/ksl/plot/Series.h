@@ -19,33 +19,43 @@
  */
 
 #pragma once
-#include <ksl/plot/Figure.h>
-#include <QBrush>
-#include <QFont>
+#include <ksl/plot/FigureItem.h>
+#include <QVector>
 
 namespace ksl {
 namespace plot {
 
-class FigurePrivate: public ksl::ObjectPrivate
+class Series: public FigureItem
 {
+    Q_OBJECT
+
 public:
 
-    FigurePrivate(Figure *publ)
-        : ksl::ObjectPrivate(publ)
-        , backBrush(QColor(230,230,230))
-        , font("Sans", 10)
-        , view(nullptr)
-    {}
+    enum SymbolEnum {
+        Line          = 0x00000001,
+        Circles       = 0x00000002,
+        Squares       = 0x00000004
+    };
+    Q_DECLARE_FLAGS(Symbol,SymbolEnum)
 
-    void updateLayout();
+    Series(const QVector<double> &x, const QVector<double> &y,
+           const char *style="ro", QObject *parent=nullptr);
 
-    QBrush backBrush;
-    QFont font;
-    FigureView* view;
-    QString title;
-    QList<FigureScale*> scaleList;
-    double layoutWidth;
-    double layoutHeight;
-    bool activeError;
+    void setData(const QVector<double> &x, const QVector<double> &y);
+
+    void setStyle(const char *style);
+
+    virtual QRect figureRect() const override;
+
+    virtual QRectF dataRect() const override;
+
+
+protected:
+
+    Series(ksl::ObjectPrivate *priv, QObject *parent=nullptr);
+
+    virtual void paint(QPainter *painter) override;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Series::Symbol)
 }}

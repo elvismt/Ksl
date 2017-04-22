@@ -22,6 +22,7 @@
 #include <QWidget>
 #include <ksl/plot/Figure.h>
 #include <ksl/plot/LinearScale.h>
+#include <ksl/plot/Series.h>
 
 namespace ksl {
 namespace plot {
@@ -34,8 +35,8 @@ class FigureView:
 
 public:
 
-    FigureView(const QString &title="Ksl", int width=500,
-               int height=350, QWidget *parent=nullptr);
+    FigureView(const QString &title="Ksl", int width=400,
+               int height=400, QWidget *parent=nullptr);
 
     FigureView(Figure *figure, QWidget *parent=nullptr);
 

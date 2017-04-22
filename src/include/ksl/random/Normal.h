@@ -19,33 +19,17 @@
  */
 
 #pragma once
-#include <ksl/plot/Figure.h>
-#include <QBrush>
-#include <QFont>
+#include <ksl/random/Distribution.h>
 
 namespace ksl {
-namespace plot {
+namespace random {
 
-class FigurePrivate: public ksl::ObjectPrivate
+class Normal: public Distribution
 {
 public:
 
-    FigurePrivate(Figure *publ)
-        : ksl::ObjectPrivate(publ)
-        , backBrush(QColor(230,230,230))
-        , font("Sans", 10)
-        , view(nullptr)
-    {}
+    Normal(double mean, double stddev);
 
-    void updateLayout();
-
-    QBrush backBrush;
-    QFont font;
-    FigureView* view;
-    QString title;
-    QList<FigureScale*> scaleList;
-    double layoutWidth;
-    double layoutHeight;
-    bool activeError;
+    virtual double generate() const override;
 };
 }}

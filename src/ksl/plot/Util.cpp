@@ -18,34 +18,20 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
-#include <ksl/plot/Figure.h>
-#include <QBrush>
-#include <QFont>
+#include <ksl/plot/Util.h>
 
 namespace ksl {
 namespace plot {
+namespace Util {
 
-class FigurePrivate: public ksl::ObjectPrivate
-{
-public:
-
-    FigurePrivate(Figure *publ)
-        : ksl::ObjectPrivate(publ)
-        , backBrush(QColor(230,230,230))
-        , font("Sans", 10)
-        , view(nullptr)
-    {}
-
-    void updateLayout();
-
-    QBrush backBrush;
-    QFont font;
-    FigureView* view;
-    QString title;
-    QList<FigureScale*> scaleList;
-    double layoutWidth;
-    double layoutHeight;
-    bool activeError;
-};
-}}
+QColor parseColor(char c) {
+    switch (c) {
+        case 'r': return Qt::red;
+        case 'g': return Qt::green;
+        case 'b': return Qt::blue;
+        case 'k': return Qt::black;
+        case 'w': return Qt::white;
+    }
+    return Qt::black;
+}
+}}}

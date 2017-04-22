@@ -19,33 +19,44 @@
  */
 
 #pragma once
-#include <ksl/plot/Figure.h>
+#include <ksl/plot/Series.h>
+#include <ksl/plot/FigureItem_p.h>
+#include <QPen>
 #include <QBrush>
-#include <QFont>
 
 namespace ksl {
 namespace plot {
 
-class FigurePrivate: public ksl::ObjectPrivate
+class SeriesPrivate: public FigureItemPrivate
 {
 public:
 
-    FigurePrivate(Figure *publ)
-        : ksl::ObjectPrivate(publ)
-        , backBrush(QColor(230,230,230))
-        , font("Sans", 10)
-        , view(nullptr)
+    SeriesPrivate(Series *publ)
+        : FigureItemPrivate(publ)
+        , linePen(Qt::blue)
+        , symbolPen(Qt::red)
+        , symbolBrush(Qt::green)
+        , symbol(Series::Line)
+        , antialias(true)
+        , symbolRadius(2.3)
     {}
 
-    void updateLayout();
+    void checkBounds();
 
-    QBrush backBrush;
-    QFont font;
-    FigureView* view;
-    QString title;
-    QList<FigureScale*> scaleList;
-    double layoutWidth;
-    double layoutHeight;
-    bool activeError;
+    void paintLine(QPainter *painter);
+
+    void paintCircles(QPainter *painter);
+
+    QPen linePen;
+    QPen symbolPen;
+    QBrush symbolBrush;
+    Series::Symbol symbol;
+    bool antialias;
+    double symbolRadius;
+    QVector<double> x, y;
+
+    int64_t pointCount;
+    double xMin, xMax;
+    double yMin, yMax;
 };
 }}

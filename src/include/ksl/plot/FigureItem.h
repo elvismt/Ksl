@@ -19,7 +19,7 @@
  */
 
 #pragma once
-#include <ksl/plot/Object.h>
+#include <ksl/Object.h>
 #include <QObject>
 #include <QRect>
 
@@ -53,10 +53,6 @@ public:
     virtual QRect figureRect() const = 0;
 
     virtual QRectF dataRect() const = 0;
-
-    virtual QPoint map(const QPointF &p) const = 0;
-
-    virtual QPointF unmap(const QPoint &p) const = 0;
 
     QString title() const;
 

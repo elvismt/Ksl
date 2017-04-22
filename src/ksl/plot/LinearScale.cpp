@@ -31,10 +31,10 @@ LinearScale::LinearScale(const QString &title, Figure *figure)
 {
     KSL_PUBLIC(LinearScale);
     m->title = title;
+    rescale();
     if (figure != nullptr) {
         figure->addScale(this);
     }
-    rescale();
 }
 
 void LinearScale::rescale() {
@@ -44,28 +44,28 @@ void LinearScale::rescale() {
         setYrange(0.0, 1.0);
         return;
     }
-
     // find the first scalable and visible item
     auto iter = m->itemList.begin();
     auto end = m->itemList.end();
-    FigureItem *item = (*iter)++;
+    FigureItem *item = nullptr;
+    bool someScales = false;
     while (iter != end) {
+        item = *(iter++);
         if (item->visible() && item->scalable()) {
+            someScales = true;
             break;
         }
-        item = (*iter)++;
     }
-    if (iter == end) {
+    if (!someScales) {
         return;
     }
-
     QRectF itemRect = item->dataRect();
     setXrange(itemRect.left(), itemRect.right());
     setYrange(itemRect.top(), itemRect.bottom());
 
     // check if any of the oter visible items stretch the bounds
     while (iter != end) {
-        item = (*iter)++;
+        item = *(iter++);
         if (item->visible() && item->scalable()) {
             itemRect = item->dataRect();
             if (itemRect.left() < m->dataXmin) m->dataXmin = itemRect.left();
@@ -74,6 +74,8 @@ void LinearScale::rescale() {
             if (itemRect.bottom() > m->dataYmax) m->dataYmax = itemRect.bottom();
         }
     }
+    m->dataWidth = m->dataXmax - m->dataXmin;
+    m->dataHeight = m->dataYmax - m->dataYmin;
 }
 
 QRect LinearScale::figureRect() const {

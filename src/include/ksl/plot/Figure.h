@@ -19,7 +19,7 @@
  */
 
 #pragma once
-#include <ksl/plot/Object.h>
+#include <ksl/Object.h>
 #include <QObject>
 #include <QRect>
 

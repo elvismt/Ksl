@@ -19,33 +19,33 @@
  */
 
 #pragma once
-#include <ksl/plot/Figure.h>
-#include <QBrush>
-#include <QFont>
+#include "ksl/Object_h.h"
+
+#define  KSL_GET_PRIVATE(Class,Instance) \
+    static_cast<Class##Private*>((Instance)->__private__())
+
+#define  KSL_PUBLIC(Class) \
+    auto m = KSL_GET_PRIVATE(Class,this)
 
 namespace ksl {
-namespace plot {
 
-class FigurePrivate: public ksl::ObjectPrivate
+class Object
 {
 public:
 
-    FigurePrivate(Figure *publ)
-        : ksl::ObjectPrivate(publ)
-        , backBrush(QColor(230,230,230))
-        , font("Sans", 10)
-        , view(nullptr)
-    {}
+    virtual ~Object() {
+        delete __privateInstance__;
+    }
 
-    void updateLayout();
+    ObjectPrivate* __private__() const {
+        return __privateInstance__;
+    }
 
-    QBrush backBrush;
-    QFont font;
-    FigureView* view;
-    QString title;
-    QList<FigureScale*> scaleList;
-    double layoutWidth;
-    double layoutHeight;
-    bool activeError;
+protected:
+
+    Object(ObjectPrivate *priv)
+        : __privateInstance__(priv) {}
+
+    ObjectPrivate *const __privateInstance__;
 };
-}}
+}
