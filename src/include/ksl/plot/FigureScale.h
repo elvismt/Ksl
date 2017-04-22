@@ -41,6 +41,8 @@ public:
 
     Figure* figure() const;
 
+    FigureView* view() const;
+
     virtual void addItem(FigureItem *item);
 
     QList<FigureItem*>& itemList();
@@ -81,5 +83,7 @@ protected:
     virtual void paint(const QRect &rect, QPainter *painter);
 
     virtual void setFigure(Figure *figure);
+
+    void notifyChange();
 };
 }}

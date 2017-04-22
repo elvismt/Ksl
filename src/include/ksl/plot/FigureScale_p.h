@@ -32,12 +32,14 @@ public:
     FigureScalePrivate(FigureScale *publ)
         : ksl::ObjectPrivate(publ)
         , figure(nullptr)
+        , view(nullptr)
         , visible(true)
         , backBrush(Qt::white)
         , layoutRect(0.0, 0.0, 1.0, 1.0)
     {}
 
     Figure *figure;
+    FigureView *view;
     bool visible;
     QBrush backBrush;
     QRectF layoutRect;

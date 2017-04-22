@@ -38,6 +38,7 @@ FigureView::FigureView(ksl::ObjectPrivate *priv,
         m->ownFigure = true;
     }
     setMinimumSize(250, 250);
+    m->figure->setView(this);
     connect(m->figure, SIGNAL(changeOccured()), this, SLOT(update()));
 }
 

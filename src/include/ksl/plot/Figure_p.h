@@ -32,14 +32,17 @@ public:
 
     FigurePrivate(Figure *publ)
         : ksl::ObjectPrivate(publ)
-        , backBrush(QColor(230,230,230))
+        //, backBrush(QColor(230,230,230))
+        , backBrush(Qt::NoBrush)
         , font("Sans", 10)
+        , view(nullptr)
     {}
 
     void updateLayout();
 
     QBrush backBrush;
     QFont font;
+    FigureView* view;
     QString title;
     QList<FigureScale*> scaleList;
     double layoutWidth;

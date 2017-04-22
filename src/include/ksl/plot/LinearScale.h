@@ -42,6 +42,10 @@ public:
 
     virtual QPointF unmap(const QPoint &p) const override;
 
+    void setXrange(double min, double max);
+
+    void setYrange(double min, double max);
+
 
 protected:
 

@@ -48,6 +48,8 @@ public:
 
     Figure* figure() const;
 
+    FigureView* view() const;
+
     virtual QRect figureRect() const = 0;
 
     virtual QRectF dataRect() const = 0;
@@ -61,6 +63,8 @@ public:
     void setTitle(const QString &title);
 
     bool visible() const;
+
+    bool scalable() const;
 
     void setVisible(bool visible);
 
@@ -81,5 +85,7 @@ protected:
     virtual void paint(QPainter *painter) = 0;
 
     virtual void setScale(FigureScale *scale);
+
+    void setScalable(bool scalable);
 };
 }}

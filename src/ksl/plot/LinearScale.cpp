@@ -20,6 +20,7 @@
 
 #include <ksl/plot/LinearScale_p.h>
 #include <ksl/plot/Figure.h>
+#include <ksl/plot/FigureItem.h>
 #include <QtGui>
 
 namespace ksl {
@@ -33,10 +34,46 @@ LinearScale::LinearScale(const QString &title, Figure *figure)
     if (figure != nullptr) {
         figure->addScale(this);
     }
+    rescale();
 }
 
 void LinearScale::rescale() {
-    // TODO
+    KSL_PUBLIC(LinearScale);
+    if (m->itemList.isEmpty()) {
+        setXrange(0.0, 1.0);
+        setYrange(0.0, 1.0);
+        return;
+    }
+
+    // find the first scalable and visible item
+    auto iter = m->itemList.begin();
+    auto end = m->itemList.end();
+    FigureItem *item = (*iter)++;
+    while (iter != end) {
+        if (item->visible() && item->scalable()) {
+            break;
+        }
+        item = (*iter)++;
+    }
+    if (iter == end) {
+        return;
+    }
+
+    QRectF itemRect = item->dataRect();
+    setXrange(itemRect.left(), itemRect.right());
+    setYrange(itemRect.top(), itemRect.bottom());
+
+    // check if any of the oter visible items stretch the bounds
+    while (iter != end) {
+        item = (*iter)++;
+        if (item->visible() && item->scalable()) {
+            itemRect = item->dataRect();
+            if (itemRect.left() < m->dataXmin) m->dataXmin = itemRect.left();
+            if (itemRect.right() > m->dataXmax) m->dataXmax = itemRect.right();
+            if (itemRect.top() < m->dataYmin) m->dataYmin = itemRect.top();
+            if (itemRect.bottom() > m->dataYmax) m->dataYmax = itemRect.bottom();
+        }
+    }
 }
 
 QRect LinearScale::figureRect() const {
@@ -91,5 +128,19 @@ void LinearScale::paint(const QRect &rect, QPainter *painter) {
     painter->setClipRect(figureRect());
     FigureScale::paint(rect, painter);
     painter->restore();
+}
+
+void LinearScale::setXrange(double min, double max) {
+    KSL_PUBLIC(LinearScale);
+    m->dataXmin = min;
+    m->dataXmax = max;
+    m->dataWidth = max - min;
+}
+
+void LinearScale::setYrange(double min, double max) {
+    KSL_PUBLIC(LinearScale);
+    m->dataYmin = min;
+    m->dataYmax = max;
+    m->dataHeight = max - min;
 }
 }}

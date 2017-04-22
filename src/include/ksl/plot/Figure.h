@@ -44,6 +44,8 @@ class Figure:
 
 public:
 
+    FigureView* view() const;
+
     Figure(const QString &title="Ksl", QObject *parent=nullptr);
 
     virtual void addScale(FigureScale *scale);
@@ -64,6 +66,8 @@ public slots:
 
     void notifyError();
 
+    void notifyChange();
+
     virtual void onDataChange(FigureItem *item);
 
     virtual void onAppearenceChange(FigureItem *item);
@@ -78,6 +82,10 @@ signals:
 
 protected:
 
+    friend class FigureView;
+
     Figure(ksl::ObjectPrivate *priv, QObject *parent=nullptr);
+
+    virtual void setView(FigureView *view);
 };
 }}

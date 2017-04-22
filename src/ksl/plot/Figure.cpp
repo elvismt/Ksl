@@ -38,6 +38,11 @@ Figure::Figure(const QString &title, QObject *parent)
     m->title = title;
 }
 
+FigureView* Figure::view() const {
+    KSL_PUBLIC(const Figure);
+    return m->view;
+}
+
 void Figure::addScale(FigureScale *scale) {
     KSL_PUBLIC(Figure);
     if (scale != nullptr) {
@@ -136,6 +141,12 @@ void Figure::notifyError() {
     m->activeError = true;
 }
 
+void Figure::notifyChange() {
+    KSL_PUBLIC(Figure);
+    m->updateLayout();
+    emit changeOccured();
+}
+
 void Figure::onDataChange(FigureItem *item) {
     item->scale()->rescale();
     emit changeOccured();
@@ -144,5 +155,13 @@ void Figure::onDataChange(FigureItem *item) {
 void Figure::onAppearenceChange(FigureItem *item) {
     Q_UNUSED(item)
     emit changeOccured();
+}
+
+void Figure::setView(FigureView *view) {
+    KSL_PUBLIC(Figure);
+    m->view = view;
+    for (auto scale : m->scaleList) {
+        scale->setFigure(this);
+    }
 }
 }}

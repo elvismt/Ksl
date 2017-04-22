@@ -31,13 +31,17 @@ public:
     FigureItemPrivate(FigureItem *publ)
         : ksl::ObjectPrivate(publ)
         , visible(true)
+        , scalable(true)
         , figure(nullptr)
         , scale(nullptr)
+        , view(nullptr)
     {}
 
     bool visible;
+    bool scalable;
     Figure *figure;
     FigureScale *scale;
+    FigureView* view;
     QString title;
 };
 }}

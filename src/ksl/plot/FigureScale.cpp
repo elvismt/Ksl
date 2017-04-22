@@ -35,6 +35,11 @@ Figure* FigureScale::figure() const {
     return m->figure;
 }
 
+FigureView* FigureScale::view() const {
+    KSL_PUBLIC(const FigureScale);
+    return m->view;
+}
+
 void FigureScale::addItem(FigureItem *item) {
     KSL_PUBLIC(FigureScale);
     if (item != nullptr) {
@@ -97,6 +102,7 @@ QRectF FigureScale::layoutRect() const {
 void FigureScale::setLayoutRect(const QRectF &rect) {
     KSL_PUBLIC(FigureScale);
     m->layoutRect = rect;
+    notifyChange();
 }
 
 void FigureScale::paint(const QRect &rect, QPainter *painter) {
@@ -114,6 +120,16 @@ void FigureScale::paint(const QRect &rect, QPainter *painter) {
 void FigureScale::setFigure(Figure *figure) {
     KSL_PUBLIC(FigureScale);
     m->figure = figure;
-    // TODO
+    m->view = figure->view();
+    for (auto item : m->itemList) {
+        item->setScale(this);
+    }
+}
+
+void FigureScale::notifyChange() {
+    KSL_PUBLIC(FigureScale);
+    if (m->figure != nullptr) {
+        m->figure->notifyChange();
+    }
 }
 }}

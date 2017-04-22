@@ -37,7 +37,7 @@ public:
     FigureView(const QString &title="Ksl", int width=500,
                int height=350, QWidget *parent=nullptr);
 
-    FigureView(Figure *figure, QWidget *parent);
+    FigureView(Figure *figure, QWidget *parent=nullptr);
 
     Figure* figure() const;
 

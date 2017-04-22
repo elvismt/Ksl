@@ -42,6 +42,11 @@ Figure* FigureItem::figure() const {
     return m->figure;
 }
 
+FigureView* FigureItem::view() const {
+    KSL_PUBLIC(const FigureItem);
+    return m->view;
+}
+
 QString FigureItem::title() const {
     KSL_PUBLIC(const FigureItem);
     return m->title;
@@ -68,14 +73,24 @@ void FigureItem::setVisible(bool visible) {
     }
 }
 
+bool FigureItem::scalable() const {
+    KSL_PUBLIC(const FigureItem);
+    return m->scalable;
+}
+
+void FigureItem::setScalable(bool scalable) {
+    KSL_PUBLIC(FigureItem);
+    m->scalable = scalable;
+}
+
 void FigureItem::setScale(FigureScale *scale) {
     KSL_PUBLIC(FigureItem);
     Figure *oldFigure = m->figure;
-    Figure *newFigure =
-        (scale != nullptr) ? scale->figure() : nullptr;
+    Figure *newFigure = (scale != nullptr) ? scale->figure() : nullptr;
 
     m->figure = newFigure;
     m->scale = scale;
+    m->view = (scale != nullptr) ? scale->view() : nullptr;
 
     if (oldFigure != nullptr) {
         disconnect(this, SIGNAL(dataChanged(FigureItem*)),
