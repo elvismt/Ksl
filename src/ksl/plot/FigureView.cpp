@@ -37,7 +37,9 @@ FigureView::FigureView(ksl::ObjectPrivate *priv,
         m->figure = new Figure();
         m->ownFigure = true;
     }
+    setAutoFillBackground(false);
     setMinimumSize(250, 250);
+    setMouseTracking(true);
     m->figure->setView(this);
     connect(m->figure, SIGNAL(changeOccured()), this, SLOT(update()));
 }

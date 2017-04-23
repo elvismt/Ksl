@@ -75,6 +75,18 @@ FigureScale* Figure::scale(const QString &title) const {
     return nullptr;
 }
 
+FigureItem* Figure::item(const QString &title) const {
+    KSL_PUBLIC(Figure);
+    for (auto scale : m->scaleList) {
+        auto item = scale->item(title);
+        if (item != nullptr) {
+            return item;
+        }
+    }
+    // not found
+    return nullptr;
+}
+
 void Figure::paint(const QRect &rect, QPainter *painter) {
     KSL_PUBLIC(Figure);
 

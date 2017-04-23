@@ -162,7 +162,7 @@ void Series::setStyle(const char *style) {
         symbolBrush.setColor(Util::parseColor(style[k++]));
     }
 
-    linePen.setWidthF(1.1);
+    linePen.setWidthF(1.2);
     symbolPen.setWidthF((symbol & Big) ? 1.5 : 0.8);
 
     m->linePen = linePen;

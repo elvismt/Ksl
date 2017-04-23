@@ -1,18 +1,14 @@
 #include <QApplication>
 #include <QDebug>
-#include <ksl/plot/FigureView.h>
+#include <ksl/plot/Chart.h>
 #include <ksl/random/Normal.h>
+
+using namespace ksl;
 
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
 
-    // figure and view widget
-    ksl::plot::FigureView figureView;
-    ksl::plot::Figure *figure = figureView.figure();
-
-    // add linear scale
-    ksl::plot::LinearScale scale("Scale", figure);
-    // scale.setFrameStyle(ksl::plot::LinearScale::ZeroAxis);
+    plot::Chart chart;
 
     // create some random data
     const int64_t pointCount = 300;
@@ -27,13 +23,9 @@ int main(int argc, char **argv) {
         y2[k] = distribution2();
     }
 
-    // create series plots
-    ksl::plot::Series plot1(x1, y1, "bOr");
-    scale.addItem(&plot1);
-    ksl::plot::Series plot2(x2, y2, "bOg");
-    scale.addItem(&plot2);
+    chart.series(x1, y1, "bOr");
+    chart.series(x2, y2, "kOg");
 
-    // show the window and run app
-    figureView.show();
+    chart.show();
     return app.exec();
 }

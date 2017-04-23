@@ -67,6 +67,10 @@ public:
 
     void setYrange(double min, double max);
 
+    void setXpadding(int left, double right);
+
+    void setYpadding(int top, int bottom);
+
 
 protected:
 

@@ -57,6 +57,8 @@ public:
 
     FigureScale* scale(const QString &title) const;
 
+    FigureItem* item(const QString &title) const;
+
     virtual void paint(const QRect &rect, QPainter *painter);
 
     void save(const QString fileName, int width=500,

@@ -174,6 +174,18 @@ void LinearScale::setYrange(double min, double max) {
     m->dataHeight = max - min;
 }
 
+void LinearScale::setXpadding(int left, double right) {
+    KSL_PUBLIC(LinearScale);
+    m->leftPadding = left;
+    m->rightPadding = right;
+}
+
+void LinearScale::setYpadding(int top, int bottom) {
+    KSL_PUBLIC(LinearScale);
+    m->topPadding = top;
+    m->bottomPadding = bottom;
+}
+
 void LinearScale::setFrameStyle(FrameStyle frameStyle) {
     KSL_PUBLIC(LinearScale);
     if (frameStyle & BoundAxis) {
@@ -183,6 +195,8 @@ void LinearScale::setFrameStyle(FrameStyle frameStyle) {
         m->axis[LinearScale::RightAxis]->setVisible(true);
         m->axis[LinearScale::X_Axis]->setVisible(false);
         m->axis[LinearScale::Y_Axis]->setVisible(false);
+        setXpadding(60, 20);
+        setYpadding(20, 60);
     } else if (frameStyle & ZeroAxis) {
         m->axis[LinearScale::BottomAxis]->setVisible(false);
         m->axis[LinearScale::LeftAxis]->setVisible(false);
@@ -190,6 +204,8 @@ void LinearScale::setFrameStyle(FrameStyle frameStyle) {
         m->axis[LinearScale::RightAxis]->setVisible(false);
         m->axis[LinearScale::X_Axis]->setVisible(true);
         m->axis[LinearScale::Y_Axis]->setVisible(true);
+        setXpadding(20, 20);
+        setYpadding(20, 20);
     }
 }
 
