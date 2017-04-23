@@ -164,4 +164,40 @@ void Figure::setView(FigureView *view) {
         scale->setFigure(this);
     }
 }
+
+void Figure::mousePressEvent(QMouseEvent *event) {
+    KSL_PUBLIC(Figure);
+    // only propagate to the items to handle
+    // TODO improve it
+    for (auto scale : m->scaleList) {
+        scale->mousePressEvent(event);
+    }
+}
+
+void Figure::mouseMoveEvent(QMouseEvent *event) {
+    KSL_PUBLIC(Figure);
+    // only propagate to the items to handle
+    // TODO improve it
+    for (auto scale : m->scaleList) {
+        scale->mouseMoveEvent(event);
+    }
+}
+
+void Figure::mouseReleaseEvent(QMouseEvent *event) {
+    KSL_PUBLIC(Figure);
+    // only propagate to the items to handle
+    // TODO improve it
+    for (auto scale : m->scaleList) {
+        scale->mouseReleaseEvent(event);
+    }
+}
+
+void Figure::mouseDoubleClickEvent(QMouseEvent *event) {
+    KSL_PUBLIC(Figure);
+    // only propagate to the items to handle
+    // TODO improve it
+    for (auto scale : m->scaleList) {
+        scale->mouseDoubleClickEvent(event);
+    }
+}
 }}

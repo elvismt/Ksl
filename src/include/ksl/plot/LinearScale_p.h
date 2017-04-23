@@ -33,8 +33,8 @@ public:
 
     LinearScalePrivate(LinearScale *publ)
         : FigureScalePrivate(publ)
-        , leftPadding(20), rightPadding(20)
-        , topPadding(20), bottomPadding(20)
+        , leftPadding(60), rightPadding(20)
+        , topPadding(20), bottomPadding(60)
         , horizontalMargin(0.05)
         , verticalMargin(0.05)
     {}

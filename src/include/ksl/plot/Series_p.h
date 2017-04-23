@@ -38,24 +38,30 @@ public:
         , symbolBrush(Qt::green)
         , symbol(Series::Line)
         , antialias(true)
-        , symbolRadius(2.4)
+        , smallSymbolRadius(2.4)
+        , bigSymbolRadius(3.5)
     {}
 
     void checkBounds();
 
     void paintLine(QPainter *painter);
 
-    void paintCircles(QPainter *painter);
+    void paintSmallCircles(QPainter *painter);
+
+    void paintBigCircles(QPainter *painter);
 
     QPen linePen;
     QPen symbolPen;
     QBrush symbolBrush;
     Series::Symbol symbol;
     bool antialias;
-    double symbolRadius;
-    QVector<double> x, y;
+    double smallSymbolRadius;
+    double bigSymbolRadius;
 
+    const double *x;
+    const double *y;
     int64_t pointCount;
+
     double xMin, xMax;
     double yMin, yMax;
 };

@@ -72,4 +72,38 @@ void FigureView::paintEvent(QPaintEvent *event) {
     m->figure->paint(rect(), &m->painter);
     m->painter.end();
 }
+
+void FigureView::mousePressEvent(QMouseEvent *event) {
+    KSL_PUBLIC(FigureView);
+    if (m->figure != nullptr) {
+        m->figure->mousePressEvent(event);
+    }
+}
+
+void FigureView::mouseMoveEvent(QMouseEvent *event) {
+    KSL_PUBLIC(FigureView);
+    // only propagate tot he items to handle
+    // TODO improve it
+    if (m->figure != nullptr) {
+        m->figure->mouseMoveEvent(event);
+    }
+}
+
+void FigureView::mouseReleaseEvent(QMouseEvent *event) {
+    KSL_PUBLIC(FigureView);
+    // only propagate tot he items to handle
+    // TODO improve it
+    if (m->figure != nullptr) {
+        m->figure->mouseReleaseEvent(event);
+    }
+}
+
+void FigureView::mouseDoubleClickEvent(QMouseEvent *event) {
+    KSL_PUBLIC(FigureView);
+    // only propagate tot he items to handle
+    // TODO improve it
+    if (m->figure != nullptr) {
+        m->figure->mouseDoubleClickEvent(event);
+    }
+}
 }}

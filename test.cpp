@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
 
     // add linear scale
     ksl::plot::LinearScale scale("Scale", figure);
-    scale.setFrameStyle(ksl::plot::LinearScale::ZeroAxis);
+    // scale.setFrameStyle(ksl::plot::LinearScale::ZeroAxis);
 
     // create some random data
     const int64_t pointCount = 300;
@@ -28,9 +28,9 @@ int main(int argc, char **argv) {
     }
 
     // create series plots
-    ksl::plot::Series plot1(x1, y1, "ro");
+    ksl::plot::Series plot1(x1, y1, "bOr");
     scale.addItem(&plot1);
-    ksl::plot::Series plot2(x2, y2, "bo");
+    ksl::plot::Series plot2(x2, y2, "bOg");
     scale.addItem(&plot2);
 
     // show the window and run app

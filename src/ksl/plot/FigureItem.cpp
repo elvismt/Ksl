@@ -105,4 +105,24 @@ void FigureItem::setScale(FigureScale *scale) {
                 newFigure, SLOT(onAppearenceChange(FigureItem*)));
     }
 }
+
+void FigureItem::mousePressEvent(QMouseEvent *event) {
+    Q_UNUSED(event)
+    // pass
+}
+
+void FigureItem::mouseMoveEvent(QMouseEvent *event) {
+    Q_UNUSED(event)
+    // pass
+}
+
+void FigureItem::mouseReleaseEvent(QMouseEvent *event) {
+    Q_UNUSED(event)
+    // pass
+}
+
+void FigureItem::mouseDoubleClickEvent(QMouseEvent *event) {
+    Q_UNUSED(event)
+    // pass
+}
 }}

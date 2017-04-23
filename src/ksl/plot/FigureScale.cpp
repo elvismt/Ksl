@@ -133,4 +133,40 @@ void FigureScale::notifyChange() {
         m->figure->notifyChange();
     }
 }
+
+void FigureScale::mousePressEvent(QMouseEvent *event) {
+    KSL_PUBLIC(FigureScale);
+    // only propagate to the items to handle
+    // TODO improve it
+    for (auto item : m->itemList) {
+        item->mousePressEvent(event);
+    }
+}
+
+void FigureScale::mouseMoveEvent(QMouseEvent *event) {
+    KSL_PUBLIC(FigureScale);
+    // only propagate to the items to handle
+    // TODO improve it
+    for (auto item : m->itemList) {
+        item->mouseMoveEvent(event);
+    }
+}
+
+void FigureScale::mouseReleaseEvent(QMouseEvent *event) {
+    KSL_PUBLIC(FigureScale);
+    // only propagate to the items to handle
+    // TODO improve it
+    for (auto item : m->itemList) {
+        item->mouseReleaseEvent(event);
+    }
+}
+
+void FigureScale::mouseDoubleClickEvent(QMouseEvent *event) {
+    KSL_PUBLIC(FigureScale);
+    // only propagate to the items to handle
+    // TODO improve it
+    for (auto item : m->itemList) {
+        item->mouseDoubleClickEvent(event);
+    }
+}
 }}

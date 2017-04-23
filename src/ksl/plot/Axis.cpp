@@ -39,10 +39,10 @@ QRect Axis::figureRect() const {
     KSL_PUBLIC(const Axis);
     if (m->orientation == Qt::Vertical) {
         return QRect(m->p1.x() - 4, m->p1.y(),
-            8, m->p2.y() - m->p1.y());
+            9, m->p2.y() - m->p1.y() + 1);
     }
     return QRect(m->p1.x(), m->p1.y() - 4,
-        m->p2.x() - m->p1.x(), 8);
+        m->p2.x() - m->p1.x() + 1, 9);
 }
 
 QRectF Axis::dataRect() const {
@@ -68,9 +68,13 @@ void Axis::paint(QPainter *painter) {
     if (m->component & Line) {
         m->paintLine(painter);
     }
+    if (m->selected) {
+        painter->fillRect(figureRect(), m->selectBrush);
+    }
 }
 
 void AxisPrivate::paintLine(QPainter *painter) {
+    painter->setRenderHint(QPainter::Antialiasing, lineAntialias);
     painter->setPen(linePen);
     painter->drawLine(p1, p2);
 }

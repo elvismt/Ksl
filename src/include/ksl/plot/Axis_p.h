@@ -34,13 +34,17 @@ public:
     AxisPrivate(Axis *publ)
         : FigureItemPrivate(publ)
         , linePen(Qt::black)
-        , selectBrush(QColor(0,0,220,200))
+        , lineAntialias(false)
+        , selectBrush(QColor(0,0,255,180))
+        , selected(false)
     {}
 
     void paintLine(QPainter *painter);
 
     QPen linePen;
+    bool lineAntialias;
     QBrush selectBrush;
+    bool selected;
     Axis::Component component;
     Qt::Orientation orientation;
     double min, max, anchor;

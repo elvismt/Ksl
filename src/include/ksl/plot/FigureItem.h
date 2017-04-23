@@ -26,6 +26,7 @@
 // Qt forward declarations
 QT_BEGIN_NAMESPACE
 class QPainter;
+class QMouseEvent;
 QT_END_NAMESPACE
 
 namespace ksl {
@@ -83,5 +84,13 @@ protected:
     virtual void setScale(FigureScale *scale);
 
     void setScalable(bool scalable);
+
+    virtual void mousePressEvent(QMouseEvent *event);
+
+    virtual void mouseMoveEvent(QMouseEvent *event);
+
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+
+    virtual void mouseDoubleClickEvent(QMouseEvent *event);
 };
 }}

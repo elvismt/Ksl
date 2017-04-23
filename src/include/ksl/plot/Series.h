@@ -32,16 +32,25 @@ class Series: public FigureItem
 public:
 
     enum SymbolEnum {
-        Line          = 0x00000001,
-        Circles       = 0x00000002,
-        Squares       = 0x00000004
+        Line           = 0x00000001,
+        Big            = 0x00000002,
+        Circles        = 0x00000004,
+        SmallCircles   = Circles,
+        BigCircles     = Circles|Big,
+        Squares        = 0x00000008,
+        SmallSquares   = Squares,
+        BigSquares     = Squares|Big
     };
     Q_DECLARE_FLAGS(Symbol,SymbolEnum)
 
     Series(const QVector<double> &x, const QVector<double> &y,
-           const char *style="ro", QObject *parent=nullptr);
+           const char *style="bOg", QObject *parent=nullptr);
 
-    void setData(const QVector<double> &x, const QVector<double> &y);
+    void setData(const double *x, const double *y, int64_t pointCount);
+
+    void setData(const QVector<double> &x, const QVector<double> &y) {
+        setData(x.data(), y.data(), qMin(x.size(), y.size()));
+    }
 
     void setStyle(const char *style);
 

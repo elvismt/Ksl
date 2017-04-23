@@ -38,16 +38,19 @@ Series::Series(const QVector<double> &x, const QVector<double> &y,
     setStyle(style);
 }
 
-void Series::setData(const QVector<double> &x, const QVector<double> &y) {
+void Series::setData(const double *x, const double *y, int64_t pointCount) {
     KSL_PUBLIC(Series);
     m->x = x;
     m->y = y;
+    m->pointCount = pointCount;
     m->checkBounds();
 }
 
 QRect Series::figureRect() const {
     KSL_PUBLIC(const Series);
-    return QRect(); // TODO
+    QPoint p1 = m->scale->map(QPointF(m->xMin, m->yMax));
+    QPoint p2 = m->scale->map(QPointF(m->xMax, m->yMin));
+    return QRect(p1, p2);
 }
 
 QRectF Series::dataRect() const {
@@ -63,13 +66,13 @@ void Series::paint(QPainter *painter) {
         return;
     }
     painter->setRenderHint(QPainter::Antialiasing, m->antialias);
-    switch (m->symbol) {
-        case Line:
-            m->paintLine(painter);
-            break;
-        case Circles:
-            m->paintCircles(painter);
-            break;
+
+    if (m->symbol == Line) {
+        m->paintLine(painter);
+    } else if (m->symbol == SmallCircles) {
+        m->paintSmallCircles(painter);
+    } else if (m->symbol == BigCircles) {
+        m->paintBigCircles(painter);
     }
 }
 
@@ -91,23 +94,29 @@ void SeriesPrivate::paintLine(QPainter *painter) {
     painter->strokePath(path, linePen);
 }
 
-void SeriesPrivate::paintCircles(QPainter *painter) {
-    double symbolDiameter = 2.0 * symbolRadius;
+void SeriesPrivate::paintSmallCircles(QPainter *painter) {
+    double r = smallSymbolRadius;
+    double twoR = 2.0 * r;
     painter->setPen(symbolPen);
     painter->setBrush(symbolBrush);
     for (int64_t k=0; k<pointCount; ++k) {
         QPoint p = scale->map(QPointF(x[k], y[k]));
-        painter->drawEllipse(
-            p.x() - symbolRadius,
-            p.y() - symbolRadius,
-            symbolDiameter,
-            symbolDiameter
-        );
+        painter->drawEllipse(p.x() - r, p.y() - r, twoR, twoR);
+    }
+}
+
+void SeriesPrivate::paintBigCircles(QPainter *painter) {
+    double r = bigSymbolRadius;
+    double twoR = 2.0 * r;
+    painter->setPen(symbolPen);
+    painter->setBrush(symbolBrush);
+    for (int64_t k=0; k<pointCount; ++k) {
+        QPoint p = scale->map(QPointF(x[k], y[k]));
+        painter->drawEllipse(p.x() - r, p.y() - r, twoR, twoR);
     }
 }
 
 void SeriesPrivate::checkBounds() {
-    pointCount = qMin(x.size(), y.size());
     if (pointCount < 1L) {
         return;
     }
@@ -124,7 +133,8 @@ void SeriesPrivate::checkBounds() {
 inline Series::Symbol parseSymbol(char c) {
     switch (c) {
         case '-': return Series::Line;
-        case 'o': return Series::Circles;
+        case 'o': return Series::SmallCircles;
+        case 'O': return Series::BigCircles;
     }
     return Series::Line;
 }
@@ -152,8 +162,8 @@ void Series::setStyle(const char *style) {
         symbolBrush.setColor(Util::parseColor(style[k++]));
     }
 
-    linePen.setWidthF(1.05);
-    symbolPen.setWidthF(0.8);
+    linePen.setWidthF(1.1);
+    symbolPen.setWidthF((symbol & Big) ? 1.5 : 0.8);
 
     m->linePen = linePen;
     m->symbolPen = symbolPen;

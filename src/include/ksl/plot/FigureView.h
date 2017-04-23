@@ -35,8 +35,8 @@ class FigureView:
 
 public:
 
-    FigureView(const QString &title="Ksl", int width=400,
-               int height=400, QWidget *parent=nullptr);
+    FigureView(const QString &title="Ksl", int width=460,
+               int height=460, QWidget *parent=nullptr);
 
     FigureView(Figure *figure, QWidget *parent=nullptr);
 
@@ -46,6 +46,14 @@ public:
 protected:
 
     virtual void paintEvent(QPaintEvent *event) override;
+
+    virtual void mousePressEvent(QMouseEvent *event) override;
+
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
+
+    virtual void mouseReleaseEvent(QMouseEvent *event) override;
+
+    virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
 
     FigureView(ksl::ObjectPrivate *priv, Figure *figure,
                QWidget *parent=nullptr);
