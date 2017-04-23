@@ -39,7 +39,7 @@ public:
         , symbol(Series::Line)
         , antialias(true)
         , smallSymbolRadius(2.5)
-        , bigSymbolRadius(3.5)
+        , bigSymbolRadius(4.0)
     {}
 
     void checkBounds();

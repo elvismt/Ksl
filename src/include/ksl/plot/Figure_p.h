@@ -34,7 +34,8 @@ public:
         : ksl::ObjectPrivate(publ)
         //, backBrush(QColor(230,230,230))
         , backBrush(Qt::white)
-        , font("Sans", 10)
+        //, backBrush(Qt::black)
+        , font("Times", 11)
         , view(nullptr)
     {}
 

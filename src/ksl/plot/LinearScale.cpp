@@ -32,12 +32,18 @@ LinearScale::LinearScale(const QString &title, Figure *figure)
     KSL_PUBLIC(LinearScale);
     m->title = title;
 
-    m->axis[BottomAxis] = new Axis(Axis::Everything, Qt::Horizontal, "BottomAxis");
-    m->axis[LeftAxis] = new Axis(Axis::Everything, Qt::Vertical, "LeftAxis");
-    m->axis[TopAxis] = new Axis(Axis::Everything, Qt::Horizontal, "TopAxis");
-    m->axis[RightAxis] = new Axis(Axis::Everything, Qt::Vertical, "RightAxis");
-    m->axis[X_Axis] = new Axis(Axis::Everything, Qt::Horizontal, "X Axis");
-    m->axis[Y_Axis] = new Axis(Axis::Everything, Qt::Vertical, "Y Axis");
+    m->axis[BottomAxis] = new Axis(
+        Axis::Title|Axis::Line|Axis::TicksDown, Qt::Horizontal, "BottomAxis");
+    m->axis[LeftAxis] = new Axis(
+        Axis::Title|Axis::Line|Axis::TicksDown, Qt::Vertical, "LeftAxis");
+    m->axis[TopAxis] = new Axis(
+        Axis::Title|Axis::Line|Axis::TicksUp, Qt::Horizontal, "TopAxis");
+    m->axis[RightAxis] = new Axis(
+        Axis::Title|Axis::Line|Axis::TicksUp, Qt::Vertical, "RightAxis");
+    m->axis[X_Axis] = new Axis(
+        Axis::Title|Axis::Line|Axis::TicksDown, Qt::Horizontal, "X Axis");
+    m->axis[Y_Axis] = new Axis(
+        Axis::Title|Axis::Line|Axis::TicksDown, Qt::Vertical, "Y Axis");
 
     for (auto axis : m->axis) {
         axis->setScale(this);
@@ -195,8 +201,8 @@ void LinearScale::setFrameStyle(FrameStyle frameStyle) {
         m->axis[LinearScale::RightAxis]->setVisible(true);
         m->axis[LinearScale::X_Axis]->setVisible(false);
         m->axis[LinearScale::Y_Axis]->setVisible(false);
-        setXpadding(60, 20);
-        setYpadding(20, 60);
+        setXpadding(60, 30);
+        setYpadding(30, 60);
     } else if (frameStyle & ZeroAxis) {
         m->axis[LinearScale::BottomAxis]->setVisible(false);
         m->axis[LinearScale::LeftAxis]->setVisible(false);
@@ -206,6 +212,12 @@ void LinearScale::setFrameStyle(FrameStyle frameStyle) {
         m->axis[LinearScale::Y_Axis]->setVisible(true);
         setXpadding(20, 20);
         setYpadding(20, 20);
+    } else if (frameStyle & AllAxis) {
+        setXpadding(60, 30);
+        setYpadding(30, 60);
+        for (auto axis : m->axis) {
+            axis->setVisible(true);
+        }
     }
 }
 

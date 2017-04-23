@@ -37,9 +37,11 @@ public:
         , lineAntialias(false)
         , selectBrush(QColor(0,0,255,180))
         , selected(false)
-    {}
+    { }
 
     void paintLine(QPainter *painter);
+
+    void paintTitle(QPainter *painter);
 
     QPen linePen;
     bool lineAntialias;

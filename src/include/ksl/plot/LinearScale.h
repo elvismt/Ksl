@@ -41,7 +41,8 @@ public:
 
     enum FrameStyleEnum {
         BoundAxis     = 0x00000001,
-        ZeroAxis      = 0x00000002
+        ZeroAxis      = 0x00000002,
+        AllAxis      = 0x00000004
     };
     Q_DECLARE_FLAGS(FrameStyle,FrameStyleEnum)
 

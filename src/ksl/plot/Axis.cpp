@@ -68,6 +68,9 @@ void Axis::paint(QPainter *painter) {
     if (m->component & Line) {
         m->paintLine(painter);
     }
+    if (m->component & Title) {
+        m->paintTitle(painter);
+    }
     if (m->selected) {
         painter->fillRect(figureRect(), m->selectBrush);
     }
@@ -77,6 +80,38 @@ void AxisPrivate::paintLine(QPainter *painter) {
     painter->setRenderHint(QPainter::Antialiasing, lineAntialias);
     painter->setPen(linePen);
     painter->drawLine(p1, p2);
+}
+
+void AxisPrivate::paintTitle(QPainter *painter) {
+    QFontMetrics fontMetrics = painter->fontMetrics();
+    if (orientation == Qt::Horizontal) {
+        if (component & Axis::TicksUp) {
+            painter->drawText(
+                (p2.x() + p1.x() - fontMetrics.width(title))/2,
+                 p1.y() - fontMetrics.descent() - 5, title);
+        } else {
+            painter->drawText(
+                (p2.x() + p1.x() - fontMetrics.width(title))/2,
+                 p1.y() + fontMetrics.height(), title);
+        }
+    } else {
+        if (component & Axis::TicksUp) {
+            painter->save();
+            painter->rotate(-90.0);
+            painter->drawText(
+                -(p1.y() + p2.y() + fontMetrics.width(title))/2,
+                p1.x() + fontMetrics.height(), title);
+            painter->restore();
+        }
+        else {
+            painter->save();
+            painter->rotate(-90.0);
+            painter->drawText(
+                -(p1.y() + p2.y() + fontMetrics.width(title))/2,
+                p1.x() - fontMetrics.descent() - 5, title);
+            painter->restore();
+        }
+    }
 }
 
 void Axis::setPosition(double min, double max, double anchor) {

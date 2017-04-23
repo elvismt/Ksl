@@ -64,8 +64,12 @@ public:
     void save(const QString fileName, int width=500,
               int height=350, const char *format="png");
 
+    QFont font() const;
+
 
 public slots:
+
+    void setFont(const QFont &font);
 
     void notifyError();
 

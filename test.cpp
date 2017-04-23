@@ -19,8 +19,8 @@ int main(int argc, char **argv) {
     auto y2 = n2(N);
 
     plot::Chart chart;
-    chart.series(x1, y1, "kog");
-    chart.series(x2, y2, "kor");
+    chart.series(x1, y1, "kOg");
+    chart.series(x2, y2, "kOr");
 
     chart.show();
     return app.exec();

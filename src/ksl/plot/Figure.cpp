@@ -43,6 +43,16 @@ FigureView* Figure::view() const {
     return m->view;
 }
 
+QFont Figure::font() const {
+    KSL_PUBLIC(const Figure);
+    return m->font;
+}
+
+void Figure::setFont(const QFont &font) {
+    KSL_PUBLIC(Figure);
+    m->font = font;
+}
+
 void Figure::addScale(FigureScale *scale) {
     KSL_PUBLIC(Figure);
     if (scale != nullptr) {
