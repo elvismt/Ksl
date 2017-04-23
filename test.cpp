@@ -10,10 +10,11 @@ int main(int argc, char **argv) {
     ksl::plot::FigureView figureView;
     ksl::plot::Figure *figure = figureView.figure();
 
-    // add scale
+    // add linear scale
     ksl::plot::LinearScale scale("Scale", figure);
+    scale.setFrameStyle(ksl::plot::LinearScale::ZeroAxis);
 
-    // create some data
+    // create some random data
     const int64_t pointCount = 300;
     ksl::random::Normal distribution1(0.0, 0.8);
     ksl::random::Normal distribution2(2.0, 0.4);
@@ -27,9 +28,9 @@ int main(int argc, char **argv) {
     }
 
     // create series plots
-    ksl::plot::Series plot1(x1, y1, "kor");
+    ksl::plot::Series plot1(x1, y1, "ro");
     scale.addItem(&plot1);
-    ksl::plot::Series plot2(x2, y2, "kob");
+    ksl::plot::Series plot2(x2, y2, "bo");
     scale.addItem(&plot2);
 
     // show the window and run app

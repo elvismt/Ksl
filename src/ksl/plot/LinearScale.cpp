@@ -31,7 +31,19 @@ LinearScale::LinearScale(const QString &title, Figure *figure)
 {
     KSL_PUBLIC(LinearScale);
     m->title = title;
+
+    m->axis[BottomAxis] = new Axis(Axis::Everything, Qt::Horizontal, "BottomAxis");
+    m->axis[LeftAxis] = new Axis(Axis::Everything, Qt::Vertical, "LeftAxis");
+    m->axis[TopAxis] = new Axis(Axis::Everything, Qt::Horizontal, "TopAxis");
+    m->axis[RightAxis] = new Axis(Axis::Everything, Qt::Vertical, "RightAxis");
+    m->axis[X_Axis] = new Axis(Axis::Everything, Qt::Horizontal, "X Axis");
+    m->axis[Y_Axis] = new Axis(Axis::Everything, Qt::Vertical, "Y Axis");
+
+    for (auto axis : m->axis) {
+        axis->setScale(this);
+    }
     rescale();
+    setFrameStyle(BoundAxis);
     if (figure != nullptr) {
         figure->addScale(this);
     }
@@ -74,8 +86,16 @@ void LinearScale::rescale() {
             if (itemRect.bottom() > m->dataYmax) m->dataYmax = itemRect.bottom();
         }
     }
+
     m->dataWidth = m->dataXmax - m->dataXmin;
+    m->dataXmin -= m->dataWidth * m->horizontalMargin;
+    m->dataXmax += m->dataWidth * m->horizontalMargin;
+    m->dataWidth += 2.0 * m->dataWidth * m->horizontalMargin;
+
     m->dataHeight = m->dataYmax - m->dataYmin;
+    m->dataYmin -= m->dataHeight * m->verticalMargin;
+    m->dataYmax += m->dataHeight * m->verticalMargin;
+    m->dataHeight += 2.0 * m->dataHeight * m->verticalMargin;
 }
 
 QRect LinearScale::figureRect() const {
@@ -130,6 +150,14 @@ void LinearScale::paint(const QRect &rect, QPainter *painter) {
     painter->setClipRect(figureRect());
     FigureScale::paint(rect, painter);
     painter->restore();
+
+    // paint the axis
+    m->positionAxis();
+    for (auto axis : m->axis) {
+        if (axis->visible()) {
+            axis->paint(painter);
+        }
+    }
 }
 
 void LinearScale::setXrange(double min, double max) {
@@ -144,5 +172,33 @@ void LinearScale::setYrange(double min, double max) {
     m->dataYmin = min;
     m->dataYmax = max;
     m->dataHeight = max - min;
+}
+
+void LinearScale::setFrameStyle(FrameStyle frameStyle) {
+    KSL_PUBLIC(LinearScale);
+    if (frameStyle & BoundAxis) {
+        m->axis[LinearScale::BottomAxis]->setVisible(true);
+        m->axis[LinearScale::LeftAxis]->setVisible(true);
+        m->axis[LinearScale::TopAxis]->setVisible(true);
+        m->axis[LinearScale::RightAxis]->setVisible(true);
+        m->axis[LinearScale::X_Axis]->setVisible(false);
+        m->axis[LinearScale::Y_Axis]->setVisible(false);
+    } else if (frameStyle & ZeroAxis) {
+        m->axis[LinearScale::BottomAxis]->setVisible(false);
+        m->axis[LinearScale::LeftAxis]->setVisible(false);
+        m->axis[LinearScale::TopAxis]->setVisible(false);
+        m->axis[LinearScale::RightAxis]->setVisible(false);
+        m->axis[LinearScale::X_Axis]->setVisible(true);
+        m->axis[LinearScale::Y_Axis]->setVisible(true);
+    }
+}
+
+void LinearScalePrivate::positionAxis() {
+    axis[LinearScale::BottomAxis]->setPosition(dataXmin, dataXmax, dataYmin);
+    axis[LinearScale::LeftAxis]->setPosition(dataYmin, dataYmax, dataXmin);
+    axis[LinearScale::TopAxis]->setPosition(dataXmin, dataXmax, dataYmax);
+    axis[LinearScale::RightAxis]->setPosition(dataYmin, dataYmax, dataXmax);
+    axis[LinearScale::X_Axis]->setPosition(dataXmin, dataXmax, 0.0);
+    axis[LinearScale::Y_Axis]->setPosition(dataYmin, dataYmax, 0.0);
 }
 }}

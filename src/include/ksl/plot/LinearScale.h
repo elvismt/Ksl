@@ -20,6 +20,7 @@
 
 #pragma once
 #include <ksl/plot/FigureScale.h>
+#include <ksl/plot/Axis.h>
 #include <QString>
 
 namespace ksl {
@@ -29,8 +30,28 @@ class LinearScale: public FigureScale
 {
 public:
 
+    enum FrameAxis {
+        BottomAxis    = 0,
+        LeftAxis      = 1,
+        TopAxis       = 2,
+        RightAxis     = 3,
+        X_Axis        = 4,
+        Y_Axis        = 5
+    };
+
+    enum FrameStyleEnum {
+        BoundAxis     = 0x00000001,
+        ZeroAxis      = 0x00000002
+    };
+    Q_DECLARE_FLAGS(FrameStyle,FrameStyleEnum)
+
+
     LinearScale(const QString &title="Ksl",
                 Figure *figure=nullptr);
+
+    Axis* axis(FrameAxis axisId) const;
+
+    void setFrameStyle(FrameStyle frameStyle);
 
     virtual void rescale() override;
 
@@ -51,4 +72,5 @@ protected:
 
     virtual void paint(const QRect &rect, QPainter *painter) override;
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS(LinearScale::FrameStyle)
 }}

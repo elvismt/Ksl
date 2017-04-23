@@ -19,42 +19,31 @@
  */
 
 #pragma once
-#include <ksl/plot/LinearScale.h>
-#include <ksl/plot/FigureScale_p.h>
+#include <ksl/plot/Axis.h>
+#include <ksl/plot/FigureItem_p.h>
+#include <QPen>
+#include <QBrush>
 
 namespace ksl {
 namespace plot {
 
-constexpr int64_t MAX_AXIS = 6;
-
-class LinearScalePrivate: public FigureScalePrivate
+class AxisPrivate: public FigureItemPrivate
 {
 public:
 
-    LinearScalePrivate(LinearScale *publ)
-        : FigureScalePrivate(publ)
-        , leftPadding(20), rightPadding(20)
-        , topPadding(20), bottomPadding(20)
-        , horizontalMargin(0.05)
-        , verticalMargin(0.05)
+    AxisPrivate(Axis *publ)
+        : FigureItemPrivate(publ)
+        , linePen(Qt::black)
+        , selectBrush(QColor(0,0,220,200))
     {}
 
-    void positionAxis();
+    void paintLine(QPainter *painter);
 
-    int leftPadding, rightPadding;
-    int topPadding, bottomPadding;
-
-    double horizontalMargin;
-    double verticalMargin;
-
-    Axis* axis[MAX_AXIS];
-
-    int xMin, xMax;
-    int yMin, yMax;
-    int width, height;
-
-    double dataXmin, dataXmax;
-    double dataYmin, dataYmax;
-    double dataWidth, dataHeight;
+    QPen linePen;
+    QBrush selectBrush;
+    Axis::Component component;
+    Qt::Orientation orientation;
+    double min, max, anchor;
+    QPoint p1, p2;
 };
 }}

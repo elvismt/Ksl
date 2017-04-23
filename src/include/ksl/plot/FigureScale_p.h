@@ -34,7 +34,8 @@ public:
         , figure(nullptr)
         , view(nullptr)
         , visible(true)
-        , backBrush(Qt::white)
+        //, backBrush(Qt::white)
+        , backBrush(Qt::NoBrush)
         , layoutRect(0.0, 0.0, 1.0, 1.0)
     {}
 

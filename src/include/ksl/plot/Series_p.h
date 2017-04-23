@@ -38,7 +38,7 @@ public:
         , symbolBrush(Qt::green)
         , symbol(Series::Line)
         , antialias(true)
-        , symbolRadius(2.3)
+        , symbolRadius(2.4)
     {}
 
     void checkBounds();

@@ -22,7 +22,9 @@ HEADERS += \
     src/include/ksl/random/Normal.h \
     src/include/ksl/random/Normal_p.h \
     src/include/ksl/random/Distribution.h \
-    src/include/ksl/random/Distribution_p.h
+    src/include/ksl/random/Distribution_p.h \
+    src/include/ksl/plot/Axis.h \
+    src/include/ksl/plot/Axis_p.h
 
 SOURCES += \
     test.cpp \
@@ -33,4 +35,5 @@ SOURCES += \
     src/ksl/plot/LinearScale.cpp \
     src/ksl/plot/Series.cpp \
     src/ksl/plot/Util.cpp \
-    src/ksl/random/Normal.cpp
+    src/ksl/random/Normal.cpp \
+    src/ksl/plot/Axis.cpp

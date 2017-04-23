@@ -152,8 +152,8 @@ void Series::setStyle(const char *style) {
         symbolBrush.setColor(Util::parseColor(style[k++]));
     }
 
-    // widths bigger than 1 are prettier
     linePen.setWidthF(1.05);
+    symbolPen.setWidthF(0.8);
 
     m->linePen = linePen;
     m->symbolPen = symbolPen;

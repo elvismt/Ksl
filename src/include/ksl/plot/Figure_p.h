@@ -32,7 +32,8 @@ public:
 
     FigurePrivate(Figure *publ)
         : ksl::ObjectPrivate(publ)
-        , backBrush(QColor(230,230,230))
+        //, backBrush(QColor(230,230,230))
+        , backBrush(Qt::white)
         , font("Sans", 10)
         , view(nullptr)
     {}

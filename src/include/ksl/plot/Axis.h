@@ -19,42 +19,45 @@
  */
 
 #pragma once
-#include <ksl/plot/LinearScale.h>
-#include <ksl/plot/FigureScale_p.h>
+#include <ksl/plot/FigureItem.h>
 
 namespace ksl {
 namespace plot {
 
-constexpr int64_t MAX_AXIS = 6;
+// forward declaration
+class LinearScale;
 
-class LinearScalePrivate: public FigureScalePrivate
+class Axis: public FigureItem
 {
+    Q_OBJECT
+
 public:
 
-    LinearScalePrivate(LinearScale *publ)
-        : FigureScalePrivate(publ)
-        , leftPadding(20), rightPadding(20)
-        , topPadding(20), bottomPadding(20)
-        , horizontalMargin(0.05)
-        , verticalMargin(0.05)
-    {}
+    enum ComponentEnum {
+        Everything    = 0xFFFFFFFF,
+        Line          = 0x00000001,
+        TicksUp       = 0x00000002,
+        TicksDown     = 0x00000004,
+        Title         = 0x00000008
+    };
+    Q_DECLARE_FLAGS(Component,ComponentEnum)
 
-    void positionAxis();
+    Axis(Component component, Qt::Orientation orientation,
+         const QString &title, QObject *parent=nullptr);
 
-    int leftPadding, rightPadding;
-    int topPadding, bottomPadding;
+    virtual QRect figureRect() const override;
 
-    double horizontalMargin;
-    double verticalMargin;
+    virtual QRectF dataRect() const override;
 
-    Axis* axis[MAX_AXIS];
+    void setPosition(double min, double max, double anchor);
 
-    int xMin, xMax;
-    int yMin, yMax;
-    int width, height;
 
-    double dataXmin, dataXmax;
-    double dataYmin, dataYmax;
-    double dataWidth, dataHeight;
+protected:
+
+    friend class LinearScale;
+
+    virtual void paint(QPainter *painter) override;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Axis::Component)
 }}
