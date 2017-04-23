@@ -38,7 +38,7 @@ public:
         , symbolBrush(Qt::green)
         , symbol(Series::Line)
         , antialias(true)
-        , smallSymbolRadius(2.4)
+        , smallSymbolRadius(2.5)
         , bigSymbolRadius(3.5)
     {}
 

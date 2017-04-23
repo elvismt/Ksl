@@ -163,7 +163,7 @@ void Series::setStyle(const char *style) {
     }
 
     linePen.setWidthF(1.2);
-    symbolPen.setWidthF((symbol & Big) ? 1.5 : 0.8);
+    symbolPen.setWidthF((symbol & Big) ? 1.5 : 1.0);
 
     m->linePen = linePen;
     m->symbolPen = symbolPen;

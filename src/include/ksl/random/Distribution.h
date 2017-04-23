@@ -21,6 +21,7 @@
 #pragma once
 #include <ksl/Object.h>
 #include <QVector>
+#include <vector>
 
 namespace ksl {
 namespace random {
@@ -31,8 +32,26 @@ public:
 
     virtual double generate() const = 0;
 
-    inline double operator() () const {
+    double operator() () const {
         return generate();
+    }
+
+    QVector<double> qVec(int64_t size) const {
+        QVector<double> v(size);
+        for (auto &x : v)
+            x = generate();
+        return std::move(v);
+    }
+
+    QVector<double> operator() (int64_t size) const {
+        return std::move(qVec(size));
+    }
+
+    std::vector<double> vec(int64_t size) const {
+        std::vector<double> v(size);
+        for (auto &x : v)
+            x = generate();
+        return std::move(v);
     }
 
 protected:
